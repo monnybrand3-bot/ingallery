@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <style>
       body { background: #121414; color: #e2e2e2; }
       .glass-panel {
@@ -43,7 +44,7 @@
           </div>
           <div class="space-y-2">
             <label for="signup-password" class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Password</label>
-            <input id="signup-password" name="password" type="password" placeholder="Minimum 6 characters" class="w-full rounded border border-white/10 bg-white/5 px-3 py-3 text-white outline-none focus:border-secondary" required />
+            <div class="relative"><input id="signup-password" name="password" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" class="w-full rounded border border-white/10 bg-white/5 px-3 py-3 pr-12 text-white outline-none focus:border-secondary" required /><button type="button" data-toggle-password aria-controls="signup-password" aria-label="Show password" aria-pressed="false" class="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined" aria-hidden="true">visibility</span></button></div>
           </div>
           <div data-signup-message class="min-h-[20px] text-sm text-secondary"></div>
           <button type="submit" class="btn-primary w-full rounded px-5 py-3 text-sm uppercase font-semibold">Create Account</button>

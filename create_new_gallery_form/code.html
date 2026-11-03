@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>[data-wizard-panel][hidden] { display: none !important; }</style>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -564,7 +565,12 @@
             nextUrl.searchParams.set('step', wizardStepKeys[currentWizardStep]);
             window.history.pushState({ galleryWizardStep: currentWizardStep }, '', nextUrl);
         }
-        wizardPanels.forEach((panel, index) => { panel.hidden = index !== currentWizardStep; });
+        wizardPanels.forEach((panel, index) => {
+            const isCurrentPage = index === currentWizardStep;
+            panel.hidden = !isCurrentPage;
+            panel.style.display = isCurrentPage ? '' : 'none';
+            panel.setAttribute('aria-hidden', String(!isCurrentPage));
+        });
         if (wizardBackButton) wizardBackButton.hidden = currentWizardStep === 0;
         if (wizardNextButton) wizardNextButton.hidden = currentWizardStep === wizardPanels.length - 1;
         if (submitButton) submitButton.hidden = currentWizardStep !== wizardPanels.length - 1;

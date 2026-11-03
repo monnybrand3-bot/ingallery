@@ -150,6 +150,7 @@ interface MalipoCallback {
 }
 
 const app = express();
+app.set('trust proxy', 1);
 const port = Number(process.env.PORT ?? 8787);
 const configuredOrigins = (process.env.FRONTEND_ORIGIN ?? 'http://localhost:5175,http://localhost:5173,http://localhost:5174').split(',').map((origin) => origin.trim()).filter(Boolean);
 const allowedOrigins = new Set([
@@ -626,6 +627,28 @@ app.post('/api/auth/login', async (request: Request<unknown, unknown, AuthBody>,
   }
 
   response.status(401).json({ ok: false, message: error?.message ?? 'Unable to sign in' });
+});
+
+app.post('/api/auth/password/request', rateLimiter(5, 15 * 60 * 1000), async (request: Request, response: Response) => {
+  const email = String(request.body?.email ?? '').trim().toLowerCase();
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    response.status(400).json({ ok: false, data: { sent: false }, message: 'Enter a valid email address.' });
+    return;
+  }
+
+  const redirectTo = `${resolveFrontendOrigin(request)}/reset-password.html`;
+  try {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+    if (error) {
+      console.warn(JSON.stringify({ event: 'password_recovery_request_failed', message: error.message }));
+      response.status(502).json({ ok: false, data: { sent: false }, message: 'Unable to send a recovery email. Check the Supabase email and redirect settings, then try again.' });
+      return;
+    }
+    response.json({ ok: true, data: { sent: true }, message: 'If an account exists for that email, recovery instructions will arrive shortly.' });
+  } catch (error) {
+    console.warn(JSON.stringify({ event: 'password_recovery_request_failed', message: error instanceof Error ? error.message : String(error) }));
+    response.status(502).json({ ok: false, data: { sent: false }, message: 'Unable to send a recovery email. Please try again later.' });
+  }
 });
 
 app.post('/api/auth/password/recovery', async (request: Request, response: Response) => {

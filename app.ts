@@ -612,6 +612,7 @@ export interface ApiService {
   createCheckout: (galleryId: string, customer: { name?: string; email: string; phone: string; network?: string }) => Promise<ApiResponse<CheckoutLink>>;
   login: (email: string, password: string) => Promise<ApiResponse<UserSession | null>>;
   signup: (email: string, password: string, name: string) => Promise<ApiResponse<UserSession | null>>;
+  requestPasswordRecovery: (email: string) => Promise<ApiResponse<{ sent: boolean }>>;
   getSession: () => Promise<ApiResponse<UserSession | null>>;
   getProfile: () => Promise<ApiResponse<StudioProfile>>;
   updateProfile: (updates: { displayName: string; studioName: string; billingEmail: string }) => Promise<ApiResponse<StudioProfile>>;
@@ -860,6 +861,21 @@ export const createApiService = (baseUrl: string): ApiService => {
         return { ok: response.ok, data: session, message: response.message };
       } catch {
         return { ok: false, data: null, message: 'Unable to create your account. Check your connection and try again.' };
+      }
+    },
+    requestPasswordRecovery: async (email) => {
+      try {
+        return await request<{ sent: boolean }>('/api/auth/password/request', {
+          method: 'POST',
+          body: JSON.stringify({ email })
+        });
+      } catch (error) {
+        const message = error instanceof TypeError
+          ? 'Unable to contact the server. Check your connection and try again.'
+          : error instanceof Error
+            ? error.message
+            : 'Unable to send a recovery email. Please try again.';
+        return { ok: false, data: { sent: false }, message };
       }
     },
     getSession: async () => {
@@ -1170,16 +1186,20 @@ export const initNavigation = (): void => {
     button.addEventListener('click', () => go(target));
   });
 
-  document.querySelector<HTMLButtonElement>('[data-toggle-password]')?.addEventListener('click', (event) => {
-    const button = event.currentTarget as HTMLButtonElement;
-    const passwordInput = document.querySelector<HTMLInputElement>('#password');
-    if (!passwordInput) return;
-    const reveal = passwordInput.type === 'password';
-    passwordInput.type = reveal ? 'text' : 'password';
-    button.setAttribute('aria-pressed', String(reveal));
-    button.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-    const icon = button.querySelector<HTMLElement>('.material-symbols-outlined');
-    if (icon) icon.textContent = reveal ? 'visibility_off' : 'visibility';
+  document.querySelectorAll<HTMLButtonElement>('[data-toggle-password]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const controlledInputId = button.getAttribute('aria-controls');
+      const passwordInput = controlledInputId
+        ? document.getElementById(controlledInputId) as HTMLInputElement | null
+        : button.parentElement?.querySelector<HTMLInputElement>('input[type="password"], input[type="text"]') ?? null;
+      if (!passwordInput) return;
+      const reveal = passwordInput.type === 'password';
+      passwordInput.type = reveal ? 'text' : 'password';
+      button.setAttribute('aria-pressed', String(reveal));
+      button.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
+      const icon = button.querySelector<HTMLElement>('.material-symbols-outlined');
+      if (icon) icon.textContent = reveal ? 'visibility_off' : 'visibility';
+    });
   });
 
   const loginForm = document.querySelector<HTMLFormElement>('[data-login-form]');
@@ -1231,6 +1251,32 @@ export const initNavigation = (): void => {
         getStorage().setItem('ingallery:onboarding', JSON.stringify(createOnboardingState(result.data.id)));
         const redirectTarget = signupForm.dataset.redirect ?? 'photographer_dashboard_overview/code.html';
         window.location.href = redirectTarget;
+      }
+    });
+  }
+
+  const passwordRecoveryForm = document.querySelector<HTMLFormElement>('[data-password-recovery-form]');
+  if (passwordRecoveryForm) {
+    passwordRecoveryForm.addEventListener('submit', async (event: SubmitEvent) => {
+      event.preventDefault();
+      const emailInput = passwordRecoveryForm.querySelector<HTMLInputElement>('[name="email"]');
+      const messageNode = passwordRecoveryForm.querySelector<HTMLElement>('[data-password-recovery-message]');
+      const submitButton = passwordRecoveryForm.querySelector<HTMLButtonElement>('button[type="submit"]');
+      const email = emailInput?.value.trim() ?? '';
+      if (!emailInput?.reportValidity()) return;
+
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending…';
+      }
+      const result = await createApiService(getApiBaseUrl()).requestPasswordRecovery(email);
+      if (messageNode) {
+        messageNode.textContent = result.message ?? (result.ok ? 'Check your email for recovery instructions.' : 'Unable to send a recovery email. Please try again.');
+        messageNode.style.color = result.ok ? '#4edea3' : '#ffb4ab';
+      }
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send Recovery Link';
       }
     });
   }
