@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InGallery - Client Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#00160c",
+                        "surface-bright": "#37393a",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "tertiary": "#4edea3",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-container": "#1e2020",
+                        "primary-container": "#121212",
+                        "on-secondary-container": "#342800",
+                        "secondary-container": "#af8d11",
+                        "on-secondary": "#3c2f00",
+                        "secondary-fixed": "#ffe088",
+                        "on-primary-fixed": "#1c1b1b",
+                        "on-tertiary": "#003824",
+                        "outline-variant": "#444748",
+                        "on-tertiary-fixed": "#002113",
+                        "tertiary-fixed": "#6ffbbe",
+                        "background": "#121414",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#121414",
+                        "on-primary-fixed-variant": "#474646",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0c0f0f",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-background": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#574500",
+                        "outline": "#8e9192",
+                        "on-primary": "#313030",
+                        "surface-tint": "#c8c6c5",
+                        "primary": "#c8c6c5",
+                        "secondary": "#e9c349",
+                        "on-secondary-fixed": "#241a00",
+                        "primary-fixed": "#e5e2e1",
+                        "on-primary-container": "#7e7d7d",
+                        "on-tertiary-container": "#008f62",
+                        "surface-variant": "#333535",
+                        "surface-container-highest": "#333535",
+                        "surface-container-high": "#282a2b",
+                        "error-container": "#93000a",
+                        "on-surface": "#e2e2e2",
+                        "on-surface-variant": "#c4c7c7",
+                        "inverse-surface": "#e2e2e2",
+                        "inverse-on-surface": "#2f3131",
+                        "surface": "#121414",
+                        "error": "#ffb4ab",
+                        "inverse-primary": "#5f5e5e"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "section-gap": "120px",
+                        "element-gap": "16px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-sm": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .blur-overlay {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        [data-gallery-hero][data-cover-design="editorial"] { justify-content:flex-start; align-items:stretch; }
+        [data-gallery-hero][data-cover-design="editorial"] [data-gallery-cover-content] { width:100%; max-width:none; margin:0; align-self:flex-end; align-items:flex-start; text-align:left; padding:0 clamp(24px,8vw,120px) clamp(42px,8vh,96px); }
+        [data-gallery-hero][data-cover-design="editorial"] [data-gallery-title] { max-width:12ch; font-family:'Playfair Display',Georgia,serif; font-size:clamp(42px,8vw,88px); line-height:1.02; }
+        [data-gallery-hero][data-cover-design="editorial"] [data-gallery-cover] > div:last-child { background:linear-gradient(0deg,rgba(5,8,8,.78),rgba(5,8,8,.02) 76%); }
+        [data-gallery-hero][data-cover-design="cinematic"] { height:78vh; min-height:480px; max-height:820px; }
+        [data-gallery-hero][data-cover-design="cinematic"] [data-gallery-title] { font-family:Inter,sans-serif; font-size:clamp(30px,5vw,64px); font-weight:500; letter-spacing:.12em; line-height:1.2; text-transform:uppercase; }
+        [data-gallery-hero][data-cover-design="cinematic"] [data-gallery-cover] > div:last-child { background:linear-gradient(90deg,rgba(5,8,8,.44),rgba(5,8,8,.12),rgba(5,8,8,.44)),linear-gradient(0deg,rgba(5,8,8,.36),transparent 65%); }
+        [data-gallery-hero][data-cover-design="minimal"] { height:42vh; min-height:310px; max-height:460px; background:#e9e4da; }
+        [data-gallery-hero][data-cover-design="minimal"] [data-gallery-cover] > div:last-child { background:rgba(238,234,225,.58); }
+        [data-gallery-hero][data-cover-design="minimal"] [data-gallery-cover-content] { gap:8px; padding:22px 30px; background:rgba(245,242,235,.9); color:#202a28; }
+        [data-gallery-hero][data-cover-design="minimal"] [data-gallery-title] { color:#202a28; font-family:'Playfair Display',Georgia,serif; font-size:clamp(32px,5vw,56px); }
+        [data-gallery-hero][data-cover-design="minimal"] [data-gallery-date],
+        [data-gallery-hero][data-cover-design="minimal"] [data-gallery-price] { color:#52605b; }
+        @media (max-width:767px) { [data-gallery-hero][data-cover-design="cinematic"] { height:60vh; min-height:360px; } }
+        [data-public-preview-grid] {
+            display: block !important;
+            column-count: 1;
+            column-gap: 6px;
+            gap: 0 !important;
+            padding: 0 !important;
+            background: transparent;
+        }
+        [data-gallery-photo-tile] {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin: 0 0 6px;
+            break-inside: avoid;
+            vertical-align: top;
+            min-width: 0;
+            min-height: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #282a2b, #121414 72%);
+        }
+        [data-gallery-photo-tile] [data-view-image],
+        [data-gallery-photo-tile] img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+        [data-gallery-photo-tile] [data-view-image] {
+            border: 0;
+            padding: 0;
+            background: transparent;
+        }
+        [data-gallery-photo-tile] img {
+            color: transparent;
+            background: linear-gradient(135deg, #282a2b, #121414 72%);
+            opacity: 0;
+            transition: opacity .25s ease, transform .5s ease;
+        }
+        [data-gallery-photo-tile] img.is-loaded {
+            opacity: 1;
+        }
+        [data-gallery-photo-tile][aria-label="Locked photo"],
+        [data-gallery-photo-tile][aria-label="Photo is being optimized"],
+        [data-gallery-photo-tile][aria-label="Photo preview unavailable"] {
+            aspect-ratio: 4 / 5;
+        }
+        .photo-tile-actions {
+            position: absolute;
+            inset: auto 0 0;
+            z-index: 5;
+            display: flex;
+            justify-content: flex-end;
+            gap: 7px;
+            padding: 36px 10px 10px;
+            opacity: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,.72));
+            transition: opacity .18s ease;
+        }
+        [data-gallery-photo-tile]:hover .photo-tile-actions,
+        [data-gallery-photo-tile]:focus-within .photo-tile-actions {
+            opacity: 1;
+        }
+        .photo-tile-actions button,
+        .photo-viewer-actions button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 38px;
+            min-height: 38px;
+            border: 1px solid rgba(255,255,255,.32);
+            border-radius: 999px;
+            background: rgba(16,18,18,.8);
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+        .photo-tile-actions button:hover,
+        .photo-viewer-actions button:hover,
+        .photo-tile-actions [aria-pressed="true"] {
+            border-color: #e9c349;
+            color: #e9c349;
+        }
+        .photo-tile-actions button:focus-visible,
+        .photo-viewer-actions button:focus-visible,
+        [data-comments-close]:focus-visible,
+        [data-comments-submit]:focus-visible {
+            outline: 2px solid #e9c349;
+            outline-offset: 2px;
+        }
+        .photo-viewer-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .photo-comments-list:empty::after {
+            content: 'No comments yet. Start the conversation.';
+            display: block;
+            padding: 16px 0;
+            color: #c4c7c7;
+            font-size: 14px;
+        }
+        [hidden] {
+            display: none !important;
+        }
+        @media (min-width: 768px) {
+            [data-public-preview-grid] { column-count: 3; }
+        }
+        @media (min-width: 1024px) {
+            [data-public-preview-grid] { column-count: 5; }
+        }
+        @media (hover: none) {
+            .photo-tile-actions { opacity: 1; }
+            .photo-tile-actions button { min-width: 42px; min-height: 42px; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav aria-label="Client gallery" class="bg-surface/80 backdrop-blur-xl dark:bg-surface-container-lowest/80 text-secondary dark:text-secondary-fixed border-b border-white/10 fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20">
+<div class="flex items-center gap-4">
+<img hidden data-gallery-studio-logo alt="Studio logo" class="h-10 w-10 object-contain" />
+<div class="text-headline-sm font-headline-sm tracking-tighter text-on-surface dark:text-primary-fixed">
+                InGallery
+            </div>
+<span class="hidden sm:inline text-label-sm text-on-surface-variant" data-gallery-studio-name>Client gallery</span>
+</div>
+</nav>
+<main class="pt-20 pb-16">
+<!-- Hero Section -->
+<header data-gallery-hero data-cover-design="classic" class="relative h-[52vh] min-h-[360px] max-h-[600px] w-full flex items-center justify-center md:h-[68vh] md:min-h-[520px] md:max-h-[760px]">
+<div class="absolute inset-0 z-0" data-gallery-cover data-alt="Gallery cover image">
+<div class="absolute inset-0 z-0 hidden opacity-0 transition-opacity duration-1000 pointer-events-none" data-cover-video-layer></div>
+<div class="absolute inset-0 z-10 bg-background/50"></div>
+</div>
+<div data-gallery-cover-content class="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center gap-3">
+<p data-gallery-date class="text-secondary tracking-[0.2em] uppercase text-label-sm font-label-sm">Gallery</p>
+<h1 data-gallery-title class="text-headline-md font-headline-md text-on-surface">Loading gallery...</h1>
+<div class="mt-3 flex flex-col items-center gap-2" data-gallery-actions>
+<button data-download-all-images hidden class="border border-white/15 bg-surface-container/80 text-on-surface px-8 py-3 tracking-[0.1em] hover:border-secondary hover:text-secondary transition-colors text-label-md font-label-md disabled:cursor-not-allowed disabled:opacity-50" type="button">
+                    Download All Photos
+                </button>
+<p data-gallery-price class="text-label-sm font-label-sm text-secondary tracking-wider">Contact photographer</p>
+<button data-gallery-unlock hidden class="border border-secondary bg-secondary px-8 py-3 text-label-md font-label-md font-semibold tracking-[0.1em] text-on-secondary hover:bg-secondary-fixed transition-colors" type="button">
+                    Unlock Gallery
+                </button>
+</div>
+</div>
+</header>
+<!-- Status Banner -->
+<div class="bg-surface-container py-4 text-center border-y border-white/5">
+<p data-gallery-status class="text-body-md font-body-md text-on-surface-variant">
+Loading gallery data...
+            </p>
+</div>
+<!-- Gallery Grid -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-6 md:py-8">
+<!-- Unlocked Previews -->
+<div hidden class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-element-gap mb-8" data-public-preview-grid></div>
+<div class="flex flex-col items-center gap-3 py-8">
+<button type="button" data-load-more-photos hidden class="border border-white/15 bg-surface-container/80 px-7 py-3 text-label-md text-on-surface transition-colors hover:border-secondary hover:text-secondary disabled:cursor-wait disabled:opacity-60">Load more photos</button>
+<p data-load-more-error role="status" class="text-sm text-error"></p>
+</div>
+</section>
+</main>
+<script src="../shared-nav.js?v=8"></script>
+<script type="module">
+    import { buildGalleryCheckoutUrl, createApiService, getApiBaseUrl, partitionPublicGalleryImages } from '../app.ts';
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get('slug');
+    const galleryId = params.get('galleryId');
+    const galleryTitle = params.get('gallery');
+    const accessTokenStorageKey = `ingallery:paid-gallery:${galleryId || slug || galleryTitle || ''}`;
+    let galleryAccessToken = '';
+    try { galleryAccessToken = sessionStorage.getItem(accessTokenStorageKey) || ''; } catch {}
+    const galleryAccessHeaders = () => galleryAccessToken ? { 'X-Gallery-Access-Token': galleryAccessToken } : {};
+    let identifier = slug || galleryId || galleryTitle;
+    const galleryTitleNodes = document.querySelectorAll('[data-gallery-title]');
+    const galleryCover = document.querySelector('[data-gallery-cover]');
+    const galleryHero = document.querySelector('[data-gallery-hero]');
+    const galleryCoverVideoLayer = document.querySelector('[data-cover-video-layer]');
+    const galleryStudioName = document.querySelector('[data-gallery-studio-name]');
+    const galleryStudioLogo = document.querySelector('[data-gallery-studio-logo]');
+    const galleryDate = document.querySelector('[data-gallery-date]');
+    const status = document.querySelector('[data-gallery-status]');
+    const galleryPrice = document.querySelector('[data-gallery-price]');
+    const galleryCtaLabel = document.querySelector('[data-gallery-cta-label]');
+    const previewGrid = document.querySelector('[data-public-preview-grid]');
+    const lockedGrid = document.querySelector('[data-public-locked-grid]');
+    const galleryActions = document.querySelector('[data-gallery-actions]');
+    const unlockButton = document.querySelector('[data-gallery-unlock]');
+    const downloadAllButton = document.querySelector('[data-download-all-images]');
+    const PUBLIC_PREVIEW_LIMIT = 10;
+    const loadMoreButton = document.querySelector('[data-load-more-photos]');
+    const loadMoreError = document.querySelector('[data-load-more-error]');
+    const api = createApiService(getApiBaseUrl());
+    const galleryImages = new Map();
+    let nextImageOffset = 0;
+    let activeGalleryRecord = null;
+    const lightbox = document.createElement('div');
+    lightbox.className = 'fixed inset-0 z-[200] hidden items-center justify-center bg-black/95 p-4';
+    lightbox.setAttribute('role', 'dialog');
+    lightbox.setAttribute('aria-modal', 'true');
+    lightbox.setAttribute('aria-label', 'Photo viewer');
+    lightbox.innerHTML = `
+        <button type="button" data-lightbox-close class="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center bg-black/60 text-white" aria-label="Close photo viewer">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
+        <button type="button" data-lightbox-prev class="absolute left-3 sm:left-6 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white" aria-label="Previous photo">
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+        </button>
+        <button type="button" data-lightbox-next class="absolute right-3 sm:right-6 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/60 text-white" aria-label="Next photo">
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+        </button>
+        <figure class="flex max-h-full max-w-full flex-col items-center gap-4">
+            <img data-lightbox-image class="max-h-[78vh] max-w-full object-contain" alt="">
+            <figcaption class="flex w-full items-center justify-between gap-4 text-sm text-white">
+                <span data-lightbox-caption class="truncate"></span>
+                <span class="photo-viewer-actions">
+                    <button type="button" data-lightbox-like aria-label="Like photo" aria-pressed="false"><span class="material-symbols-outlined" aria-hidden="true">favorite</span><span data-lightbox-like-count>0</span></button>
+                    <button type="button" data-lightbox-comment aria-label="Comment on photo"><span class="material-symbols-outlined" aria-hidden="true">chat_bubble_outline</span><span data-lightbox-comment-count>0</span></button>
+                    <button type="button" data-lightbox-download aria-label="Download photo"><span class="material-symbols-outlined" aria-hidden="true">download</span></button>
+                </span>
+            </figcaption>
+        </figure>`;
+    document.body.append(lightbox);
+    const lightboxImage = lightbox.querySelector('[data-lightbox-image]');
+    const lightboxCaption = lightbox.querySelector('[data-lightbox-caption]');
+    const lightboxPrevious = lightbox.querySelector('[data-lightbox-prev]');
+    const lightboxNext = lightbox.querySelector('[data-lightbox-next]');
+    const lightboxDownload = lightbox.querySelector('[data-lightbox-download]');
+    const lightboxLike = lightbox.querySelector('[data-lightbox-like]');
+    const lightboxLikeCount = lightbox.querySelector('[data-lightbox-like-count]');
+    const lightboxComment = lightbox.querySelector('[data-lightbox-comment]');
+    const lightboxCommentCount = lightbox.querySelector('[data-lightbox-comment-count]');
+    const visitorStorageKey = 'ingallery:gallery-visitor';
+    let visitorId = localStorage.getItem(visitorStorageKey);
+    if (!visitorId) {
+        visitorId = crypto.randomUUID();
+        localStorage.setItem(visitorStorageKey, visitorId);
+    }
+    let activeGallerySlug = '';
+    let lightboxImages = [];
+    let activeLightboxIndex = -1;
+    const interactionSummary = new Map();
+    const getYouTubeVideoId = (value) => {
+        try {
+            const url = new URL(value);
+            const host = url.hostname.toLowerCase().replace(/^www\./, '');
+            if (host === 'youtu.be') return url.pathname.split('/').filter(Boolean)[0] ?? '';
+            if (['youtube.com', 'm.youtube.com', 'youtube-nocookie.com'].includes(host)) {
+                return url.searchParams.get('v') ?? url.pathname.match(/^\/(?:embed|shorts)\/([^/?]+)/)?.[1] ?? '';
+            }
+        } catch {
+            return '';
+        }
+        return '';
+    };
+    const showGalleryCoverVideo = (videoUrl, hasCoverImage) => {
+        if (!galleryCoverVideoLayer || !videoUrl) return;
+        const youtubeId = getYouTubeVideoId(videoUrl);
+        if (/^[A-Za-z0-9_-]{11}$/.test(youtubeId)) {
+            const frame = document.createElement('iframe');
+            frame.className = 'h-full w-full';
+            frame.src = `https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&playlist=${youtubeId}&controls=0&rel=0&playsinline=1`;
+            frame.title = 'Gallery cover video';
+            frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+            frame.setAttribute('loading', 'lazy');
+            galleryCoverVideoLayer.append(frame);
+        } else {
+            const video = document.createElement('video');
+            video.className = 'h-full w-full object-cover';
+            video.src = videoUrl;
+            video.autoplay = true;
+            video.muted = true;
+            video.loop = true;
+            video.playsInline = true;
+            video.preload = 'metadata';
+            galleryCoverVideoLayer.append(video);
+            video.play().catch(() => {});
+        }
+
+        galleryCoverVideoLayer.classList.remove('hidden');
+        const setVideoVisible = (visible) => {
+            galleryCoverVideoLayer.classList.toggle('opacity-100', visible);
+            galleryCoverVideoLayer.classList.toggle('opacity-0', !visible);
+        };
+        if (!hasCoverImage) {
+            setVideoVisible(true);
+            return;
+        }
+        let videoVisible = false;
+        window.setInterval(() => {
+            videoVisible = !videoVisible;
+            setVideoVisible(videoVisible);
+        }, 9000);
+    };
+    const commentsDialog = document.createElement('dialog');
+    commentsDialog.className = 'w-[min(92vw,560px)] rounded-xl border border-white/10 bg-surface-container p-0 text-on-surface shadow-2xl backdrop:bg-black/75';
+    commentsDialog.innerHTML = `
+        <section class="p-5 sm:p-7">
+            <header class="mb-5 flex items-center justify-between gap-4">
+                <h2 class="text-headline-sm font-headline-sm">Photo comments</h2>
+                <button type="button" data-comments-close class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-white/10" aria-label="Close comments"><span class="material-symbols-outlined" aria-hidden="true">close</span></button>
+            </header>
+            <div data-comments-list class="photo-comments-list mb-5 max-h-64 overflow-y-auto divide-y divide-white/10"></div>
+            <form data-comments-form class="space-y-3">
+                <label class="block text-xs uppercase tracking-widest text-on-surface-variant" for="photo-comment-name">Your name</label>
+                <input id="photo-comment-name" maxlength="60" required class="w-full rounded border border-white/15 bg-background px-3 py-2 text-on-surface" autocomplete="name">
+                <label class="block text-xs uppercase tracking-widest text-on-surface-variant" for="photo-comment-body">Comment</label>
+                <textarea id="photo-comment-body" maxlength="1200" required rows="3" class="w-full rounded border border-white/15 bg-background px-3 py-2 text-on-surface"></textarea>
+                <p data-comments-error role="status" class="min-h-5 text-sm text-error"></p>
+                <button type="submit" data-comments-submit class="w-full bg-secondary px-4 py-3 font-semibold text-on-secondary">Post comment</button>
+            </form>
+        </section>`;
+    document.body.append(commentsDialog);
+    const commentsList = commentsDialog.querySelector('[data-comments-list]');
+    const commentsForm = commentsDialog.querySelector('[data-comments-form]');
+    const commentsError = commentsDialog.querySelector('[data-comments-error]');
+    const commentNameInput = commentsDialog.querySelector('#photo-comment-name');
+    const commentBodyInput = commentsDialog.querySelector('#photo-comment-body');
+    const savedCommentName = localStorage.getItem('ingallery:comment-name');
+    if (commentNameInput && savedCommentName) commentNameInput.value = savedCommentName;
+    let activeCommentImageId = '';
+    const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    const closeLightbox = () => {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.classList.remove('overflow-hidden');
+        if (lightboxImage) {
+            lightboxImage.src = '';
+            lightboxImage.removeAttribute('srcset');
+        }
+    };
+    const getPhotoInteraction = (imageId) => interactionSummary.get(imageId) ?? { likes: 0, comments: 0, likedByVisitor: false };
+    const getLightboxPreviewUrl = (image) => window.matchMedia('(max-width: 767px)').matches
+        ? image.mediumUrl || image.largeUrl || image.viewUrl || image.previewUrl
+        : image.largeUrl || image.mediumUrl || image.viewUrl || image.previewUrl;
+    const updateInteractionControls = (imageId) => {
+        const state = getPhotoInteraction(imageId);
+        previewGrid?.querySelectorAll('[data-like-image]').forEach((button) => {
+            if (button.getAttribute('data-like-image') !== imageId) return;
+            button.setAttribute('aria-pressed', String(state.likedByVisitor));
+            button.setAttribute('aria-label', `${state.likedByVisitor ? 'Unlike' : 'Like'} photo, ${state.likes} likes`);
+            const count = button.querySelector('[data-like-count]');
+            if (count) count.textContent = String(state.likes);
+        });
+        previewGrid?.querySelectorAll('[data-comment-image]').forEach((button) => {
+            if (button.getAttribute('data-comment-image') !== imageId) return;
+            button.setAttribute('aria-label', `Comment on photo, ${state.comments} comments`);
+            const count = button.querySelector('[data-comment-count]');
+            if (count) count.textContent = String(state.comments);
+        });
+        if (lightboxImage?.getAttribute('data-image-id') === imageId) {
+            lightboxLike?.setAttribute('aria-pressed', String(state.likedByVisitor));
+            lightboxLike?.setAttribute('aria-label', `${state.likedByVisitor ? 'Unlike' : 'Like'} photo`);
+            if (lightboxLikeCount) lightboxLikeCount.textContent = String(state.likes);
+            if (lightboxCommentCount) lightboxCommentCount.textContent = String(state.comments);
+        }
+    };
+    const loadInteractionSummary = async (gallerySlug, imageIds) => {
+        const query = new URLSearchParams({ visitorId });
+        if (imageIds?.length) query.set('imageIds', imageIds.join(','));
+        const response = await fetch(`${getApiBaseUrl()}/api/public/galleries/${encodeURIComponent(gallerySlug)}/interactions?${query}`, {
+            headers: galleryAccessHeaders()
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.message || 'Unable to load photo reactions');
+        Object.entries(result.data ?? {}).forEach(([id, state]) => interactionSummary.set(id, state));
+    };
+    const likePhoto = async (imageId) => {
+        const response = await fetch(`${getApiBaseUrl()}/api/public/galleries/${encodeURIComponent(activeGallerySlug)}/images/${encodeURIComponent(imageId)}/like`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...galleryAccessHeaders() },
+            body: JSON.stringify({ visitorId })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.message || 'Unable to update like');
+        interactionSummary.set(imageId, {
+            ...getPhotoInteraction(imageId),
+            likes: result.data.count,
+            likedByVisitor: result.data.liked
+        });
+        updateInteractionControls(imageId);
+    };
+    const openComments = async (imageId) => {
+        activeCommentImageId = imageId;
+        if (commentsError) commentsError.textContent = '';
+        if (commentsList) commentsList.replaceChildren();
+        commentsDialog.showModal();
+        const response = await fetch(`${getApiBaseUrl()}/api/public/galleries/${encodeURIComponent(activeGallerySlug)}/images/${encodeURIComponent(imageId)}/comments`, {
+            headers: galleryAccessHeaders()
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.message || 'Unable to load comments');
+        if (!commentsList) return;
+        for (const comment of result.data ?? []) {
+            const item = document.createElement('article');
+            item.className = 'py-3';
+            const heading = document.createElement('p');
+            heading.className = 'font-semibold text-secondary';
+            heading.textContent = comment.display_name;
+            const content = document.createElement('p');
+            content.className = 'mt-1 whitespace-pre-wrap break-words text-sm text-on-surface';
+            content.textContent = comment.body;
+            const date = document.createElement('time');
+            date.className = 'mt-1 block text-xs text-on-surface-variant';
+            date.dateTime = comment.created_at;
+            date.textContent = new Date(comment.created_at).toLocaleString();
+            item.append(heading, content, date);
+            commentsList.append(item);
+        }
+    };
+    const openLightbox = (image) => {
+        activeLightboxIndex = lightboxImages.findIndex((item) => item.id === image.id);
+        if (activeLightboxIndex < 0) activeLightboxIndex = 0;
+        const activeImage = lightboxImages[activeLightboxIndex] ?? image;
+        if (lightboxImage) {
+            lightboxImage.src = activeImage.previewUrl;
+            lightboxImage.alt = activeImage.fileName;
+            lightboxImage.setAttribute('data-image-id', activeImage.id);
+        }
+        if (lightboxCaption) lightboxCaption.textContent = activeImage.fileName;
+        if (lightboxDownload) lightboxDownload.hidden = false;
+        if (lightboxPrevious) lightboxPrevious.disabled = lightboxImages.length < 2;
+        if (lightboxNext) lightboxNext.disabled = lightboxImages.length < 2;
+        updateInteractionControls(activeImage.id);
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+        lightbox.querySelector('[data-lightbox-close]')?.focus();
+        const lightboxPreviewUrl = getLightboxPreviewUrl(activeImage);
+        if (lightboxPreviewUrl && lightboxPreviewUrl !== activeImage.previewUrl) {
+            const fullResolutionImage = new Image();
+            fullResolutionImage.addEventListener('load', () => {
+                if (!lightbox.classList.contains('hidden') && lightboxImage?.getAttribute('data-image-id') === activeImage.id) {
+                    lightboxImage.src = fullResolutionImage.src;
+                }
+            }, { once: true });
+            fullResolutionImage.src = lightboxPreviewUrl;
+        }
+        [activeLightboxIndex - 1, activeLightboxIndex + 1].forEach((index) => {
+            const nearbyImage = lightboxImages[index];
+            if (!nearbyImage) return;
+            const preload = new Image();
+            preload.src = getLightboxPreviewUrl(nearbyImage);
+        });
+    };
+    const moveLightbox = (direction) => {
+        if (!lightboxImages.length) return;
+        activeLightboxIndex = (activeLightboxIndex + direction + lightboxImages.length) % lightboxImages.length;
+        openLightbox(lightboxImages[activeLightboxIndex]);
+    };
+    lightbox.querySelector('[data-lightbox-close]')?.addEventListener('click', closeLightbox);
+    lightboxPrevious?.addEventListener('click', () => moveLightbox(-1));
+    lightboxNext?.addEventListener('click', () => moveLightbox(1));
+    lightbox.addEventListener('click', (event) => {
+        if (event.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && !lightbox.classList.contains('hidden')) closeLightbox();
+        else if (event.key === 'ArrowLeft' && !lightbox.classList.contains('hidden')) moveLightbox(-1);
+        else if (event.key === 'ArrowRight' && !lightbox.classList.contains('hidden')) moveLightbox(1);
+    });
+    lightboxDownload?.addEventListener('click', () => {
+        const imageId = lightboxImage?.getAttribute('data-image-id');
+        const image = galleryImages.get(imageId);
+        if (image?.downloadUrl) triggerDownload(image.downloadUrl);
+        else unlockButton?.click();
+    });
+    lightboxLike?.addEventListener('click', async () => {
+        const imageId = lightboxImage?.getAttribute('data-image-id');
+        if (!imageId) return;
+        lightboxLike.disabled = true;
+        try {
+            await likePhoto(imageId);
+        } catch (error) {
+            if (commentsError) commentsError.textContent = error instanceof Error ? error.message : 'Unable to update like';
+        } finally {
+            lightboxLike.disabled = false;
+        }
+    });
+    lightboxComment?.addEventListener('click', async () => {
+        const imageId = lightboxImage?.getAttribute('data-image-id');
+        if (!imageId) return;
+        try {
+            await openComments(imageId);
+        } catch (error) {
+            if (commentsError) commentsError.textContent = error instanceof Error ? error.message : 'Unable to load comments';
+        }
+    });
+    commentsDialog.querySelector('[data-comments-close]')?.addEventListener('click', () => commentsDialog.close());
+    commentsDialog.addEventListener('click', (event) => {
+        if (event.target === commentsDialog) commentsDialog.close();
+    });
+    commentsForm?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const displayName = String(commentNameInput?.value ?? '').trim();
+        const body = String(commentBodyInput?.value ?? '').trim();
+        if (!activeCommentImageId || !displayName || !body) return;
+        const submit = commentsDialog.querySelector('[data-comments-submit]');
+        if (submit) submit.disabled = true;
+        if (commentsError) commentsError.textContent = '';
+        try {
+            localStorage.setItem('ingallery:comment-name', displayName);
+            const response = await fetch(`${getApiBaseUrl()}/api/public/galleries/${encodeURIComponent(activeGallerySlug)}/images/${encodeURIComponent(activeCommentImageId)}/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', ...galleryAccessHeaders() },
+                body: JSON.stringify({ visitorId, displayName, body })
+            });
+            const result = await response.json();
+            if (!response.ok || !result.ok) throw new Error(result.message || 'Unable to post comment');
+            if (commentBodyInput) commentBodyInput.value = '';
+            const state = getPhotoInteraction(activeCommentImageId);
+            interactionSummary.set(activeCommentImageId, { ...state, comments: state.comments + 1 });
+            updateInteractionControls(activeCommentImageId);
+            await openComments(activeCommentImageId);
+        } catch (error) {
+            if (commentsError) commentsError.textContent = error instanceof Error ? error.message : 'Unable to post comment';
+        } finally {
+            if (submit) submit.disabled = false;
+        }
+    });
+    previewGrid?.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element)) return;
+        const downloadButton = event.target.closest('[data-download-image]');
+        if (downloadButton) {
+            const image = galleryImages.get(downloadButton.getAttribute('data-download-image'));
+            if (image?.downloadUrl) triggerDownload(image.downloadUrl);
+            else unlockButton?.click();
+            return;
+        }
+        const likeButton = event.target.closest('[data-like-image]');
+        if (likeButton) {
+            const imageId = likeButton.getAttribute('data-like-image');
+            if (!imageId) return;
+            likeButton.setAttribute('aria-busy', 'true');
+            likePhoto(imageId).catch((error) => {
+                if (commentsError) commentsError.textContent = error instanceof Error ? error.message : 'Unable to update like';
+            }).finally(() => likeButton.removeAttribute('aria-busy'));
+            return;
+        }
+        const commentButton = event.target.closest('[data-comment-image]');
+        if (commentButton) {
+            const imageId = commentButton.getAttribute('data-comment-image');
+            if (!imageId) return;
+            openComments(imageId).catch((error) => {
+                if (commentsError) commentsError.textContent = error instanceof Error ? error.message : 'Unable to load comments';
+            });
+            return;
+        }
+        const viewButton = event.target.closest('[data-view-image]');
+        if (viewButton) {
+            const image = galleryImages.get(viewButton.getAttribute('data-view-image'));
+            if (image) openLightbox(image);
+        }
+    });
+
+    const triggerDownload = (url) => {
+        if (!url) return;
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.rel = 'noopener';
+        anchor.style.display = 'none';
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+    };
+
+    const renderGalleryImages = (images, isUnlocked, append = false) => {
+        if (!previewGrid) return;
+        images.forEach((image) => galleryImages.set(image.id, image));
+        const unlockedCandidates = isUnlocked ? images : images.slice(0, PUBLIC_PREVIEW_LIMIT);
+        const previewImages = unlockedCandidates.filter((image) => image.processingStatus === 'ready' && image.previewUrl);
+        const pendingImages = unlockedCandidates.filter((image) => image.processingStatus === 'queued' || image.processingStatus === 'processing');
+        const failedImages = unlockedCandidates.filter((image) => image.processingStatus === 'failed');
+        const lockedImages = isUnlocked ? [] : images.slice(PUBLIC_PREVIEW_LIMIT);
+        const previewMarkup = previewImages.map((image) => {
+            const previewCandidates = [
+                image.previewUrl && `${image.previewUrl} ${Number(image.previewWidth) || 380}w`,
+                image.mediumUrl && `${image.mediumUrl} ${Number(image.mediumWidth) || 1200}w`,
+                image.largeUrl && `${image.largeUrl} ${Number(image.largeWidth) || 2000}w`
+            ].filter(Boolean).join(', ');
+            return `
+                <div data-gallery-photo-tile data-preview-width="${Number(image.previewWidth) || 0}" data-preview-height="${Number(image.previewHeight) || 0}" class="group">
+                    <button type="button" data-view-image="${escapeHtml(image.id)}" class="absolute inset-0 h-full w-full cursor-zoom-in" aria-label="View ${escapeHtml(image.fileName)}">
+                        <img data-preview-width="${Number(image.previewWidth) || 0}" data-preview-height="${Number(image.previewHeight) || 0}" class="object-cover transition-transform duration-500 group-hover:scale-105" src="${escapeHtml(image.previewUrl)}" ${previewCandidates ? `srcset="${escapeHtml(previewCandidates)}" sizes="(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 20vw"` : ''} alt="${escapeHtml(image.fileName)}" loading="lazy" decoding="async" fetchpriority="low">
+                    </button>
+                    <div class="photo-tile-actions" aria-label="Photo actions">
+                        <button type="button" data-like-image="${escapeHtml(image.id)}" aria-pressed="${getPhotoInteraction(image.id).likedByVisitor}" aria-label="Like photo, ${getPhotoInteraction(image.id).likes} likes" title="Like photo">
+                            <span class="material-symbols-outlined" aria-hidden="true">favorite</span><span data-like-count>${getPhotoInteraction(image.id).likes}</span>
+                        </button>
+                        <button type="button" data-comment-image="${escapeHtml(image.id)}" aria-label="Comment on photo, ${getPhotoInteraction(image.id).comments} comments" title="Comment">
+                            <span class="material-symbols-outlined" aria-hidden="true">chat_bubble_outline</span><span data-comment-count>${getPhotoInteraction(image.id).comments}</span>
+                        </button>
+                        <button type="button" data-download-image="${escapeHtml(image.id)}" aria-label="${image.downloadUrl ? 'Download original photo' : 'Unlock to download'}" title="${image.downloadUrl ? 'Download original photo' : 'Unlock to download'}">
+                            <span class="material-symbols-outlined" aria-hidden="true">${image.downloadUrl ? 'download' : 'lock'}</span>
+                        </button>
+                    </div>
+                </div>`;
+        }).join('');
+        const lockedMarkup = lockedImages.map((image) => `
+            <div data-gallery-photo-tile data-preview-width="${Number(image.previewWidth) || 0}" data-preview-height="${Number(image.previewHeight) || 0}" class="relative flex items-center justify-center overflow-hidden bg-surface-container-low" aria-label="Locked photo">
+                <div class="absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-container-lowest"></div>
+                <div class="relative flex flex-col items-center gap-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-3xl" aria-hidden="true">lock</span>
+                    <span class="text-xs uppercase tracking-widest">Locked</span>
+                </div>
+            </div>`).join('');
+        const pendingMarkup = pendingImages.map(() => `
+            <div data-gallery-photo-tile class="relative flex items-center justify-center overflow-hidden bg-surface-container-low" aria-label="Photo is being optimized">
+                <div class="relative flex flex-col items-center gap-2 text-on-surface-variant">
+                    <span class="material-symbols-outlined animate-pulse text-3xl" aria-hidden="true">image</span>
+                    <span class="text-xs uppercase tracking-widest">Preparing preview</span>
+                </div>
+            </div>`).join('');
+        const failedMarkup = failedImages.map((image) => `
+            <div data-gallery-photo-tile class="relative flex items-center justify-center overflow-hidden bg-surface-container-low" aria-label="Photo preview unavailable">
+                <div class="relative flex flex-col items-center gap-2 px-3 text-center text-on-surface-variant">
+                    <span class="material-symbols-outlined text-3xl" aria-hidden="true">image_not_supported</span>
+                    <span class="text-xs uppercase tracking-widest">Preview unavailable</span>
+                    ${image.downloadUrl ? `<button type="button" data-download-image="${escapeHtml(image.id)}" class="mt-2 rounded-full border border-white/30 bg-black/70 px-3 py-2 text-xs text-white">Download original</button>` : ''}
+                </div>
+            </div>`).join('');
+        if (!append) previewGrid.replaceChildren();
+        previewGrid.insertAdjacentHTML('beforeend', previewMarkup + pendingMarkup + failedMarkup + lockedMarkup);
+        previewGrid.querySelectorAll('img:not(.is-loaded)').forEach((image) => {
+            const markLoaded = () => image.classList.add('is-loaded');
+            if (image.complete && image.naturalWidth) markLoaded();
+            else image.addEventListener('load', markLoaded, { once: true });
+        });
+        lightboxImages = [...galleryImages.values()].filter((image) => image.processingStatus === 'ready' && image.previewUrl);
+        const layoutPhotoTiles = () => {
+            previewGrid.querySelectorAll('[data-gallery-photo-tile]').forEach((tile) => {
+                const image = tile.querySelector('img');
+                const imageWidth = Number(image?.dataset.previewWidth) || Number(tile.dataset.previewWidth) || image?.naturalWidth;
+                const imageHeight = Number(image?.dataset.previewHeight) || Number(tile.dataset.previewHeight) || image?.naturalHeight;
+                if (!imageWidth || !imageHeight) return;
+                tile.style.aspectRatio = `${imageWidth} / ${imageHeight}`;
+            });
+        };
+        previewGrid.addEventListener('load', layoutPhotoTiles, { once: true, capture: true });
+        layoutPhotoTiles();
+        requestAnimationFrame(layoutPhotoTiles);
+        previewGrid.hidden = false;
+    };
+
+    const loadGallery = async () => {
+        if (!identifier) {
+            galleryTitleNodes.forEach((heading) => { heading.textContent = 'No published gallery'; });
+            document.title = 'InGallery - No gallery available';
+            if (status) status.textContent = 'Open the client gallery link shared by your photographer.';
+            galleryActions?.remove();
+            return;
+        }
+
+        try {
+            const response = await api.getPublicGallery(identifier, galleryAccessToken);
+            const gallery = response.data;
+            activeGalleryRecord = gallery;
+            galleryHero?.setAttribute('data-cover-design', gallery.coverDesign || 'classic');
+            activeGallerySlug = gallery.slug;
+            if (galleryAccessToken && gallery.slug) {
+                try { sessionStorage.setItem(`ingallery:paid-gallery:${gallery.slug}`, galleryAccessToken); } catch {}
+            }
+            const eligibleImages = gallery.isUnlocked ? gallery.images : gallery.images.slice(0, PUBLIC_PREVIEW_LIMIT);
+            const pendingImages = eligibleImages
+                .filter((image) => image.processingStatus === 'queued' || image.processingStatus === 'processing');
+            const failedImages = eligibleImages.filter((image) => image.processingStatus === 'failed');
+            const readyImages = eligibleImages
+                .filter((image) => image.processingStatus === 'ready' && image.previewUrl);
+            const { previewImages, lockedImages } = partitionPublicGalleryImages(readyImages, gallery.isUnlocked);
+            nextImageOffset = gallery.nextImageOffset;
+            try {
+                await loadInteractionSummary(gallery.slug, gallery.images.map((image) => image.id));
+            } catch (error) {
+                console.warn('Photo reaction counts are unavailable', error);
+            }
+            galleryTitleNodes.forEach((heading) => { heading.textContent = gallery.title; });
+            if (galleryStudioName && gallery.studioName) galleryStudioName.textContent = gallery.studioName;
+            if (galleryStudioLogo && gallery.studioLogoUrl) {
+                galleryStudioLogo.src = gallery.studioLogoUrl;
+                galleryStudioLogo.hidden = false;
+            }
+            document.title = `InGallery - ${gallery.title}`;
+            if (galleryCover && gallery.coverUrl) {
+                galleryCover.style.backgroundImage = `url("${gallery.coverUrl}")`;
+                galleryCover.style.backgroundPosition = 'center';
+                galleryCover.style.backgroundSize = 'cover';
+            }
+            showGalleryCoverVideo(gallery.coverVideoUrl, Boolean(gallery.coverUrl));
+            const currentParams = new URLSearchParams(window.location.search);
+            if (currentParams.get('slug') !== gallery.slug || currentParams.has('galleryId') || currentParams.has('gallery')) {
+                history.replaceState({}, '', `${window.location.pathname}?${new URLSearchParams({ slug: gallery.slug }).toString()}`);
+            }
+            if (galleryDate) {
+                galleryDate.hidden = gallery.isUnlocked;
+                galleryDate.textContent = 'Preview gallery';
+            }
+            if (galleryPrice) {
+                galleryPrice.hidden = gallery.isUnlocked;
+                galleryPrice.textContent = gallery.accessPrice > 0 ? `${gallery.currency} ${Number(gallery.accessPrice).toLocaleString()}` : 'Free access';
+            }
+            if (status) {
+                const previousCountKey = `ingallery:gallery-image-count:${gallery.slug}`;
+                let previousCount = gallery.imageCount;
+                try { previousCount = Number(sessionStorage.getItem(previousCountKey) || gallery.imageCount); } catch {}
+                const newPhotoCount = Math.max(0, gallery.imageCount - previousCount);
+                try { sessionStorage.setItem(previousCountKey, String(Math.max(previousCount, gallery.imageCount))); } catch {}
+                status.innerHTML = gallery.isUnlocked
+                    ? `<span class="text-tertiary">${gallery.imageCount} photos in this gallery.</span> ${pendingImages.length ? `${pendingImages.length} photos are being optimized. ` : ''}${failedImages.length ? `${failedImages.length} previews are unavailable; original files remain available for download. ` : ''}Download the original files any time.`
+                    : `<span class="text-tertiary">${previewImages.length} preview photos available.</span> ${Math.max(0, gallery.imageCount - PUBLIC_PREVIEW_LIMIT)} additional photos are locked. ${pendingImages.length ? `${pendingImages.length} preview photos are being optimized. ` : ''}${failedImages.length ? `${failedImages.length} preview files could not be processed. ` : ''}Unlock the gallery to view all photos and download full-resolution images.`;
+                if (gallery.imageCount === 0) {
+                    status.innerHTML = '<span class="text-tertiary">This gallery is ready.</span> The photographer will add event photos here. Keep this link to view them when they are uploaded.';
+                } else if (newPhotoCount > 0) {
+                    status.insertAdjacentHTML('afterbegin', `<span class="mb-2 block rounded bg-secondary/10 px-3 py-2 text-secondary">${newPhotoCount} new photo${newPhotoCount === 1 ? '' : 's'} added since your last visit.</span>`);
+                }
+            }
+            if (downloadAllButton) {
+                downloadAllButton.hidden = !gallery.imageCount;
+                downloadAllButton.disabled = !gallery.isUnlocked;
+                downloadAllButton.title = gallery.isUnlocked ? 'Download all gallery photos' : 'Unlock the gallery to download all photos';
+                downloadAllButton.onclick = async () => {
+                    if (!gallery.isUnlocked) return;
+                    downloadAllButton.disabled = true;
+                    try {
+                        const response = await fetch(`${getApiBaseUrl()}/api/public/galleries/${encodeURIComponent(gallery.slug)}/download-all`, {
+                            headers: galleryAccessHeaders()
+                        });
+                        if (!response.ok) throw new Error('Unable to download this gallery. Please try again.');
+                        const archiveUrl = URL.createObjectURL(await response.blob());
+                        const link = document.createElement('a');
+                        link.href = archiveUrl;
+                        link.download = `${gallery.slug || 'gallery'}-photos.zip`;
+                        link.click();
+                        window.setTimeout(() => URL.revokeObjectURL(archiveUrl), 60_000);
+                    } catch (error) {
+                        if (loadMoreError) loadMoreError.textContent = error instanceof Error ? error.message : 'Unable to download this gallery.';
+                    } finally {
+                        downloadAllButton.disabled = false;
+                    }
+                };
+            }
+            if (unlockButton) {
+                unlockButton.hidden = gallery.isUnlocked || gallery.accessPrice <= 0;
+                unlockButton.onclick = () => {
+                    if (gallery.id) window.location.href = buildGalleryCheckoutUrl({ id: gallery.id, title: gallery.title });
+                };
+            }
+            if (lockedGrid) lockedGrid.remove();
+            if (gallery.images.length && previewGrid) {
+                renderGalleryImages(gallery.images, gallery.isUnlocked);
+            } else if (previewGrid) {
+                previewGrid.innerHTML = '<p class="text-body-md text-on-surface-variant col-span-full text-center py-12">No photos have been uploaded to this gallery yet.</p>';
+            }
+            if (loadMoreButton) {
+                loadMoreButton.hidden = !gallery.isUnlocked || !gallery.hasMoreImages;
+                loadMoreButton.addEventListener('click', async () => {
+                    if (!activeGalleryRecord || loadMoreButton.disabled || !activeGalleryRecord.hasMoreImages) return;
+                    loadMoreButton.disabled = true;
+                    if (loadMoreError) loadMoreError.textContent = '';
+                    try {
+                        const page = await api.getPublicGalleryImages(activeGalleryRecord.slug, nextImageOffset, galleryAccessToken);
+                        const pageData = page.data;
+                        await loadInteractionSummary(activeGalleryRecord.slug, pageData.images.map((image) => image.id));
+                        renderGalleryImages(pageData.images, activeGalleryRecord.isUnlocked, true);
+                        nextImageOffset = pageData.nextOffset;
+                        activeGalleryRecord.hasMoreImages = pageData.hasMore;
+                        activeGalleryRecord.nextImageOffset = pageData.nextOffset;
+                        loadMoreButton.hidden = !pageData.hasMore;
+                    } catch (error) {
+                        if (loadMoreError) loadMoreError.textContent = error instanceof Error ? error.message : 'Unable to load more photos.';
+                    } finally {
+                        loadMoreButton.disabled = false;
+                    }
+                });
+            }
+            if (previewGrid) previewGrid.hidden = false;
+        } catch (error) {
+            console.error('Unable to load public gallery', error);
+        }
+    };
+
+    loadGallery();
+    window.setInterval(async () => {
+        if (document.visibilityState !== 'visible' || !activeGalleryRecord?.slug) return;
+        try {
+            const latest = await api.getPublicGallery(activeGalleryRecord.slug, galleryAccessToken);
+            if (latest.data.imageCount > activeGalleryRecord.imageCount) {
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification(`${latest.data.imageCount - activeGalleryRecord.imageCount} new event photo${latest.data.imageCount - activeGalleryRecord.imageCount === 1 ? '' : 's'}`, {
+                        body: `New photos are available in ${latest.data.title}.`,
+                        tag: `ingallery-${latest.data.slug}`
+                    });
+                }
+                window.location.reload();
+            }
+        } catch (error) {
+            console.warn('Live gallery refresh failed.', error);
+        }
+    }, 30000);
+</script>
+</body></html>

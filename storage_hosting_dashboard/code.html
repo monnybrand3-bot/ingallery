@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Storage &amp; Hosting - InGallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#241a00",
+                        "on-surface": "#e2e2e2",
+                        "surface-dim": "#121414",
+                        "on-surface-variant": "#c4c7c7",
+                        "surface-variant": "#333535",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "surface-bright": "#37393a",
+                        "surface-container": "#1e2020",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-container-lowest": "#0c0f0f",
+                        "surface-container-highest": "#333535",
+                        "secondary": "#e9c349",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "on-error": "#690005",
+                        "inverse-primary": "#5f5e5e",
+                        "outline": "#8e9192",
+                        "on-primary": "#313030",
+                        "secondary-fixed-dim": "#e9c349",
+                        "on-tertiary": "#003824",
+                        "inverse-surface": "#e2e2e2",
+                        "primary-container": "#121212",
+                        "background": "#121414",
+                        "on-secondary-container": "#342800",
+                        "surface-container-low": "#1a1c1c",
+                        "on-secondary": "#3c2f00",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed-variant": "#474646",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "primary-fixed": "#e5e2e1",
+                        "secondary-container": "#af8d11",
+                        "on-primary-container": "#7e7d7d",
+                        "on-secondary-fixed-variant": "#574500",
+                        "tertiary-container": "#00160c",
+                        "on-error-container": "#ffdad6",
+                        "surface-tint": "#c8c6c5",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#008f62",
+                        "on-tertiary-fixed": "#002113",
+                        "outline-variant": "#444748",
+                        "surface-container-high": "#282a2b",
+                        "tertiary": "#4edea3",
+                        "on-primary-fixed": "#1c1b1b",
+                        "primary": "#c8c6c5",
+                        "secondary-fixed": "#ffe088"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "element-gap": "16px",
+                        "section-gap": "120px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        /* Custom progress bar styles */
+        .progress-bar-bg { background-color: theme('colors.surface-variant'); border-radius: theme('borderRadius.DEFAULT'); overflow: hidden; height: 8px; }
+        .progress-bar-fill { background-color: theme('colors.secondary'); height: 100%; transition: width 0.5s ease-in-out; }
+        .progress-bar-fill-success { background-color: #10B981; height: 100%; transition: width 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (from JSON) -->
+<nav class="hidden md:flex flex-col h-full py-8 px-4 h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/20 bg-surface-container-low dark:bg-tertiary-container z-40">
+<div class="mb-10 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden flex-shrink-0 border border-outline-variant/20">
+<img alt="Photographer Profile" class="w-full h-full object-cover" data-alt="A close-up, black and white portrait of a professional photographer, looking intently into the camera. High contrast, studio lighting, capturing a sense of artistic focus and technical expertise. The image is cropped tightly, emphasizing the eyes and expression. Perfect for a premium photography SaaS profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJBynFz76X3S2NUvs-UNfgcnMysSYbnnr2Jp9VEWGNX0dvv-NvlrJcaxbFvW_YNW4JQW0nMKonx_jQIOnLuwOKibgslwAexuC1eHqFcRAKedOJlF2-SmnSsevCVTDx_mw1vfEi7XUkLAZh5FLHiogEQFmFx9l2d_MQzC4BVIBROvkxgCFJXtVbiyhlndHwMWTiTPlC6xJFLDLZ7aosdTr3eexMmYErOqNUA96pM_37yUgjfApwiJHviQ"/>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-primary m-0">Studio Admin</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Premium Plan</p>
+</div>
+</div>
+</div>
+<button class="mb-8 w-full bg-secondary text-on-secondary px-4 py-3 rounded text-label-md font-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">upload</span>
+            Upload New Gallery
+        </button>
+<ul class="flex flex-col gap-2 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">photo_library</span>
+                    Galleries
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">group</span>
+                    Clients
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">shopping_bag</span>
+                    Orders
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-label-md font-label-md bg-secondary/10 text-secondary border-r-4 border-secondary translate-x-1 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">cloud_queue</span>
+                    Storage
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant/20 pt-4">
+<ul class="flex flex-col gap-2">
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help_outline</span>
+                        Help
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-2 rounded text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">logout</span>
+                        Sign Out
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- TopNavBar (from JSON - for Mobile primarily, but structured as requested) -->
+<header class="md:hidden fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-20 bg-surface/80 backdrop-blur-xl border-b border-white/10">
+<div class="text-headline-sm font-headline-sm tracking-tighter text-on-surface">InGallery</div>
+<button class="text-secondary border border-secondary/50 px-4 py-2 rounded text-label-sm font-label-sm">Client Access</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 md:pt-8 px-margin-mobile md:px-margin-desktop md:ml-64 pb-20 max-w-[1440px] mx-auto w-full">
+<header class="mb-12">
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-on-surface mb-2">Storage &amp; Hosting</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Manage your cloud infrastructure and storage.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-element-gap mb-12">
+<!-- Usage Overview (Spans 8 cols on desktop) -->
+<section class="md:col-span-8 bg-surface-container-low rounded-xl border border-white/10 p-6 md:p-8 relative overflow-hidden backdrop-blur-lg">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-6">Usage Overview</h3>
+<div class="flex flex-col gap-8">
+<!-- Storage Gauge -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="text-label-sm font-label-sm text-outline block mb-1 uppercase tracking-wider">Cloud Storage</span>
+<span class="text-headline-md font-headline-md text-on-surface" data-storage-used>—</span>
+</div>
+<span class="text-body-md font-body-md text-on-surface-variant" data-storage-limit>of — used</span>
+</div>
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" data-storage-progress style="width: 0%"></div>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div>
+<span class="text-label-sm font-label-sm text-outline block mb-1 uppercase tracking-wider">Total High-Res Photos</span>
+<span class="text-headline-sm font-headline-sm text-on-surface mb-2 block" data-storage-photo-count>—</span>
+<div class="progress-bar-bg h-[4px]">
+<div class="progress-bar-fill-success w-0" data-photo-progress></div>
+</div>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline block mb-1 uppercase tracking-wider">Reserved for uploads</span>
+<div class="flex items-center gap-2 mb-2">
+<span class="text-headline-sm font-headline-sm text-on-surface" data-storage-reserved>—</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Hosting Plan Card (Spans 4 cols on desktop) -->
+<section class="md:col-span-4 bg-surface-container-low rounded-xl border border-white/10 p-6 flex flex-col justify-between relative overflow-hidden">
+<!-- Subtle background glow -->
+<div class="absolute -top-20 -right-20 w-40 h-40 bg-secondary/10 rounded-full blur-[40px]"></div>
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-label-sm font-label-sm bg-surface-variant text-on-surface px-2 py-1 rounded" data-plan-status>Plan</span>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1" data-storage-plan>Loading plan...</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6" data-storage-plan-description>Storage allowance and usage from your current account.</p>
+</div>
+<div>
+<div class="border-t border-white/5 pt-4 mb-6">
+<span class="text-label-sm font-label-sm text-outline block mb-1">Remaining storage</span>
+<span class="text-body-lg font-body-lg text-on-surface" data-storage-remaining>—</span>
+</div>
+<a class="w-full bg-transparent border border-white/20 text-on-surface px-4 py-3 rounded text-label-md font-label-md tracking-wider hover:border-secondary hover:text-secondary transition-all duration-300 text-center block" href="../subscription_storage_plans/code.html">Manage Subscription</a>
+</div>
+</section>
+</div>
+<!-- Lower Section: Table and CDN Status -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-element-gap">
+<!-- Gallery Breakdown Table (Spans 2 cols on lg) -->
+<section class="lg:col-span-2 bg-surface-container-lowest rounded-xl border border-white/10 overflow-hidden">
+<div class="p-6 border-b border-white/5 flex justify-between items-center">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Gallery Breakdown</h3>
+<button class="text-label-sm font-label-sm text-secondary hover:text-white transition-colors flex items-center gap-1">
+                        View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-white/5">
+<th class="py-4 px-6 text-label-sm font-label-sm text-outline uppercase tracking-wider font-normal">Gallery Name</th>
+<th class="py-4 px-6 text-label-sm font-label-sm text-outline uppercase tracking-wider font-normal text-right">Photo Count</th>
+<th class="py-4 px-6 text-label-sm font-label-sm text-outline uppercase tracking-wider font-normal text-right">Size</th>
+<th class="py-4 px-6 text-label-sm font-label-sm text-outline uppercase tracking-wider font-normal text-center">Status</th>
+</tr>
+</thead>
+<tbody class="text-body-sm font-body-sm text-on-surface" data-storage-galleries>
+<tr><td class="px-6 py-8 text-center text-on-surface-variant" colspan="4">Loading storage data...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- CDN Status (Spans 1 col on lg) -->
+</div>
+</main>
+<script type="module">
+    import { clearCurrentSession, createApiService, getApiBaseUrl, getCurrentSession } from '../app.ts';
+
+    const api = createApiService(getApiBaseUrl());
+    const setText = (selector, value) => {
+        const node = document.querySelector(selector);
+        if (node) node.textContent = value;
+    };
+    const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
+    const galleriesNode = document.querySelector('[data-storage-galleries]');
+
+    if (!getCurrentSession()?.accessToken) {
+        galleriesNode.innerHTML = '<tr><td class="px-6 py-8 text-center text-on-surface-variant" colspan="4">Sign in to view studio storage. <a class="text-secondary underline" href="../index.html">Sign in</a></td></tr>';
+        setText('[data-storage-used]', 'Sign in required');
+        setText('[data-storage-plan]', 'Sign in required');
+        setText('[data-storage-remaining]', 'Sign in required');
+    } else try {
+        const [storageResponse, galleriesResponse] = await Promise.all([api.getStorage(), api.getGalleries()]);
+        const storage = storageResponse.data;
+        const galleries = galleriesResponse.data;
+        const usedPercent = storage.effectiveLimitBytes ? Math.min(100, Math.round(storage.totalUsedBytes / storage.effectiveLimitBytes * 100)) : 0;
+        const photoCount = galleries.reduce((total, gallery) => total + Number(gallery.imageCount ?? 0), 0);
+
+        setText('[data-storage-used]', storage.usedDisplay);
+        setText('[data-storage-limit]', `of ${storage.limitDisplay} total`);
+        setText('[data-storage-remaining]', storage.remainingDisplay);
+        setText('[data-storage-reserved]', `${(storage.reservedBytes / 1073741824).toFixed(2)} GB`);
+        setText('[data-storage-photo-count]', photoCount.toLocaleString());
+        setText('[data-storage-plan]', storage.planName);
+        setText('[data-storage-plan-description]', `${storage.limitDisplay} included storage, plus ${(storage.extraBytes / 1073741824).toFixed(1)} GB of added capacity.`);
+        setText('[data-plan-status]', storage.planName === 'No active plan' ? 'No plan' : 'Current');
+        document.querySelector('[data-storage-progress]')?.setAttribute('style', `width: ${usedPercent}%`);
+        document.querySelector('[data-storage-progress]')?.classList.toggle('!bg-error', storage.warning === 'critical');
+
+        galleriesNode.innerHTML = galleries.length ? galleries.map((gallery) => `
+            <tr class="border-b border-white/5 hover:bg-surface-variant/30 transition-colors">
+                <td class="py-4 px-6 font-medium">${escapeHtml(gallery.title)}</td>
+                <td class="py-4 px-6 text-right text-on-surface-variant">${Number(gallery.imageCount ?? 0).toLocaleString()}</td>
+                <td class="py-4 px-6 text-right font-medium">—</td>
+                <td class="py-4 px-6 text-center"><span class="text-[10px] uppercase font-bold tracking-wider">${escapeHtml(gallery.status)}</span></td>
+            </tr>`).join('') : '<tr><td class="px-6 py-8 text-center text-on-surface-variant" colspan="4">No galleries are using storage yet.</td></tr>';
+    } catch (error) {
+        if (error?.status === 401) {
+            clearCurrentSession();
+            galleriesNode.innerHTML = '<tr><td class="px-6 py-8 text-center text-on-surface-variant" colspan="4">Your session has expired. <a class="text-secondary underline" href="../index.html">Sign in again</a> to view storage.</td></tr>';
+            setText('[data-storage-used]', 'Sign in required');
+            setText('[data-storage-plan]', 'Sign in required');
+            setText('[data-storage-remaining]', 'Sign in required');
+        } else {
+            const message = escapeHtml(error instanceof Error ? error.message : 'Unable to load storage data.');
+            galleriesNode.innerHTML = `<tr><td class="px-6 py-8 text-center text-error" colspan="4">${message}</td></tr>`;
+            setText('[data-storage-used]', 'Unavailable');
+            setText('[data-storage-plan]', 'Unavailable');
+            setText('[data-storage-remaining]', 'Unavailable');
+        }
+    }
+</script>
+<script src="../shared-nav.js?v=9"></script>
+</body></html>

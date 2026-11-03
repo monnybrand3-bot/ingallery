@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>InGallery - Subscription Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#e9c349",
+                        "on-secondary": "#3c2f00",
+                        "background": "#121414",
+                        "on-background": "#e2e2e2",
+                        "surface": "#121414",
+                        "on-surface": "#e2e2e2",
+                        "on-surface-variant": "#c4c7c7",
+                        "surface-container": "#1e2020",
+                        "outline": "#8e9192",
+                        "tertiary": "#4edea3",
+                        "tertiary-container": "#00160c",
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-md": ["Playfair Display"],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md">
+    <div class="relative flex min-h-screen w-full flex-col">
+        <main class="flex-1 flex flex-col items-center justify-center p-6 lg:p-12">
+            <div class="max-w-md w-full glass-card rounded-2xl p-8 border border-outline/20 bg-surface-container shadow-2xl">
+                <div class="text-center mb-8">
+                    <h1 class="text-headline-md text-on-surface text-3xl font-bold mb-2">Complete Your Subscription</h1>
+                    <p class="text-on-surface-variant">Confirm your plan selection to unlock professional features.</p>
+                </div>
+
+                <div id="plan-summary" class="bg-background/50 rounded-xl p-6 mb-8 border border-outline/10">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-bold text-on-surface" id="selected-plan-name">Loading...</span>
+                        <span class="text-secondary font-bold text-xl" id="selected-plan-price">---</span>
+                    </div>
+                    <div class="space-y-2" id="plan-features">
+                        <!-- Features will be injected here -->
+                    </div>
+                </div>
+
+                <form id="payment-form" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface-variant mb-2">Payment Number</label>
+                        <input type="text" id="phone" required class="w-full bg-surface border-outline text-on-surface rounded-lg px-4 py-3 focus:ring-2 focus:ring-secondary outline-none transition-all" placeholder="e.g. 07XXXXXXXX">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-on-surface-variant mb-2">Network</label>
+                        <select id="network" required class="w-full bg-surface border-outline text-on-surface rounded-lg px-4 py-3 focus:ring-2 focus:ring-secondary outline-none transition-all">
+                            <option value="Mpesa">Vodacom M-Pesa</option>
+                            <option value="TigoPesa">Mixx by Yas</option>
+                            <option value="AirtelMoney">Airtel Money</option>
+                            <option value="HaloPesa">HaloPesa</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-secondary text-on-secondary py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                        Pay Now
+                        <span class="material-symbols-outlined">arrow_forward</span>
+                    </button>
+                </form>
+                <div id="error-msg" class="mt-4 text-center text-error text-sm hidden"></div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        import { getApiBaseUrl, getCurrentSession } from '../app.ts';
+
+        const params = new URLSearchParams(window.location.search);
+        const requestedName = params.get('plan') || 'Starter';
+        const form = document.getElementById('payment-form');
+        const errorNode = document.getElementById('error-msg');
+        const featuresList = document.getElementById('plan-features');
+        let selectedPlan = null;
+        const showError = (message) => {
+            errorNode.textContent = message;
+            errorNode.classList.remove('hidden');
+        };
+
+        try {
+            const response = await fetch(`${getApiBaseUrl()}/api/public/plans`, { cache: 'no-store' });
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.message || 'Unable to load packages.');
+            selectedPlan = payload.data.find((plan) => plan.name.toLowerCase() === requestedName.toLowerCase());
+            if (!selectedPlan) throw new Error('This package is not currently available.');
+            document.getElementById('selected-plan-name').textContent = selectedPlan.name;
+            const period = selectedPlan.billing_interval === 'year' ? ' / year' : selectedPlan.billing_interval === 'month' ? ' / month' : ' one-time';
+            document.getElementById('selected-plan-price').textContent = `${selectedPlan.currency} ${Number(selectedPlan.price).toLocaleString('en-US')}${period}`;
+            const storageGB = Number(selectedPlan.storage_limit_bytes) / (1024 ** 3);
+            const features = [
+                `${storageGB.toLocaleString('en-US', { maximumFractionDigits: 0 })} GB Storage`,
+                `${Number(selectedPlan.max_projects).toLocaleString()} Galleries`,
+                `${Number(selectedPlan.max_users).toLocaleString()} Studio users`
+            ];
+            features.forEach((feature) => {
+                const item = document.createElement('div');
+                item.className = 'flex items-center gap-2 text-sm text-on-surface-variant';
+                item.innerHTML = '<span class="material-symbols-outlined text-secondary text-xs">check_circle</span> ' + feature;
+                featuresList.appendChild(item);
+            });
+        } catch (error) {
+            showError(error instanceof Error ? error.message : 'Unable to load package details.');
+            form.querySelector('button[type="submit"]')?.setAttribute('disabled', 'true');
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errorNode.classList.add('hidden');
+            const session = getCurrentSession();
+            if (!session?.accessToken) {
+                showError('Sign in to your photographer account before purchasing a package.');
+                return;
+            }
+            if (!selectedPlan) {
+                showError('Package details are unavailable. Refresh and try again.');
+                return;
+            }
+            const submitButton = form.querySelector('button[type="submit"]');
+            const phone = document.getElementById('phone').value.trim();
+            const network = document.getElementById('network').value;
+            submitButton.disabled = true;
+            try {
+                const response = await fetch(`${getApiBaseUrl()}/api/platform/subscriptions/checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.accessToken}` },
+                    body: JSON.stringify({ planId: selectedPlan.id, customerPhone: phone, network })
+                });
+                const payload = await response.json();
+                if (!response.ok) throw new Error(payload.message || 'Unable to start package payment.');
+                if (!payload.data.paymentRequired) {
+                    window.location.href = payload.data.checkoutUrl;
+                    return;
+                }
+                try { sessionStorage.setItem('ingallery:pending-package-payment', JSON.stringify({ packageName: selectedPlan.name, amount: selectedPlan.price, currency: selectedPlan.currency, orderReference: payload.data.orderReference })); } catch {}
+                window.location.href = payload.data.checkoutUrl;
+            } catch (error) {
+                showError(error instanceof Error ? error.message : 'Unable to start package payment.');
+                submitButton.disabled = false;
+            }
+        });
+    </script>
+    <script src="../shared-nav.js?v=8"></script>
+</body>
+</html>

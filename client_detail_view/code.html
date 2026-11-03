@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InGallery - Client Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#474646",
+                        "secondary-fixed-dim": "#e9c349",
+                        "secondary": "#e9c349",
+                        "inverse-surface": "#e2e2e2",
+                        "surface-container-highest": "#333535",
+                        "surface-container-lowest": "#0c0f0f",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#008f62",
+                        "on-surface-variant": "#c4c7c7",
+                        "surface-variant": "#333535",
+                        "on-primary-container": "#7e7d7d",
+                        "surface-tint": "#c8c6c5",
+                        "outline": "#8e9192",
+                        "on-secondary-fixed-variant": "#574500",
+                        "on-tertiary-fixed": "#002113",
+                        "background": "#121414",
+                        "primary-container": "#121212",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#ffe088",
+                        "surface-container": "#1e2020",
+                        "surface-container-low": "#1a1c1c",
+                        "on-surface": "#e2e2e2",
+                        "on-error-container": "#ffdad6",
+                        "inverse-primary": "#5f5e5e",
+                        "on-secondary-fixed": "#241a00",
+                        "outline-variant": "#444748",
+                        "surface-container-high": "#282a2b",
+                        "primary": "#c8c6c5",
+                        "on-primary-fixed": "#1c1b1b",
+                        "tertiary-fixed": "#6ffbbe",
+                        "tertiary": "#4edea3",
+                        "on-background": "#e2e2e2",
+                        "inverse-on-surface": "#2f3131",
+                        "on-secondary-container": "#342800",
+                        "surface-bright": "#37393a",
+                        "primary-fixed": "#e5e2e1",
+                        "on-primary": "#313030",
+                        "surface-dim": "#121414",
+                        "surface": "#121414",
+                        "on-secondary": "#3c2f00",
+                        "error-container": "#93000a",
+                        "on-error": "#690005",
+                        "secondary-container": "#af8d11",
+                        "tertiary-container": "#00160c",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-tertiary": "#003824"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "section-gap": "120px",
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "element-gap": "16px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Playfair Display"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: #D4AF37;
+            color: #000000;
+            letter-spacing: 0.1em;
+            transition: transform 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            letter-spacing: 0.1em;
+            transition: all 0.2s ease;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen selection:bg-secondary selection:text-black">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container border-r border-white/10 py-8 z-40">
+<div class="px-8 mb-12">
+<h1 class="font-headline-sm text-headline-sm text-primary tracking-widest">InGallery</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2">Premium SaaS</p>
+</div>
+<div class="flex flex-col gap-2 px-4">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="collections">collections</span>
+<span class="font-label-md text-label-md">Galleries</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-secondary font-bold border-r-2 border-secondary bg-white/5 hover:bg-white/10 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Finances</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-white/5 transition-all duration-300" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar -->
+<header class="hidden md:flex fixed top-0 right-0 w-[calc(100%-16rem)] h-20 bg-surface/80 border-b border-white/10 backdrop-blur-md z-30 justify-between items-center px-margin-desktop">
+<div class="flex items-center gap-4">
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2 text-on-surface-variant font-label-md text-label-md">
+<a class="hover:text-primary transition-colors" href="#">Clients</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span class="text-on-surface">Client not selected</span>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors focus:ring-1 focus:ring-secondary/50 rounded-full p-2">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors focus:ring-1 focus:ring-secondary/50 rounded-full p-2">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="md:ml-64 pt-24 md:pt-32 px-margin-mobile md:px-margin-desktop pb-section-gap max-w-container-max mx-auto">
+<!-- Client Header Section -->
+<section class="mb-element-gap">
+<div class="glass-panel rounded-xl p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 relative overflow-hidden">
+<!-- Background ambient glow -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-secondary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="flex items-center gap-8 relative z-10">
+<div class="w-32 h-32 rounded-full overflow-hidden border-2 border-surface-variant bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-on-surface-variant" aria-hidden="true">account_circle</span>
+</div>
+<div>
+<div class="flex items-center gap-3 mb-2">
+<h2 data-client-name class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Loading client...</h2>
+<span data-client-status class="bg-tertiary/10 text-tertiary px-3 py-1 rounded-full font-label-sm text-label-sm border border-tertiary/20">—</span>
+</div>
+<div class="flex flex-col gap-1 text-on-surface-variant font-body-md text-body-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">mail</span>
+<span data-client-email>—</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">phone</span>
+<span data-client-phone>—</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4 w-full md:w-auto relative z-10">
+<button class="btn-secondary px-6 py-3 rounded-lg font-label-md text-label-md flex-1 md:flex-none text-center">
+                        Edit Profile
+                    </button>
+<button class="btn-primary px-6 py-3 rounded-lg font-label-md text-label-md flex-1 md:flex-none text-center flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">send</span>
+                        Send Message
+                    </button>
+</div>
+</div>
+</section>
+<!-- Metrics Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-element-gap mb-section-gap">
+<!-- Metric 1 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:bg-white/5 transition-colors duration-300">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Lifetime Revenue</h3>
+<span class="material-symbols-outlined text-secondary/70">payments</span>
+</div>
+<div>
+<p data-client-revenue class="font-headline-md text-headline-md text-on-surface">—</p>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:bg-white/5 transition-colors duration-300">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Total Galleries</h3>
+<span class="material-symbols-outlined text-secondary/70">collections</span>
+</div>
+<div>
+<p data-client-galleries class="font-headline-md text-headline-md text-on-surface">—</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2">Distinct purchased galleries</p>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between hover:bg-white/5 transition-colors duration-300">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-label-md text-label-md text-on-surface-variant uppercase tracking-widest">Last Active</h3>
+<span class="material-symbols-outlined text-secondary/70">schedule</span>
+</div>
+<div>
+<p data-client-active class="font-headline-md text-headline-md text-on-surface">—</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2">Most recent order activity</p>
+</div>
+</div>
+</section>
+</main>
+<script type="module">
+    import { createApiService, getApiBaseUrl } from '../app.ts';
+
+    const params = new URLSearchParams(window.location.search);
+    const clientId = params.get('clientId');
+    const api = createApiService(getApiBaseUrl());
+    const setText = (selector, value) => {
+        const node = document.querySelector(selector);
+        if (node) node.textContent = value;
+    };
+    const revenueLabel = (orders) => {
+        const totals = new Map();
+        orders.filter((order) => ['SUCCESS', 'PAID', 'COMPLETED'].includes(String(order.status).toUpperCase()))
+            .forEach((order) => totals.set(order.currency, (totals.get(order.currency) ?? 0) + Number(order.amount ?? 0)));
+        return totals.size ? [...totals].map(([currency, total]) => `${currency} ${total.toLocaleString()}`).join(' · ') : '—';
+    };
+
+    if (!clientId) {
+        setText('[data-client-name]', 'Select a client');
+        setText('[data-client-status]', 'No client selected');
+    } else {
+        try {
+            const [clientsResponse, ordersResponse] = await Promise.all([api.getClients(), api.getOrders()]);
+            const client = clientsResponse.data.find((item) => item.id === clientId || item.email === clientId);
+            if (!client) throw new Error('Client not found.');
+            const clientOrders = ordersResponse.data.filter((order) => order.customer_email?.toLowerCase() === client.email.toLowerCase());
+            const paidOrders = clientOrders.filter((order) => ['SUCCESS', 'PAID', 'COMPLETED'].includes(String(order.status).toUpperCase()));
+            const galleryIds = new Set(paidOrders.map((order) => order.gallery_id).filter(Boolean));
+            const lastOrder = [...clientOrders].sort((left, right) => Date.parse(right.created_at) - Date.parse(left.created_at))[0];
+
+            setText('[data-client-name]', client.display_name || client.email);
+            setText('[data-client-status]', client.status);
+            setText('[data-client-email]', client.email);
+            setText('[data-client-phone]', client.phone || 'No phone provided');
+            setText('[data-client-revenue]', revenueLabel(paidOrders));
+            setText('[data-client-galleries]', String(galleryIds.size));
+            setText('[data-client-active]', lastOrder ? new Date(lastOrder.created_at).toLocaleDateString() : 'No orders');
+            document.title = `InGallery - ${client.display_name || client.email}`;
+        } catch (error) {
+            const message = error instanceof Error ? error.message : 'Unable to load client details.';
+            setText('[data-client-name]', message);
+            setText('[data-client-status]', 'Unavailable');
+            setText('[data-client-email]', '—');
+            setText('[data-client-phone]', '—');
+            setText('[data-client-revenue]', '—');
+            setText('[data-client-galleries]', '—');
+            setText('[data-client-active]', '—');
+        }
+    }
+</script>
+<script src="../shared-nav.js?v=8"></script>
+</body></html>

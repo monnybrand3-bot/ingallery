@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InGallery - Studio Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-container": "#00160c",
+                      "surface-bright": "#37393a",
+                      "on-tertiary-fixed-variant": "#005236",
+                      "primary-fixed-dim": "#c8c6c5",
+                      "tertiary": "#4edea3",
+                      "surface-container-low": "#1a1c1c",
+                      "surface-container": "#1e2020",
+                      "primary-container": "#121212",
+                      "on-secondary-container": "#342800",
+                      "secondary-container": "#af8d11",
+                      "on-secondary": "#3c2f00",
+                      "secondary-fixed": "#ffe088",
+                      "on-primary-fixed": "#1c1b1b",
+                      "on-tertiary": "#003824",
+                      "outline-variant": "#444748",
+                      "on-tertiary-fixed": "#002113",
+                      "tertiary-fixed": "#6ffbbe",
+                      "background": "#121414",
+                      "tertiary-fixed-dim": "#4edea3",
+                      "on-error-container": "#ffdad6",
+                      "surface-dim": "#121414",
+                      "on-primary-fixed-variant": "#474646",
+                      "on-error": "#690005",
+                      "surface-container-lowest": "#0c0f0f",
+                      "secondary-fixed-dim": "#e9c349",
+                      "on-background": "#e2e2e2",
+                      "on-secondary-fixed-variant": "#574500",
+                      "outline": "#8e9192",
+                      "on-primary": "#313030",
+                      "surface-tint": "#c8c6c5",
+                      "primary": "#c8c6c5",
+                      "secondary": "#e9c349",
+                      "on-secondary-fixed": "#241a00",
+                      "primary-fixed": "#e5e2e1",
+                      "on-primary-container": "#7e7d7d",
+                      "on-tertiary-container": "#008f62",
+                      "surface-variant": "#333535",
+                      "surface-container-highest": "#333535",
+                      "surface-container-high": "#282a2b",
+                      "error-container": "#93000a",
+                      "on-surface": "#e2e2e2",
+                      "on-surface-variant": "#c4c7c7",
+                      "inverse-surface": "#e2e2e2",
+                      "inverse-on-surface": "#2f3131",
+                      "surface": "#121414",
+                      "error": "#ffb4ab",
+                      "inverse-primary": "#5f5e5e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "section-gap": "120px",
+                      "element-gap": "16px",
+                      "margin-mobile": "20px",
+                      "margin-desktop": "64px",
+                      "container-max": "1440px"
+              },
+              "fontFamily": {
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Playfair Display"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Playfair Display"
+                      ],
+                      "headline-lg-mobile": [
+                              "Playfair Display"
+                      ],
+                      "headline-sm": [
+                              "Playfair Display"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Playfair Display"
+                      ]
+              },
+              "fontSize": {
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.1em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "64px",
+                              {
+                                      "lineHeight": "72px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-sm": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .btn-primary {
+            background-color: #e9c349;
+            color: #121414;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            opacity: 0.9;
+        }
+        .image-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(18,20,20,0.9) 0%, rgba(18,20,20,0.2) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 16px;
+        }
+        .image-card:hover .image-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md antialiased overflow-x-hidden">
+<div class="flex">
+<!-- SideNavBar -->
+<nav class="bg-surface-container-low dark:bg-tertiary-container h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/20 hidden md:flex flex-col py-8 px-4 z-40">
+<div class="mb-12 px-4 flex flex-col items-start gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-outline-variant/30 relative">
+<img alt="Photographer Profile" class="w-full h-full object-cover" data-alt="A close-up, high-end professional headshot of a photographer in a dimly lit, minimalist studio environment. Dramatic side lighting highlights their features against a dark charcoal background. The mood is creative, focused, and premium." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDKYPc17XIcVqBKqxmdQNaS9RROIg4vDZfceEk-DRli9X47Co709L2A82GhtYdZ65ZvqrkdeX4ji9jBdxxDqhNfkh2KKsgb5W7DbPEq2UkVMZJslZKaqC0VJ5XntkOYso3XaLm5USZ3Frjry7Hy8gbYsTcqNYXX2G8FWcDAL3sweNewM1zlXS7160fClgufxHNtjcnezb5IyUYk33vGfWTrbQ0PXuD2a3ZMb8Ll_2z8t50xNFXuyQuEWw"/>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-primary">Studio Admin</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Premium Plan</p>
+</div>
+</div>
+<button class="btn-primary w-full py-3 px-4 rounded-full flex items-center justify-center gap-2 mb-8 text-label-md font-label-md">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">add</span>
+                Upload New Gallery
+            </button>
+<ul class="flex flex-col gap-2 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md bg-secondary/10 text-secondary border-r-4 border-secondary translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                        Dashboard
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">photo_library</span>
+                        Galleries
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">group</span>
+                        Clients
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">shopping_bag</span>
+                        Orders
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">cloud_queue</span>
+                        Storage
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">settings</span>
+                        Settings
+                    </a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant/20 pt-4 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">help_outline</span>
+                    Help
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-label-md font-label-md text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">logout</span>
+                    Sign Out
+                </a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 ml-0 md:ml-64 p-margin-mobile md:p-margin-desktop min-h-screen flex flex-col gap-section-gap">
+<!-- Header Section -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mt-8 md:mt-0">
+<div>
+<p class="text-label-md font-label-md text-primary tracking-widest uppercase mb-2">Overview</p>
+<h1 data-dashboard-heading class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-on-surface">Overview</h1>
+</div>
+<button class="btn-primary py-3 px-8 rounded-full text-label-md font-label-md flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add_circle</span>
+                    Create New Gallery
+                </button>
+</header>
+<!-- Bento Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Stat 1 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[140px] relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-secondary/5 rounded-full blur-xl group-hover:bg-secondary/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start">
+<p class="text-label-md font-label-md text-on-surface-variant">Gross Paid Sales</p>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 0;">account_balance_wallet</span>
+</div>
+<div>
+<p class="text-headline-md font-headline-md text-on-surface mt-4" data-dashboard-revenue>—</p>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[140px] relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-xl group-hover:bg-primary/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start">
+<p class="text-label-md font-label-md text-on-surface-variant">Total Galleries</p>
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 0;">photo_library</span>
+</div>
+<p class="text-headline-md font-headline-md text-on-surface mt-4" data-dashboard-total-galleries>—</p>
+</div>
+<!-- Stat 3 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[140px] relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-tertiary/5 rounded-full blur-xl group-hover:bg-tertiary/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start">
+<p class="text-label-md font-label-md text-on-surface-variant">Active Galleries</p>
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 0;">visibility</span>
+</div>
+<p class="text-headline-md font-headline-md text-on-surface mt-4" data-dashboard-active-galleries>—</p>
+</div>
+<!-- Stat 4 -->
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between min-h-[140px] relative overflow-hidden group">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-error/5 rounded-full blur-xl group-hover:bg-error/10 transition-all duration-500"></div>
+<div class="flex justify-between items-start">
+<p class="text-label-md font-label-md text-on-surface-variant">Storage Used</p>
+<span class="material-symbols-outlined text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">cloud</span>
+</div>
+<div class="mt-4">
+<p class="text-headline-md font-headline-md text-on-surface mb-2 flex items-baseline gap-2" data-dashboard-storage>—</p>
+<div class="w-full bg-surface-container-high rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-1.5 rounded-full" data-dashboard-storage-bar style="width: 0%"></div>
+</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Recent Galleries -->
+<section class="lg:col-span-2 flex flex-col gap-6">
+<div class="flex justify-between items-end border-b border-white/5 pb-4">
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Recent Galleries</h2>
+<a class="text-label-md font-label-md text-secondary hover:text-secondary-fixed transition-colors" href="#">View All</a>
+</div>
+<div class="hidden grid grid-cols-1 md:grid-cols-2 gap-6" data-live-gallery-list></div>
+</section>
+<!-- Recent Activity -->
+<section class="flex flex-col gap-6">
+<div class="border-b border-white/5 pb-4">
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Recent Activity</h2>
+</div>
+<div class="glass-panel rounded-xl p-6 flex flex-col gap-6" data-recent-activity>
+<p class="text-body-md text-on-surface-variant">Loading recent activity...</p>
+</div>
+</section>
+</div>
+</main>
+</div>
+<script type="module">
+        import { confirmGalleryDeletion, createApiService, formatCurrencyTotals, getApiBaseUrl, getCurrentSession, getPublicFrontendUrl, showGalleryToast } from '../app.ts';
+        import QRCode from 'qrcode';
+
+        const formatMoney = (value, currency = 'TZS') => `${currency} ${Number(value || 0).toLocaleString()}`;
+        const setText = (selector, value) => { const node = document.querySelector(selector); if (node) node.textContent = value; };
+        const emptyGalleryState = '<p class="text-body-md text-on-surface-variant md:col-span-2">No galleries created yet.</p>';
+        const signInGalleryState = '<p class="text-body-md text-on-surface-variant md:col-span-2">Sign in to view your galleries.</p>';
+        const escapeHtml = (value) => String(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character]));
+        const makeClientGalleryUrl = (gallery) => {
+                const url = new URL('/public_gallery_unpaid/code.html', getPublicFrontendUrl());
+                url.search = new URLSearchParams({ slug: gallery.slug || gallery.id }).toString();
+                return url.toString();
+        };
+        const showGalleryQr = async (button) => {
+                const url = button.getAttribute('data-gallery-qr');
+                const title = button.getAttribute('data-gallery-title') || 'Gallery';
+                if (!url) return;
+
+                const dialog = document.createElement('dialog');
+                dialog.className = 'rounded-xl border border-outline-variant bg-surface-container p-0 text-on-surface shadow-2xl backdrop:bg-black/70';
+                dialog.setAttribute('aria-label', `QR code for ${title}`);
+                dialog.innerHTML = `
+                        <div class="w-[min(90vw,420px)] p-6 text-center">
+                                <div class="flex items-start justify-between gap-4 text-left">
+                                        <div><h2 class="text-headline-sm font-headline-sm">Gallery QR code</h2><p class="mt-1 text-sm text-on-surface-variant">${escapeHtml(title)}</p></div>
+                                        <button type="button" data-qr-close class="text-on-surface-variant hover:text-on-surface" aria-label="Close">✕</button>
+                                </div>
+                                <img data-qr-image alt="QR code linking to ${escapeHtml(title)}" class="mx-auto my-6 h-72 w-72 max-w-full rounded bg-white p-3">
+                                <p class="mb-5 break-all text-xs text-on-surface-variant">${escapeHtml(url)}</p>
+                                <div class="flex flex-wrap justify-center gap-3">
+                                        <a data-qr-download download="${escapeHtml((title || 'gallery').trim().replace(/[^a-z0-9-_]+/gi, '-').toLowerCase())}-qr.png" class="rounded bg-secondary px-4 py-2 font-semibold text-on-secondary">Download QR (PNG)</a>
+                                        <button type="button" data-qr-print class="rounded border border-outline-variant px-4 py-2">Print QR card</button>
+                                        <button type="button" data-qr-copy class="rounded border border-outline-variant px-4 py-2">Copy gallery link</button>
+                                </div>
+                        </div>`;
+                document.body.append(dialog);
+                const close = () => { dialog.close(); dialog.remove(); };
+                dialog.querySelector('[data-qr-close]').addEventListener('click', close);
+                dialog.addEventListener('click', (event) => { if (event.target === dialog) close(); });
+                dialog.querySelector('[data-qr-copy]').addEventListener('click', async (event) => {
+                        try {
+                                await navigator.clipboard.writeText(url);
+                                event.currentTarget.textContent = 'Copied';
+                        } catch {
+                                window.prompt('Copy this client gallery link:', url);
+                        }
+                });
+                try {
+                        const dataUrl = await QRCode.toDataURL(url, { width: 640, margin: 2, errorCorrectionLevel: 'M' });
+                        dialog.querySelector('[data-qr-image]').src = dataUrl;
+                        dialog.querySelector('[data-qr-download]').href = dataUrl;
+                        dialog.querySelector('[data-qr-print]').addEventListener('click', () => {
+                                const printWindow = window.open('', '_blank', 'width=720,height=900');
+                                if (!printWindow) { showGalleryToast('Allow pop-ups to print this QR card.', true); return; }
+                                printWindow.document.write(`<!doctype html><html><head><title>${escapeHtml(title)} QR card</title><style>body{font-family:Arial,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;color:#17211f}.card{text-align:center;border:1px solid #ccd5d1;border-radius:18px;padding:36px;max-width:460px}img{width:320px;height:320px}.hint{font-size:18px;color:#42534f}.link{font-size:11px;overflow-wrap:anywhere;color:#62716d}</style></head><body><main class="card"><h1>${escapeHtml(title)}</h1><img src="${dataUrl}" alt="Gallery QR code"><p class="hint">Scan to view the event photos</p><p class="link">${escapeHtml(url)}</p></main><script>window.onload=()=>window.print()<\\/script></body></html>`);
+                                printWindow.document.close();
+                        });
+                        dialog.showModal();
+                } catch (error) {
+                        dialog.remove();
+                        console.error('Unable to generate gallery QR code.', error);
+                        showGalleryToast('Unable to generate this gallery QR code. Please try again.', true);
+                }
+        };
+        const hydrateDashboard = async () => {
+                const list = document.querySelector('[data-live-gallery-list]');
+                const showGalleryList = () => list?.classList.remove('hidden');
+                if (!getCurrentSession()?.accessToken) {
+                            if (list) list.innerHTML = signInGalleryState;
+                            showGalleryList();
+                        setText('[data-dashboard-total-galleries]', '0');
+                        setText('[data-dashboard-active-galleries]', '0');
+                        setText('[data-dashboard-revenue]', 'TZS 0');
+                        return;
+                }
+
+                try {
+                        const response = await createApiService(getApiBaseUrl()).getDashboard();
+                        if (!response.ok) throw new Error(response.message);
+                        const snapshot = response.data;
+                        const totalGalleries = snapshot.recentGalleries.length;
+                        const activeGalleries = snapshot.recentGalleries.filter((gallery) => gallery.status === 'published').length;
+                        setText('[data-dashboard-heading]', snapshot.studioName ? `Welcome back, ${snapshot.studioName}` : 'Overview');
+                        setText('[data-dashboard-revenue]', formatCurrencyTotals(snapshot.revenueByCurrency));
+                        setText('[data-dashboard-total-galleries]', String(totalGalleries));
+                        setText('[data-dashboard-active-galleries]', String(activeGalleries));
+                        setText('[data-dashboard-storage]', `${(snapshot.storageUsed / 1073741824).toFixed(1)} GB / ${(snapshot.storageLimit / 1073741824).toFixed(1)} GB`);
+                        const storagePercent = snapshot.storageLimit ? Math.min(100, Math.round((snapshot.storageUsed / snapshot.storageLimit) * 100)) : 0;
+                        document.querySelector('[data-dashboard-storage-bar]')?.setAttribute('style', `width: ${storagePercent}%`);
+                        if (!list) return;
+                        if (!snapshot.recentGalleries.length) {
+                                list.innerHTML = emptyGalleryState;
+                                showGalleryList();
+                                return;
+                        }
+                        list.innerHTML = snapshot.recentGalleries.map((gallery) => {
+                                const clientUrl = makeClientGalleryUrl(gallery);
+                                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`View your photo gallery: ${clientUrl}`)}`;
+                                return `
+                                <article data-gallery-actions-managed class="glass-panel rounded-xl overflow-hidden p-0">
+                                        <div class="relative h-40 w-full overflow-hidden bg-surface-container">
+                                                ${gallery.coverUrl
+                                                        ? `<img src="${gallery.coverUrl}" alt="${gallery.title} cover" class="h-full w-full object-cover">`
+                                                        : `<div class="h-full w-full flex items-center justify-center"><span class="material-symbols-outlined text-5xl text-outline-variant">photo_library</span></div>`}
+                                                <span class="absolute top-3 left-3 rounded bg-primary-container/80 px-2 py-1 text-label-sm text-on-surface border border-white/10">${gallery.status}</span>
+                                        </div>
+                                        <div class="p-5">
+                                                <div class="flex items-center justify-between gap-3">
+                                                        <h3 class="text-body-lg font-body-lg font-semibold text-on-surface truncate">${escapeHtml(gallery.title)}</h3>
+                                                        <a class="text-label-sm text-on-surface-variant hover:text-secondary" href="../create_new_gallery_form/code.html?edit=${encodeURIComponent(gallery.id)}">Edit</a>
+                                                        <button type="button" data-delete-gallery="${gallery.id}" class="text-label-sm text-error hover:text-on-error bg-error/10 px-2 py-1 rounded border border-error/20" aria-label="Delete ${gallery.title}">Delete</button>
+                                                </div>
+                                                <p class="text-label-sm text-on-surface-variant mt-3">${gallery.imageCount} photos</p>
+                                                <div class="mt-4 flex flex-wrap items-center gap-4">
+                                                        <a class="text-label-sm text-secondary hover:text-secondary-fixed" href="${escapeHtml(clientUrl)}" target="_blank" rel="noopener">View Gallery</a>
+                                                        <a class="text-label-sm text-tertiary hover:text-secondary" href="${escapeHtml(whatsappUrl)}" target="_blank" rel="noopener">WhatsApp</a>
+                                                        <button type="button" data-copy-gallery-link="${escapeHtml(clientUrl)}" class="text-label-sm text-on-surface-variant hover:text-secondary">Copy link</button>
+                                                        <button type="button" data-gallery-qr="${escapeHtml(clientUrl)}" data-gallery-title="${escapeHtml(gallery.title)}" class="text-label-sm text-on-surface-variant hover:text-secondary">QR code</button>
+                                                </div>
+                                        </div>
+                                </article>
+                        `;}).join('');
+                        list.querySelectorAll('[data-copy-gallery-link]').forEach((button) => {
+                                button.addEventListener('click', async () => {
+                                        const url = button.getAttribute('data-copy-gallery-link');
+                                        if (!url) return;
+                                        try {
+                                                await navigator.clipboard.writeText(url);
+                                                button.textContent = 'Copied';
+                                                window.setTimeout(() => { button.textContent = 'Copy link'; }, 1800);
+                                        } catch {
+                                                window.prompt('Copy this client gallery link:', url);
+                                        }
+                                });
+                        });
+                        list.querySelectorAll('[data-gallery-qr]').forEach((button) => {
+                                button.addEventListener('click', () => showGalleryQr(button));
+                        });
+                        document.querySelectorAll('[data-delete-gallery]').forEach((button) => {
+                                button.addEventListener('click', async (event) => {
+                                        const target = event.currentTarget;
+                                        const galleryId = target.getAttribute('data-delete-gallery');
+                                        if (!galleryId) return;
+                                        const galleryTitle = target.closest('article')?.querySelector('h3')?.textContent?.trim() || 'this gallery';
+                                        const confirmed = await confirmGalleryDeletion(galleryTitle);
+                                        if (!confirmed) return;
+
+                                        try {
+                                                const api = createApiService(getApiBaseUrl());
+                                                await api.deleteGallery(galleryId);
+                                                await hydrateDashboard();
+                                                showGalleryToast('Gallery deleted successfully.');
+                                        } catch (error) {
+                                                console.error('Unable to delete gallery', error);
+                                                showGalleryToast('Unable to delete this gallery right now. Please try again.', true);
+                                        }
+                                });
+                        });
+                        showGalleryList();
+                } catch {
+                        if (list) list.innerHTML = '<p class="text-body-md text-error md:col-span-2">Unable to load dashboard data.</p>';
+                        showGalleryList();
+                }
+        };
+
+        window.addEventListener('ingallery:gallery-upload-complete', () => hydrateDashboard());
+        hydrateDashboard();
+</script>
+<script src="../shared-nav.js?v=8"></script>
+</body></html>

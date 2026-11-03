@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InGallery</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              background: '#121414',
+              surface: '#121414',
+              'surface-container': '#1e2020',
+              'surface-container-low': '#1a1c1c',
+              'surface-variant': '#333535',
+              'on-surface': '#e2e2e2',
+              'on-surface-variant': '#c4c7c7',
+              primary: '#c8c6c5',
+              secondary: '#e9c349',
+              tertiary: '#4edea3',
+              'on-primary': '#313030',
+              'on-secondary': '#3c2f00',
+              'on-tertiary': '#003824',
+              outline: '#8e9192',
+              error: '#ffb4ab'
+            },
+            fontFamily: {
+              body: ['Inter', 'sans-serif'],
+              display: ['Playfair Display', 'serif']
+            }
+          }
+        }
+      };
+    </script>
+    <style>
+      body { background: #121414; color: #e2e2e2; }
+      .glass-panel {
+        background: rgba(18, 18, 18, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .btn-primary {
+        background-color: #e9c349;
+        color: #121414;
+        letter-spacing: 0.1em;
+        transition: all 0.3s ease;
+      }
+      .btn-primary:hover { transform: scale(1.02); opacity: 0.9; }
+    </style>
+  </head>
+  <body class="bg-background text-on-surface font-body antialiased">
+    <div class="min-h-screen flex items-center justify-center px-6">
+      <div class="glass-panel max-w-xl w-full rounded-lg p-8">
+        <p class="text-xs uppercase tracking-[0.2em] text-secondary text-center">InGallery</p>
+        <h1 class="mt-4 font-display text-4xl md:text-5xl text-center">Studio Access</h1>
+
+        <form data-login-form data-redirect="photographer_dashboard_overview/code.html" class="mt-8 space-y-4">
+          <div class="space-y-2">
+            <label for="email" class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Email</label>
+            <input id="email" type="email" autocomplete="username" placeholder="you@example.com" class="w-full rounded border border-white/10 bg-white/5 px-3 py-3 text-white outline-none focus:border-secondary" required />
+          </div>
+          <div class="space-y-2">
+            <label for="password" class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Password</label>
+            <div class="relative"><input id="password" type="password" autocomplete="current-password" class="w-full rounded border border-white/10 bg-white/5 px-3 py-3 pr-12 text-white outline-none focus:border-secondary" required /><button type="button" data-toggle-password aria-label="Show password" aria-pressed="false" class="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined" aria-hidden="true">visibility</span></button></div>
+          </div>
+          <div data-login-message class="min-h-[20px] text-sm text-secondary"></div>
+          <button type="submit" class="btn-primary w-full rounded px-5 py-3 text-sm uppercase font-semibold">Sign In</button>
+        </form>
+
+        <div class="mt-8 flex justify-center gap-4 flex-wrap">
+          <a href="signup.html" class="btn-primary inline-flex items-center justify-center rounded px-5 py-3 text-sm uppercase font-semibold">Create Account</a>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./app.ts"></script>
+  </body>
+</html>

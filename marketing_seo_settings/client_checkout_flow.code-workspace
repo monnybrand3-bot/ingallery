@@ -1,0 +1,54 @@
+{
+	"folders": [
+		{
+			"path": "../client_checkout_flow"
+		},
+		{
+			"path": "../client_detail_view"
+		},
+		{
+			"path": "../client_management_dashboard"
+		},
+		{
+			"path": "../create_new_gallery_form"
+		},
+		{
+			"path": "../ingallery"
+		},
+		{
+			"path": "../ingallery_photography_studio_platform"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../order_management_dashboard"
+		},
+		{
+			"path": "../payment_pending_status"
+		},
+		{
+			"path": "../payment_success_unlocked_gallery"
+		},
+		{
+			"path": "../photographer_dashboard_overview"
+		},
+		{
+			"path": "../public_gallery_unpaid"
+		},
+		{
+			"path": "../storage_hosting_dashboard"
+		},
+		{
+			"path": "../studio_performance_report"
+		},
+		{
+			"path": "../subscription_storage_plans"
+		},
+		{
+			"path": "../team_permissions_view"
+		}
+	],
+	"settings": {
+	}
+}

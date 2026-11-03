@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InGallery - Premium Checkout</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Playfair+Display:wght@100..900&display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#3c2f00",
+                    "inverse-on-surface": "#2f3131",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "surface-tint": "#c8c6c5",
+                    "secondary": "#e9c349",
+                    "on-primary-container": "#7e7d7d",
+                    "on-primary-fixed": "#1c1b1b",
+                    "surface-container-highest": "#333535",
+                    "primary": "#c8c6c5",
+                    "background": "#121414",
+                    "on-secondary-fixed": "#241a00",
+                    "surface-variant": "#333535",
+                    "primary-container": "#121212",
+                    "surface-container": "#1e2020",
+                    "on-background": "#e2e2e2",
+                    "error-container": "#93000a",
+                    "surface-dim": "#121414",
+                    "on-secondary-container": "#342800",
+                    "on-primary-fixed-variant": "#474646",
+                    "surface-container-lowest": "#0c0f0f",
+                    "surface-container-low": "#1a1c1c",
+                    "secondary-container": "#af8d11",
+                    "secondary-fixed-dim": "#e9c349",
+                    "tertiary-fixed-dim": "#4edea3",
+                    "primary-fixed": "#e5e2e1",
+                    "on-primary": "#313030",
+                    "inverse-surface": "#e2e2e2",
+                    "on-surface-variant": "#c4c7c7",
+                    "inverse-primary": "#5f5e5e",
+                    "on-tertiary-container": "#008f62",
+                    "on-surface": "#e2e2e2",
+                    "on-tertiary-fixed": "#002113",
+                    "primary-fixed-dim": "#c8c6c5",
+                    "tertiary": "#4edea3",
+                    "outline-variant": "#444748",
+                    "on-secondary-fixed-variant": "#574500",
+                    "secondary-fixed": "#ffe088",
+                    "error": "#ffb4ab",
+                    "on-error-container": "#ffdad6",
+                    "outline": "#8e9192",
+                    "tertiary-container": "#00160c",
+                    "surface": "#121414",
+                    "on-error": "#690005",
+                    "on-tertiary": "#003824",
+                    "surface-container-high": "#282a2b",
+                    "surface-bright": "#37393a",
+                    "tertiary-fixed": "#6ffbbe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "gutter": "24px",
+                    "margin-desktop": "64px",
+                    "container-max": "1440px",
+                    "element-gap": "16px",
+                    "section-gap": "120px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "headline-sm": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "label-md": ["Inter"],
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["40px", {"lineHeight": "48px", "fontWeight": "600"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "500"}],
+                    "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                    "display-lg": ["64px", {"lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        /* Progress Indicator Color Overrides for this specific context */
+        .progress-spinner {
+            border-top-color: #10B981; /* Success Green */
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen antialiased flex flex-col pt-20 overflow-x-hidden">
+<!-- TopNavBar (Shared Component) -->
+<nav class="bg-surface/80 backdrop-blur-xl dark:bg-surface-container-lowest/80 border-b border-white/10 fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20">
+<!-- Brand -->
+<div class="flex items-center gap-4">
+<img hidden data-checkout-studio-logo alt="Studio logo" class="h-9 w-9 object-contain" />
+<span class="text-headline-sm font-headline-sm tracking-tighter text-on-surface dark:text-primary-fixed" data-checkout-studio-name>InGallery</span>
+</div>
+<!-- Navigation Links (Desktop) -->
+<div class="hidden md:flex items-center gap-8">
+<!-- Galleries is semantically active as it relates to the current purchase context -->
+<a class="text-secondary border-b-2 border-secondary pb-1 text-label-sm font-label-sm uppercase hover:opacity-80 transition-opacity duration-300" href="#">Galleries</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors text-label-sm font-label-sm uppercase hover:opacity-80 duration-300" href="#">Collections</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors text-label-sm font-label-sm uppercase hover:opacity-80 duration-300" href="#">About</a>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="hidden md:block border border-white/20 px-6 py-2 text-label-sm font-label-sm text-on-surface hover:bg-surface-variant/50 transition-colors uppercase tracking-widest rounded-DEFAULT">
+                Client Access
+            </button>
+</div>
+</nav>
+<!-- Main Checkout Canvas -->
+<main class="flex-grow flex items-center justify-center py-margin-desktop px-margin-mobile md:px-margin-desktop w-full max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter w-full">
+<!-- Left Side: Gallery Details (Bento/Card Style) -->
+<div class="col-span-1 md:col-span-6 lg:col-span-7 flex flex-col justify-center mb-12 md:mb-0">
+<div class="relative w-full aspect-[4/3] rounded-xl overflow-hidden group">
+<!-- Image -->
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A stunning, high-end editorial wedding photograph capturing a bride and groom in a moment of quiet intimacy. The scene is set in an architectural space with dramatic, moody lighting characterized by deep, rich shadows and soft, directional highlights. The aesthetic perfectly complements a premium, minimalist digital gallery interface in dark mode, emphasizing elegant contrast, subtle grain, and a cinematic quality that feels exclusive and professionally curated." data-gallery-cover-image style="background-image: linear-gradient(135deg, rgba(233,195,73,0.15), rgba(17,24,39,0.8));">
+</div>
+<!-- Gradient Overlay for Text Readability -->
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent"></div>
+<!-- Gallery Meta Content -->
+<div class="absolute bottom-0 left-0 w-full p-8 md:p-12">
+<div class="inline-flex items-center gap-2 bg-surface-container-lowest/60 backdrop-blur-md px-3 py-1.5 rounded-DEFAULT mb-4 border border-white/10">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant">photo_library</span>
+<span class="text-label-sm font-label-sm text-on-surface" data-gallery-photo-count>Loading photos...</span>
+</div>
+<h1 class="text-headline-md md:text-display-lg font-headline-md md:font-display-lg text-on-surface leading-tight">
+                            <span data-gallery-name>Gallery link required</span><br/>
+<span class="text-on-surface-variant">Premium gallery access</span>
+</h1>
+</div>
+</div>
+</div>
+<!-- Right Side: Payment Interaction -->
+<div class="col-span-1 md:col-span-6 lg:col-span-4 lg:col-start-9 flex flex-col justify-center">
+<div class="bg-surface-container-low/40 backdrop-blur-2xl border border-white/5 rounded-xl p-8 relative overflow-hidden min-h-[400px] flex flex-col justify-center">
+<!-- State 1: Checkout Form -->
+<div class="flex flex-col h-full transition-opacity duration-500 opacity-100 relative z-10" id="checkout-form">
+<div class="mb-8">
+<h2 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-widest mb-2">Order Total</h2>
+<div class="text-headline-lg font-headline-lg text-secondary" data-order-total>
+                                Loading amount...
+                            </div>
+</div>
+<div class="w-full h-px bg-white/10 mb-8"></div>
+<div class="flex-grow flex flex-col justify-center">
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase mb-2 flex items-center gap-2" for="network">
+<span class="material-symbols-outlined text-[18px]">network_cell</span>
+Mobile money network
+</label>
+<select class="w-full mb-6 border-0 border-b border-white/20 bg-transparent text-body-md text-on-surface py-3 focus:ring-0 focus:border-secondary" id="network" required>
+<option value="" selected disabled>Select network</option>
+<option value="Mpesa">M-Pesa</option>
+<option value="TigoPesa">Mixx by Yas</option>
+<option value="AirtelMoney">Airtel Money</option>
+<option value="HaloPesa">HaloPesa</option>
+</select>
+<label class="text-label-sm font-label-sm text-on-surface-variant uppercase mb-4 flex items-center gap-2" for="phone">
+<span class="material-symbols-outlined text-[18px]">smartphone</span>
+                                Mobile Payment Number
+                            </label>
+<!-- Minimalist Input Field -->
+<div class="relative mb-12">
+<input class="w-full bg-transparent border-0 border-b border-white/20 text-body-lg font-body-lg text-on-surface py-3 px-0 focus:ring-0 focus:border-secondary transition-colors placeholder:text-on-surface-variant/30" id="phone" placeholder="+255 700 000 000" type="tel" value="+255 "/>
+</div>
+<p class="mb-4 min-h-5 text-sm text-error" id="payment-error" role="alert"></p>
+<!-- Primary Button -->
+<button class="w-full bg-secondary text-on-secondary py-4 text-label-sm font-label-sm uppercase tracking-widest rounded-DEFAULT hover:scale-[1.02] transition-transform duration-300 flex justify-center items-center gap-2 group" id="pay-now" type="button">
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">lock</span>
+                                Pay Now
+                            </button>
+</div>
+</div>
+<!-- State 2: Pending (Hidden Initially) -->
+<div class="absolute inset-0 bg-surface-container-low/95 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center opacity-0 pointer-events-none transition-opacity duration-500 z-20" id="pending-state">
+<!-- Progress Spinner using Success Green theme rule -->
+<div class="w-16 h-16 border-4 border-surface-variant rounded-full animate-spin progress-spinner mb-8"></div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-3">Awaiting Payment</h3>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[250px]">
+                            Payment request sent. Please complete the payment on your phone.
+                        </p>
+</div>
+</div>
+<div class="mt-6 flex justify-center items-center gap-2 text-on-surface-variant/50 text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[14px]">shield</span>
+                    Secured by InGallery Payments
+                </div>
+</div>
+</div>
+</main>
+    <script type="module">
+        import { createApiService, getApiBaseUrl, normalizeGalleryCheckoutState } from '../app.ts';
+
+        const button = document.getElementById('pay-now');
+        const form = document.getElementById('checkout-form');
+        const pending = document.getElementById('pending-state');
+        const errorMessage = document.getElementById('payment-error');
+        const params = new URLSearchParams(window.location.search);
+        const galleryId = params.get('galleryId');
+        const api = createApiService(getApiBaseUrl());
+        const galleryTitleNode = document.querySelector('[data-gallery-name]');
+        const galleryImageNode = document.querySelector('[data-gallery-cover-image]');
+        const galleryCountNode = document.querySelector('[data-gallery-photo-count]');
+        const orderTotalNode = document.querySelector('[data-order-total]');
+        const checkoutStudioName = document.querySelector('[data-checkout-studio-name]');
+        const checkoutStudioLogo = document.querySelector('[data-checkout-studio-logo]');
+
+        const formatAmount = (amount, currency) => {
+            const formatted = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(amount ?? 0));
+            return `${currency || 'TZS'} ${formatted}`;
+        };
+
+        const setCheckoutSummary = (summary) => {
+            if (galleryTitleNode) {
+                galleryTitleNode.textContent = summary.title;
+            }
+            if (galleryImageNode) {
+                galleryImageNode.style.backgroundImage = summary.coverUrl ? `url('${summary.coverUrl}')` : 'linear-gradient(135deg, rgba(233,195,73,0.15), rgba(17,24,39,0.8))';
+            }
+            if (galleryCountNode) {
+                galleryCountNode.textContent = `${summary.imageCount} Photos`;
+            }
+            if (orderTotalNode) {
+                orderTotalNode.textContent = formatAmount(summary.accessPrice, summary.currency);
+            }
+        };
+
+        const loadGallery = async () => {
+            if (!galleryId) {
+                if (errorMessage) errorMessage.textContent = 'This checkout link is missing a gallery reference.';
+                return;
+            }
+
+            try {
+                const response = await api.getPublicGallery(galleryId);
+                if (checkoutStudioName && response.data.studioName) checkoutStudioName.textContent = response.data.studioName;
+                if (checkoutStudioLogo && response.data.studioLogoUrl) {
+                    checkoutStudioLogo.src = response.data.studioLogoUrl;
+                    checkoutStudioLogo.hidden = false;
+                }
+                const summary = normalizeGalleryCheckoutState({
+                    id: response.data.id,
+                    title: response.data.title || params.get('gallery'),
+                    slug: response.data.slug,
+                    accessPrice: response.data.accessPrice,
+                    currency: response.data.currency,
+                    imageCount: response.data.imageCount,
+                    coverUrl: response.data.coverUrl
+                });
+                setCheckoutSummary(summary);
+            } catch (error) {
+                const fallbackTitle = params.get('gallery') || 'Gallery unavailable';
+                if (galleryTitleNode) galleryTitleNode.textContent = fallbackTitle;
+                if (galleryCountNode) galleryCountNode.textContent = 'Photos unavailable';
+                if (orderTotalNode) orderTotalNode.textContent = 'Amount unavailable';
+                if (errorMessage) errorMessage.textContent = error instanceof Error ? error.message : 'Unable to load gallery details.';
+                console.warn('Unable to load gallery details for checkout', error);
+            }
+        };
+
+        button?.addEventListener('click', async () => {
+            if (!galleryId) {
+                if (errorMessage) errorMessage.textContent = 'This checkout link is missing a gallery reference.';
+                return;
+            }
+
+            const phoneInput = document.getElementById('phone');
+            const phone = phoneInput?.value.trim() ?? '';
+            const network = document.getElementById('network')?.value ?? '';
+            if (!phone) {
+                if (errorMessage) errorMessage.textContent = 'Enter a mobile payment number to continue.';
+                return;
+            }
+            if (!network) {
+                if (errorMessage) errorMessage.textContent = 'Choose your mobile money network to continue.';
+                return;
+            }
+
+            button.setAttribute('disabled', 'true');
+            if (errorMessage) errorMessage.textContent = '';
+            try {
+                const result = await api.createCheckout(galleryId, {
+                    email: params.get('email') ?? 'client@example.com',
+                    phone,
+                    network
+                });
+                try {
+                    sessionStorage.setItem('ingallery:pending-gallery-payment', JSON.stringify({
+                        orderReference: result.data.orderReference,
+                        galleryId,
+                        galleryTitle: params.get('gallery') ?? ''
+                    }));
+                } catch {
+                    if (!result.data.transactionId) throw new Error('This browser could not save the payment return session. Enable session storage and try again.');
+                }
+                form?.classList.add('opacity-0', 'pointer-events-none');
+                pending?.classList.remove('opacity-0', 'pointer-events-none');
+                window.location.href = result.data.checkoutUrl;
+            } catch (error) {
+                button.removeAttribute('disabled');
+                if (errorMessage) errorMessage.textContent = error instanceof Error ? error.message : 'Unable to start payment.';
+            }
+        });
+
+        loadGallery();
+    </script>
+<script src="../shared-nav.js?v=8"></script>
+</body></html>

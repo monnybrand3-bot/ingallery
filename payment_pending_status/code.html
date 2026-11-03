@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InGallery - Payment Pending</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#c4c7c7",
+                        "outline": "#8e9192",
+                        "inverse-primary": "#5f5e5e",
+                        "on-error": "#690005",
+                        "on-tertiary": "#003824",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-primary-fixed-variant": "#474646",
+                        "secondary-fixed-dim": "#e9c349",
+                        "inverse-on-surface": "#2f3131",
+                        "secondary": "#e9c349",
+                        "background": "#121414",
+                        "on-tertiary-fixed": "#002113",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "surface-container": "#1e2020",
+                        "primary-container": "#121212",
+                        "on-primary-container": "#7e7d7d",
+                        "error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "surface-dim": "#121414",
+                        "tertiary-container": "#00160c",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-background": "#e2e2e2",
+                        "surface-container-highest": "#333535",
+                        "surface-container-low": "#1a1c1c",
+                        "surface-container-high": "#282a2b",
+                        "on-secondary-fixed-variant": "#574500",
+                        "surface": "#121414",
+                        "inverse-surface": "#e2e2e2",
+                        "on-tertiary-container": "#008f62",
+                        "secondary-fixed": "#ffe088",
+                        "on-secondary-container": "#342800",
+                        "primary-fixed": "#e5e2e1",
+                        "on-secondary-fixed": "#241a00",
+                        "on-surface": "#e2e2e2",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed": "#1c1b1b",
+                        "tertiary": "#4edea3",
+                        "surface-tint": "#c8c6c5",
+                        "secondary-container": "#af8d11",
+                        "error": "#ffb4ab",
+                        "primary": "#c8c6c5",
+                        "surface-variant": "#333535",
+                        "on-secondary": "#3c2f00",
+                        "outline-variant": "#444748",
+                        "surface-bright": "#37393a",
+                        "on-primary": "#313030"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "section-gap": "120px",
+                        "margin-mobile": "20px",
+                        "gutter": "24px",
+                        "margin-desktop": "64px",
+                        "element-gap": "16px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "display-lg": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .spin-slow {
+            animation: spin 3s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pulse-text {
+            animation: pulse-op 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse-op {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col relative overflow-hidden">
+<!-- Blurred Background Image -->
+<div class="absolute inset-0 z-0">
+<div class="absolute inset-0 bg-background/90 z-10 backdrop-blur-md"></div>
+<div class="w-full h-full bg-cover bg-center opacity-40" data-alt="A moody, high-contrast, premium wedding photography background. A bride and groom dancing in a grand hall, softly out of focus. Lighting is cinematic, with deep shadows and warm highlights reflecting off polished floors. The overall aesthetic is dark mode, luxurious, and elegant, fitting for a high-end photography portfolio platform." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAERq0wt0mY-vkhj_ildeLW5fOorFoW9edLf5I7zPrcHWUATRiTO4O-LPFuC-o-IYKabSMlCkqZyi4OBXkpjKnPl9OdX31d1wzuF-fNmHtQ0eS3uofihOvehA8Aa0H2bi70FvTYEKQjhFaSxXXKMTIGR-y33Nqzf0ZRyaa-G1vCdjv8c-d0pflFF7JOblelgdD-DGoD_d-GUD1FTVamDEDWGyZSdv8VcMuBP8jtuWVYBoDM1zKu-K3XdA')"></div>
+</div>
+<!-- Minimal brand header for the client payment flow -->
+<header class="fixed top-0 w-full z-50 border-b border-outline-variant/10 bg-background/80 backdrop-blur-xl">
+<div class="flex justify-between items-center px-margin-mobile md:px-margin-desktop py-6 w-full max-w-container-max mx-auto">
+<div class="font-display-lg text-headline-sm text-on-background tracking-tighter">InGallery</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex items-center justify-center relative z-20 px-margin-mobile mt-[100px] mb-[100px]">
+<!-- Payment Modal -->
+<div class="bg-primary-container/80 backdrop-blur-2xl border border-outline-variant/20 p-8 md:p-12 w-full max-w-[500px] flex flex-col items-center text-center shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+<!-- Spinner -->
+<div class="relative w-24 h-24 mb-8">
+<svg class="absolute inset-0 w-full h-full text-surface-container-high" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-width="2"></circle>
+</svg>
+<svg class="absolute inset-0 w-full h-full text-secondary spin-slow" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="141" stroke-dashoffset="0" stroke-linecap="round" stroke-width="2"></circle>
+</svg>
+<span class="material-symbols-outlined absolute inset-0 flex items-center justify-center text-secondary text-4xl" data-icon="mobile_friendly" style="font-variation-settings: 'FILL' 1;">mobile_friendly</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4">Package Payment in Progress</h1>
+<!-- Plan Summary Card -->
+<div class="w-full bg-surface-container-low/50 border border-outline-variant/10 p-6 mb-8 flex flex-col gap-2">
+<div class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Package Summary</div>
+<div class="font-body-lg text-body-lg text-on-background truncate" data-order-title>Loading package...</div>
+<div class="font-headline-sm text-headline-sm text-secondary mt-2" data-order-amount>Loading amount...</div>
+</div>
+<!-- Polling Status -->
+<div class="flex items-center gap-3 mb-10 text-tertiary pulse-text">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+<span class="font-label-md text-label-md" data-payment-status>Waiting for confirmation...</span>
+</div>
+<!-- Secondary Actions -->
+<div class="flex flex-col gap-4 w-full">
+<button class="font-label-md text-label-md text-on-background border border-outline-variant/30 hover:border-outline-variant py-4 transition-colors uppercase tracking-widest w-full hover:bg-surface-container-low">Resend Package Payment Request</button>
+<button class="font-label-md text-label-md text-on-surface-variant hover:text-on-background transition-colors w-full py-2">Change Payment Phone Number</button>
+</div>
+</div>
+</main>
+<!-- Footer Area Badge -->
+<footer class="relative z-20 pb-8 flex justify-center w-full">
+<div class="flex items-center gap-2 text-outline bg-surface-container-lowest/80 px-4 py-2 backdrop-blur-sm border border-outline-variant/10">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-sm text-label-sm uppercase tracking-widest">Secured by InGallery Payments</span>
+</div>
+</footer>
+<script type="module">
+    import { createApiService, getApiBaseUrl } from '../app.ts';
+
+    const params = new URLSearchParams(window.location.search);
+    const transactionId = params.get('transactionId');
+    let pendingPayment = null;
+    try { pendingPayment = JSON.parse(sessionStorage.getItem('ingallery:pending-package-payment') || 'null'); } catch {}
+    const isPackagePayment = params.get('type') === 'package' || Boolean(pendingPayment?.orderReference && !params.has('galleryId') && !params.has('gallery'));
+    const orderReference = params.get('reference') || pendingPayment?.orderReference || '';
+    const packageName = params.get('package') || pendingPayment?.packageName || pendingPayment?.name || '';
+    const titleNode = document.querySelector('[data-order-title]');
+    const amountNode = document.querySelector('[data-order-amount]');
+    const statusNode = document.querySelector('[data-payment-status]');
+
+    const formatAmount = (amount, currency = 'TZS') => {
+        const formatted = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(amount ?? 0));
+        return `${currency} ${formatted}`;
+    };
+
+    const inferPaymentState = (payload) => {
+        const data = payload?.data ?? payload;
+        const statusValue = String(data?.status ?? data?.state ?? data?.paymentStatus ?? data?.payment_status ?? data?.transaction_status ?? payload?.status ?? '').toUpperCase();
+        if (['SUCCESS', 'PAID', 'COMPLETED', 'APPROVED'].includes(statusValue)) return 'SUCCESS';
+        if (['FAILED', 'DECLINED', 'CANCELLED', 'CANCELED', 'REJECTED'].includes(statusValue)) return 'FAILED';
+        return 'PENDING';
+    };
+
+    const updateSummary = () => {
+        if (titleNode) titleNode.textContent = packageName || 'Selected package';
+        const amount = params.get('amount') || pendingPayment?.amount;
+        const currency = params.get('currency') || pendingPayment?.currency || 'TZS';
+        if (amountNode) amountNode.textContent = amount == null ? 'Amount unavailable' : formatAmount(amount, currency);
+    };
+
+    if (statusNode) statusNode.textContent = 'Waiting for confirmation...';
+    updateSummary();
+
+    const pollPayment = async () => {
+        if (!transactionId && !orderReference) {
+            if (statusNode) statusNode.textContent = 'Missing payment reference for this package.';
+            return;
+        }
+
+        try {
+            const statusUrl = isPackagePayment
+                ? `${getApiBaseUrl()}/api/platform/payments/orders/${encodeURIComponent(orderReference)}/status`
+                : transactionId
+                    ? `${getApiBaseUrl()}/api/payments/malipo/status/${encodeURIComponent(transactionId)}`
+                    : `${getApiBaseUrl()}/api/payments/orders/${encodeURIComponent(orderReference)}/status`;
+            const response = await fetch(statusUrl);
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload.message || 'Unable to verify payment.');
+            const state = inferPaymentState(payload);
+
+            if (state === 'SUCCESS') {
+                if (isPackagePayment) {
+                    if (statusNode) statusNode.textContent = 'Package payment confirmed. Your plan is active.';
+                    try { sessionStorage.removeItem('ingallery:pending-package-payment'); } catch {}
+                    return;
+                }
+                const accessToken = payload?.data?.accessToken;
+                if (!accessToken) {
+                    if (statusNode) statusNode.textContent = 'Payment confirmed, but package access could not be issued. Contact support.';
+                    return;
+                }
+                if (statusNode) statusNode.textContent = 'Package payment confirmed.';
+                try { sessionStorage.removeItem('ingallery:pending-package-payment'); } catch {}
+                return;
+            }
+
+            if (state === 'FAILED' && statusNode) {
+                statusNode.textContent = isPackagePayment ? 'Package payment was not completed.' : 'Payment was not completed.';
+                return;
+            }
+
+            if (statusNode) statusNode.textContent = 'Waiting for confirmation...';
+            setTimeout(pollPayment, 5000);
+        } catch (error) {
+            console.warn('Unable to poll payment status', error);
+            if (statusNode) statusNode.textContent = 'Waiting for confirmation...';
+            setTimeout(pollPayment, 5000);
+        }
+    };
+
+    pollPayment();
+</script>
+<script src="../shared-nav.js?v=8"></script>
+</body></html>

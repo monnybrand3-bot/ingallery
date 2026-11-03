@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Subscription Plans - InGallery Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;family=Be+Vietnam+Pro:wght@400;500;700&amp;family=Noto+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed-dim": "#4edea3",
+                    "surface-container-lowest": "#0c0f0f",
+                    "on-primary-fixed-variant": "#474646",
+                    "error-container": "#93000a",
+                    "on-tertiary-container": "#008f62",
+                    "on-primary-container": "#7e7d7d",
+                    "tertiary": "#4edea3",
+                    "inverse-on-surface": "#2f3131",
+                    "secondary-fixed": "#ffe088",
+                    "on-secondary-container": "#342800",
+                    "tertiary-fixed": "#6ffbbe",
+                    "surface-dim": "#121414",
+                    "background": "#121414",
+                    "surface-bright": "#37393a",
+                    "surface": "#121414",
+                    "inverse-surface": "#e2e2e2",
+                    "secondary-fixed-dim": "#e9c349",
+                    "on-tertiary": "#003824",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#3c2f00",
+                    "primary-container": "#121212",
+                    "on-tertiary-fixed": "#002113",
+                    "surface-container-high": "#282a2b",
+                    "on-secondary-fixed": "#241a00",
+                    "tertiary-container": "#00160c",
+                    "on-tertiary-fixed-variant": "#005236",
+                    "surface-container-highest": "#333535",
+                    "primary": "#c8c6c5",
+                    "on-background": "#e2e2e2",
+                    "surface-container": "#1e2020",
+                    "outline-variant": "#444748",
+                    "surface-variant": "#333535",
+                    "secondary-container": "#af8d11",
+                    "primary-fixed-dim": "#c8c6c5",
+                    "surface-tint": "#c8c6c5",
+                    "inverse-primary": "#5f5e5e",
+                    "primary-fixed": "#e5e2e1",
+                    "secondary": "#e9c349",
+                    "on-primary-fixed": "#1c1b1b",
+                    "on-error": "#690005",
+                    "on-secondary-fixed-variant": "#574500",
+                    "surface-container-low": "#1a1c1c",
+                    "outline": "#8e9192",
+                    "on-surface": "#e2e2e2",
+                    "on-primary": "#313030",
+                    "error": "#ffb4ab",
+                    "on-surface-variant": "#c4c7c7"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Playfair Display"],
+                    "label-sm": ["Inter"],
+                    "headline-sm": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "headline-md": ["Playfair Display"],
+                    "label-md": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(30, 32, 32, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(142, 145, 146, 0.1);
+        }
+        .pricing-toggle-active {
+            box-shadow: 0 0 15px rgba(233, 195, 73, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md">
+<div class="relative flex min-h-screen w-full flex-col bg-background overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Shared Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-outline-variant px-10 py-3 bg-surface z-50 sticky top-0">
+<div class="flex items-center gap-4 text-on-surface">
+<div class="size-6 text-secondary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M4 4H17.3334V17.3334H30.6666V30.6666H44V44H4V4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-on-surface text-lg font-bold leading-tight tracking-tight font-headline-sm">InGallery</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="flex gap-2">
+<button class="flex cursor-pointer items-center justify-center rounded h-10 bg-surface-container-high text-on-surface px-2.5 transition-colors hover:bg-surface-container-highest">
+<div class="text-on-surface" data-icon="Bell" data-size="20px" data-weight="regular">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+</button>
+<button class="flex cursor-pointer items-center justify-center rounded h-10 bg-surface-container-high text-on-surface px-2.5 transition-colors hover:bg-surface-container-highest">
+<div class="text-on-surface" data-icon="Gear" data-size="20px" data-weight="regular">
+<span class="material-symbols-outlined">settings</span>
+</div>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-outline-variant" data-alt="A professional headshot of a minimalist photographer with soft, moody studio lighting, set against a dark grey textured background in a sleek UI design." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAzqT3hKeIE0EJ5aWiMBK3zEFSJoy9xxeFJtsVLM0B61zXXtceYNYFx2J3235BipGzNfVNspljtn65u0BmO1qJPqRLXLco8p7Xd2WL_nSJutyY5pQSuXuSkf-5wD6rAWFDfngM2SZQoq-dpoB1AmP6lhjCsFvBHhUN8YlWEGHellGqKmHONSyJhehCdVLkdK8JyvRvWHuMX05iuocxLQBj7sdsM3giF3PLeZiJKftiooflv_GN7ShUJGg");'></div>
+</div>
+</header>
+<div class="flex flex-1">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-outline-variant bg-surface flex flex-col p-4 shrink-0 hidden lg:flex">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col mb-4">
+<h1 data-studio-brand class="text-on-surface text-base font-medium leading-normal">Studio</h1>
+<p class="text-on-surface-variant text-sm font-normal" data-plan-name>Loading plan...</p>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-all" href="#">
+<div data-icon="Image"><span class="material-symbols-outlined">image</span></div>
+<span class="text-sm font-medium">Galleries</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-all" href="#">
+<div data-icon="Users"><span class="material-symbols-outlined">group</span></div>
+<span class="text-sm font-medium">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-all" href="#">
+<div data-icon="ChartPie"><span class="material-symbols-outlined">pie_chart</span></div>
+<span class="text-sm font-medium">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-secondary-container text-on-secondary-container rounded-lg" href="#">
+<div data-icon="HardDrive" data-weight="fill"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storage</span></div>
+<span class="text-sm font-bold">Storage &amp; Plan</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-lg transition-all" href="#">
+<div data-icon="Settings"><span class="material-symbols-outlined">settings_suggest</span></div>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-4 bg-surface-container-low rounded-xl border border-outline-variant">
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-semibold text-on-surface-variant">STORAGE USED</span>
+<span class="text-xs font-bold text-on-surface" data-plan-storage-percent>—</span>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+<div class="bg-secondary h-full w-0" data-plan-storage-bar></div>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-2" data-plan-storage-used>Loading storage...</p>
+</div>
+</aside>
+<!-- Main Content Container -->
+<main class="flex-1 flex flex-col relative">
+<!-- Background Decorative Element -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-20 overflow-hidden">
+<webgl-shader class="w-full h-full" src="{{DATA:ANIMATION:ANIMATION_1}}"></webgl-shader>
+</div>
+<div class="relative z-10 flex flex-col gap-8 p-6 lg:p-12 max-w-[1200px] mx-auto w-full">
+<!-- Header Section -->
+<div class="flex flex-col gap-4 text-center items-center">
+<span class="px-4 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold tracking-widest uppercase">Pricing &amp; Plans</span>
+<h1 class="text-on-surface font-headline-lg text-4xl lg:text-6xl tracking-tight max-w-2xl leading-tight">Elevate Your Studio's Capacity</h1>
+<p class="text-on-surface-variant text-body-lg max-w-xl">Scale your creative vision with storage and sharing tools built for professional photographers.</p>
+</div>
+<!-- Billing Toggle -->
+<div class="hidden flex justify-center items-center gap-4">
+<span class="text-sm font-medium text-on-surface" id="label-monthly">Monthly</span>
+<button class="relative w-14 h-7 rounded-full bg-surface-container-highest p-1 transition-all" id="billing-toggle">
+<div class="h-5 w-5 rounded-full bg-secondary shadow-lg transform transition-transform translate-x-7" id="toggle-circle"></div>
+</button>
+<div id="billing-toggle-container" class="flex items-center gap-2">
+<span class="text-sm font-bold text-secondary" id="label-yearly">Yearly</span>
+
+</div>
+</div>
+<div id="yearly-hero" class="hidden flex flex-col items-center justify-center py-12 text-center transition-all duration-500">
+    <h2 class="text-headline-md font-headline-md text-secondary text-4xl lg:text-6xl font-bold mb-4">Pay Yearly, Get 2 Months Free!</h2>
+    <p class="text-on-surface-variant text-lg max-w-2xl mx-auto">The smartest way to scale your studio and save more on your subscription.</p>
+</div>
+
+<!-- Pricing Grid -->
+<div id="pricing-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+        <div class="glass-card rounded-2xl p-8 flex flex-col relative overflow-hidden group transition-all duration-300 hover:border-secondary/40 hover:bg-white/[0.05]">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex flex-col">
+                    <h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">Starter</h3>
+                    <p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Monthly Plan</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-headline-md font-headline-md text-secondary">TSh 15,000</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4 mb-8">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Storage</span>
+                    <span class="text-on-surface font-medium">20 GB</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Active galleries</span>
+                    <span class="text-on-surface font-medium">10</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Photos per gallery</span>
+                    <span class="text-on-surface font-medium">1,000</span>
+                </div>
+            </div>
+            <div class="mb-8">
+                <p class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-3">Features</p>
+                <ul class="flex flex-col gap-2"><li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Original-quality downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client payment/unlock</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ QR gallery links</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery expiration</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ InGallery branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Custom branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Custom domain</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client favorites/selection</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery password</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Email notifications</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Analytics</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Bulk upload</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Priority support</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Team management</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Agency dashboard</li>
+</ul>
+            </div>
+            <div class="mt-auto pt-6 border-t border-white/10">
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Team members</span>
+                    <span class="text-on-surface font-medium">1</span>
+                </div>
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Watermarks</span>
+                    <span class="text-on-surface font-medium">Basic</span>
+                </div>
+                <div class="flex justify-between text-sm mb-6">
+                    <span class="text-on-surface-variant">Support</span>
+                    <span class="text-on-surface font-medium">Standard</span>
+                </div>
+<a href="/subscription_checkout/code.html?plan=Starter" class="block w-full text-center bg-secondary text-on-secondary py-3 rounded-lg font-label-md font-bold hover:opacity-90 transition-opacity">Choose Starter</a>
+            </div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-8 flex flex-col relative overflow-hidden group transition-all duration-300 hover:border-secondary/40 hover:bg-white/[0.05]">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex flex-col">
+                    <h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">Professional</h3>
+                    <p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Monthly Plan</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-headline-md font-headline-md text-secondary">TSh 35,000</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4 mb-8">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Storage</span>
+                    <span class="text-on-surface font-medium">100 GB</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Active galleries</span>
+                    <span class="text-on-surface font-medium">50</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Photos per gallery</span>
+                    <span class="text-on-surface font-medium">3,000</span>
+                </div>
+            </div>
+            <div class="mb-8">
+                <p class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-3">Features</p>
+                <ul class="flex flex-col gap-2"><li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Original-quality downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client payment/unlock</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ QR gallery links</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery expiration</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ InGallery branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Custom branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Custom domain</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client favorites/selection</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery password</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Email notifications</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Analytics</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Bulk upload</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Priority support</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Team management</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Agency dashboard</li>
+</ul>
+            </div>
+            <div class="mt-auto pt-6 border-t border-white/10">
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Team members</span>
+                    <span class="text-on-surface font-medium">1</span>
+                </div>
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Watermarks</span>
+                    <span class="text-on-surface font-medium">Advanced</span>
+                </div>
+                <div class="flex justify-between text-sm mb-6">
+                    <span class="text-on-surface-variant">Support</span>
+                    <span class="text-on-surface font-medium">Standard</span>
+                </div>
+<a href="/subscription_checkout/code.html?plan=Professional" class="block w-full text-center bg-secondary text-on-secondary py-3 rounded-lg font-label-md font-bold hover:opacity-90 transition-opacity">Choose Professional</a>
+            </div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-8 flex flex-col relative overflow-hidden group transition-all duration-300 hover:border-secondary/40 hover:bg-white/[0.05]">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex flex-col">
+                    <h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">Studio</h3>
+                    <p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Monthly Plan</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-headline-md font-headline-md text-secondary">TSh 75,000</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4 mb-8">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Storage</span>
+                    <span class="text-on-surface font-medium">500 GB</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Active galleries</span>
+                    <span class="text-on-surface font-medium">200</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Photos per gallery</span>
+                    <span class="text-on-surface font-medium">10,000</span>
+                </div>
+            </div>
+            <div class="mb-8">
+                <p class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-3">Features</p>
+                <ul class="flex flex-col gap-2"><li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Original-quality downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client payment/unlock</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ QR gallery links</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery expiration</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ InGallery branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Custom branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Custom domain</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client favorites/selection</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery password</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Email notifications</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Analytics</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Bulk upload</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Priority support</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Team management</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">— Agency dashboard</li>
+</ul>
+            </div>
+            <div class="mt-auto pt-6 border-t border-white/10">
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Team members</span>
+                    <span class="text-on-surface font-medium">3</span>
+                </div>
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Watermarks</span>
+                    <span class="text-on-surface font-medium">Advanced</span>
+                </div>
+                <div class="flex justify-between text-sm mb-6">
+                    <span class="text-on-surface-variant">Support</span>
+                    <span class="text-on-surface font-medium">Priority</span>
+                </div>
+<a href="/subscription_checkout/code.html?plan=Studio" class="block w-full text-center bg-secondary text-on-secondary py-3 rounded-lg font-label-md font-bold hover:opacity-90 transition-opacity">Choose Studio</a>
+            </div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-8 flex flex-col relative overflow-hidden group transition-all duration-300 hover:border-secondary/40 hover:bg-white/[0.05]">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex flex-col">
+                    <h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">Agency</h3>
+                    <p class="text-label-sm text-on-surface-variant uppercase tracking-widest">Monthly Plan</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-headline-md font-headline-md text-secondary">TSh 120,000</span>
+                </div>
+            </div>
+            <div class="flex flex-col gap-4 mb-8">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Storage</span>
+                    <span class="text-on-surface font-medium">1 TB</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Active galleries</span>
+                    <span class="text-on-surface font-medium">Unlimited</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-on-surface-variant">Photos per gallery</span>
+                    <span class="text-on-surface font-medium">20,000</span>
+                </div>
+            </div>
+            <div class="mb-8">
+                <p class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-3">Features</p>
+                <ul class="flex flex-col gap-2"><li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Original-quality downloads</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client payment/unlock</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ QR gallery links</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery expiration</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ InGallery branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Custom branding</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Custom domain</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Client favorites/selection</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Gallery password</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Email notifications</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Analytics</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Bulk upload</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Priority support</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Team management</li>
+<li class="flex items-center gap-2 text-sm text-on-surface-variant">✓ Agency dashboard</li>
+</ul>
+            </div>
+            <div class="mt-auto pt-6 border-t border-white/10">
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Team members</span>
+                    <span class="text-on-surface font-medium">10</span>
+                </div>
+                <div class="flex justify-between text-sm mb-4">
+                    <span class="text-on-surface-variant">Watermarks</span>
+                    <span class="text-on-surface font-medium">Advanced</span>
+                </div>
+                <div class="flex justify-between text-sm mb-6">
+                    <span class="text-on-surface-variant">Support</span>
+                    <span class="text-on-surface font-medium">Priority</span>
+                </div>
+<a href="/subscription_checkout/code.html?plan=Agency" class="block w-full text-center bg-secondary text-on-secondary py-3 rounded-lg font-label-md font-bold hover:opacity-90 transition-opacity">Choose Agency</a>
+            </div>
+        </div>
+        </div>
+<!-- FAQ Section -->
+<div class="mt-16 flex flex-col gap-8">
+<div class="flex flex-col gap-2">
+<h2 class="text-on-surface font-headline-sm text-3xl">Common Questions</h2>
+<p class="text-on-surface-variant">Everything you need to know about InGallery billing.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+<div class="flex flex-col gap-2 group">
+<h4 class="text-on-surface font-bold text-lg flex items-center gap-2 group-hover:text-secondary transition-colors">
+                                    Can I change my plan at any time?
+                                    <span class="material-symbols-outlined text-sm">arrow_outward</span>
+</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">Yes, you can upgrade or downgrade your plan at any point. If you upgrade, the new features will be available immediately and charges will be prorated.</p>
+</div>
+<div class="flex flex-col gap-2 group">
+<h4 class="text-on-surface font-bold text-lg flex items-center gap-2 group-hover:text-secondary transition-colors">
+                                    What happens if I exceed my storage?
+                                    <span class="material-symbols-outlined text-sm">arrow_outward</span>
+</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">We'll notify you when you reach 90% capacity. If you exceed it, you'll still be able to share existing galleries, but new uploads will be paused until you upgrade.</p>
+</div>
+<div class="flex flex-col gap-2 group">
+<h4 class="text-on-surface font-bold text-lg flex items-center gap-2 group-hover:text-secondary transition-colors">
+                                    Are there any hidden transaction fees?
+                                    <span class="material-symbols-outlined text-sm">arrow_outward</span>
+</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">InGallery does not charge commission on your sales. Standard Stripe processing fees apply if you use our integrated client print store.</p>
+</div>
+<div class="flex flex-col gap-2 group">
+<h4 class="text-on-surface font-bold text-lg flex items-center gap-2 group-hover:text-secondary transition-colors">
+                                    How secure is my data?
+                                    <span class="material-symbols-outlined text-sm">arrow_outward</span>
+</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">We use AES-256 encryption for all stored files and high-availability server clusters to ensure your portfolio is always safe and accessible.</p>
+</div>
+</div>
+</div>
+<!-- Footer Decorative -->
+<div class="mt-12 py-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center text-on-surface-variant text-[12px] uppercase tracking-widest gap-4">
+<div class="flex gap-8">
+<a class="hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-on-surface transition-colors" href="#">Cookie Settings</a>
+</div>
+<div>© 2024 InGallery Digital Solutions</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+<script type="module">
+    import { createApiService, getApiBaseUrl } from '../app.ts';
+
+    const setText = (selector, value) => {
+        const node = document.querySelector(selector);
+        if (node) node.textContent = value;
+    };
+
+    const renderPublicPlans = async () => {
+        const response = await fetch(`${getApiBaseUrl()}/api/public/plans`, { cache: 'no-store' });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.message || 'Unable to load packages.');
+        const uniquePlans = [...new Map(payload.data.map((plan) => [plan.name.toLowerCase(), plan])).values()];
+        const grid = document.querySelector('#pricing-grid');
+        if (!grid) return;
+        grid.innerHTML = uniquePlans.map((plan) => {
+            const storageGB = Number(plan.storage_limit_bytes) / (1024 ** 3);
+            const price = `${plan.currency} ${Number(plan.price).toLocaleString('en-US')}`;
+            const period = plan.billing_interval === 'year' ? 'per year' : plan.billing_interval === 'month' ? 'per month' : 'one-time';
+            const featureLabels = { clientDownloads: 'Client downloads', originalQualityDownloads: 'Original quality downloads', clientPaymentUnlock: 'Client payment and unlock', qrGalleryLinks: 'QR gallery links', galleryExpiration: 'Gallery expiration', ingalleryBranding: 'InGallery branding', customBranding: 'Custom branding', customDomain: 'Custom domain', clientFavorites: 'Client favorites and selection', galleryPassword: 'Gallery password', emailNotifications: 'Email notifications', analytics: 'Analytics', bulkUpload: 'Bulk upload', prioritySupport: 'Priority support', teamManagement: 'Team management', agencyDashboard: 'Agency dashboard' };
+            const includedFeatures = Object.entries(plan.features || {}).filter(([, included]) => included).map(([key]) => featureLabels[key]).filter(Boolean);
+            const galleryLimit = Number(plan.max_projects) === 0 ? 'Unlimited' : Number(plan.max_projects).toLocaleString('en-US');
+            const photoLimit = Number(plan.max_photos_per_gallery || 0) === 0 ? 'Unlimited' : Number(plan.max_photos_per_gallery).toLocaleString('en-US');
+            const watermarkLabel = plan.watermark_level === 'advanced' ? 'Advanced' : 'Basic';
+            const supportLabel = plan.support_level === 'priority' ? 'Priority' : 'Standard';
+            return `<article class="glass-card rounded-2xl p-8 flex flex-col border border-white/10 transition-all hover:border-secondary/40">
+                <div class="mb-6"><h3 class="text-headline-sm font-headline-sm text-on-surface">${String(plan.name).replace(/[&<>"']/g, '')}</h3><p class="mt-2 text-xs uppercase tracking-widest text-on-surface-variant">Studio package</p></div>
+                <div class="mb-6"><span class="text-headline-md font-headline-md text-secondary">${price}</span><span class="ml-2 text-sm text-on-surface-variant">${period}</span></div>
+                <ul class="mb-8 flex flex-col gap-4 text-sm"><li class="flex justify-between"><span class="text-on-surface-variant">Storage</span><span>${storageGB >= 1024 ? `${(storageGB / 1024).toLocaleString('en-US')} TB` : `${storageGB.toLocaleString('en-US', { maximumFractionDigits: 0 })} GB`}</span></li><li class="flex justify-between"><span class="text-on-surface-variant">Active galleries</span><span>${galleryLimit}</span></li><li class="flex justify-between"><span class="text-on-surface-variant">Photos per gallery</span><span>${photoLimit}</span></li><li class="flex justify-between"><span class="text-on-surface-variant">Team members</span><span>${Number(plan.max_users).toLocaleString('en-US')}</span></li><li class="flex justify-between"><span class="text-on-surface-variant">Watermarks</span><span>${watermarkLabel}</span></li><li class="flex justify-between"><span class="text-on-surface-variant">Support</span><span>${supportLabel}</span></li>${includedFeatures.map((feature) => `<li class="flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-base">check_circle</span><span>${feature}</span></li>`).join('')}</ul>
+                <a href="/subscription_checkout/code.html?plan=${encodeURIComponent(plan.name)}" class="mt-auto block w-full bg-secondary py-3 text-center font-label-md font-bold text-on-secondary hover:opacity-90">Choose ${String(plan.name).replace(/[&<>"']/g, '')}</a>
+            </article>`;
+        }).join('') || '<p class="text-on-surface-variant">No packages are available right now.</p>';
+    };
+
+    renderPublicPlans().catch((error) => {
+        const grid = document.querySelector('#pricing-grid');
+        if (grid) grid.innerHTML = `<p class="text-error">${error instanceof Error ? error.message : 'Unable to load packages.'}</p>`;
+    });
+
+    try {
+        const response = await createApiService(getApiBaseUrl()).getStorage();
+        const storage = response.data;
+        const percent = storage.effectiveLimitBytes ? Math.min(100, Math.round(storage.totalUsedBytes / storage.effectiveLimitBytes * 100)) : 0;
+        setText('[data-plan-name]', storage.planName);
+        setText('[data-plan-storage-percent]', `${percent}%`);
+        setText('[data-plan-storage-used]', `${storage.usedDisplay} of ${storage.limitDisplay} used`);
+        document.querySelector('[data-plan-storage-bar]')?.setAttribute('style', `width: ${percent}%`);
+    } catch {
+        setText('[data-plan-name]', 'Plan unavailable');
+        setText('[data-plan-storage-percent]', '—');
+        setText('[data-plan-storage-used]', 'Storage usage unavailable');
+    }
+</script>
+<script src="../shared-nav.js?v=8"></script>
+</body></html>

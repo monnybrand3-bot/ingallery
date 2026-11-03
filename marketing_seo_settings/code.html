@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Studio Settings - InGallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "on-primary-fixed-variant": "#474646",
+                        "tertiary-container": "#00160c",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "secondary-fixed": "#ffe088",
+                        "on-tertiary": "#003824",
+                        "surface": "#121414",
+                        "on-secondary-fixed-variant": "#574500",
+                        "primary-container": "#121212",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "inverse-on-surface": "#2f3131",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#af8d11",
+                        "outline": "#8e9192",
+                        "surface-variant": "#333535",
+                        "on-secondary-container": "#342800",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-primary": "#313030",
+                        "primary-fixed": "#e5e2e1",
+                        "secondary": "#e9c349",
+                        "surface-container-high": "#282a2b",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "surface-tint": "#c8c6c5",
+                        "on-primary-container": "#7e7d7d",
+                        "error-container": "#93000a",
+                        "on-secondary-fixed": "#241a00",
+                        "tertiary": "#4edea3",
+                        "surface-container-lowest": "#0c0f0f",
+                        "error": "#ffb4ab",
+                        "on-secondary": "#3c2f00",
+                        "on-primary-fixed": "#1c1b1b",
+                        "on-tertiary-fixed": "#002113",
+                        "on-surface": "#e2e2e2",
+                        "on-surface-variant": "#c4c7c7",
+                        "outline-variant": "#444748",
+                        "inverse-surface": "#e2e2e2",
+                        "on-background": "#e2e2e2",
+                        "surface-container-highest": "#333535",
+                        "surface-container": "#1e2020",
+                        "surface-bright": "#37393a",
+                        "on-tertiary-container": "#008f62",
+                        "background": "#121414",
+                        "inverse-primary": "#5f5e5e",
+                        "surface-container-low": "#1a1c1c",
+                        "primary": "#c8c6c5",
+                        "surface-dim": "#121414",
+                        "secondary-fixed-dim": "#e9c349"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "element-gap": "16px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px",
+                        "container-max": "1440px",
+                        "section-gap": "120px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Playfair Display"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "label-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "600" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .glass-panel {
+            background: rgba(18, 20, 20, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .minimal-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 0;
+            color: theme('colors.on-surface');
+            transition: border-color 0.3s ease;
+        }
+
+        .minimal-input:focus {
+            outline: none;
+            border-bottom-color: theme('colors.secondary');
+            box-shadow: none;
+        }
+        
+        .minimal-input::placeholder {
+            color: theme('colors.outline');
+        }
+
+        /* Custom Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: theme('colors.secondary');
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: theme('colors.secondary');
+        }
+        .toggle-checkbox:checked + .toggle-label:after {
+            transform: translateX(100%);
+            border-color: white;
+        }
+        .toggle-label {
+            width: 44px;
+            height: 24px;
+            background-color: theme('colors.surface-variant');
+            border-radius: 9999px;
+            position: relative;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .toggle-label:after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.background');
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.surface-variant');
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline');
+        }
+    </style>
+</head>
+<body class="flex min-h-screen font-body-md">
+<!-- SideNavBar (Shared Component) -->
+<nav class="bg-surface-container-low dark:bg-tertiary-container h-screen w-64 fixed left-0 top-0 border-r border-outline-variant/20 hidden md:flex flex-col py-8 px-4 z-40">
+<!-- Header -->
+<div class="mb-12 px-4 flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden">
+<img alt="Photographer Profile" class="w-full h-full object-cover" data-alt="A close up, high end professional headshot of a photographer in a modern studio. Minimalist dark aesthetic with soft rim lighting. The subject is wearing dark clothing." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASX2L3mAsLWp7SVhUU7hzzsRa39pge2JXbHXJgM0Oih48qQWx3AZP0b4d9SkRZR2Hfnne-6GTdQMn7cjTE_dhclcAOjKg43fgkEkof6vxx04cwIZlZ0njBLNKAtT_pofHwsOAewVF_hcse2R_y9YHuMo48RIV7QslojH3Sw_yMbShCk-uTUFO_81YOcB6pjy1XL0jcQpnJBpNHWDkhQ7nDZxSPschdPTgl1LGtDpWoW2sBJke8EMnPzg"/>
+</div>
+<div>
+<h2 class="text-headline-sm font-headline-sm text-primary m-0 p-0 line-clamp-1">Studio Admin</h2>
+<p class="text-label-sm font-label-sm text-outline m-0 p-0">Premium Plan</p>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex flex-col gap-2 flex-grow">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="photo_library">photo_library</span>
+<span class="text-label-md font-label-md">Galleries</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="text-label-md font-label-md">Clients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="text-label-md font-label-md">Orders</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="cloud_queue">cloud_queue</span>
+<span class="text-label-md font-label-md">Storage</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary/10 text-secondary border-r-4 border-secondary translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</div>
+<!-- Footer Actions -->
+<div class="mt-auto flex flex-col gap-4 pt-8">
+<button class="w-full py-3 bg-secondary text-on-secondary rounded-DEFAULT text-label-md font-label-md tracking-[0.05em] hover:opacity-90 transition-opacity">Upload New Gallery</button>
+<div class="flex flex-col gap-2 mt-4 border-t border-outline-variant/20 pt-4">
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+<span class="text-label-md font-label-md">Help</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="text-label-md font-label-md">Sign Out</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 relative min-h-screen flex flex-col">
+<!-- TopNavBar (Contextual for Settings) -->
+<header class="bg-surface/80 backdrop-blur-xl dark:bg-surface-container-lowest/80 border-b border-white/10 sticky top-0 z-30 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20">
+<div class="flex items-center gap-4">
+<!-- Mobile Menu Button -->
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="text-headline-md font-headline-md md:text-headline-md text-headline-lg-mobile text-on-surface m-0">Studio Settings</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-6 py-2 border border-white/20 text-on-surface rounded-DEFAULT text-label-md font-label-md hover:bg-white/5 transition-colors tracking-[0.05em]" data-settings-discard type="button">Discard Changes</button>
+<button class="px-6 py-2 bg-secondary text-on-secondary rounded-DEFAULT text-label-md font-label-md hover:opacity-90 transition-opacity tracking-[0.05em]" data-settings-save type="submit" form="studio-settings-form">Save Settings</button>
+</div>
+</header>
+<!-- Settings Content -->
+<div class="p-margin-mobile md:p-margin-desktop flex-grow max-w-container-max mx-auto w-full pb-section-gap">
+<form id="studio-settings-form" class="grid grid-cols-1 lg:grid-cols-12 gap-gutter" novalidate>
+<section class="glass-panel rounded-xl p-6 md:p-8 lg:col-span-8" aria-labelledby="profile-heading">
+<div class="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+<span class="material-symbols-outlined text-secondary" aria-hidden="true">storefront</span>
+<div>
+<h2 id="profile-heading" class="text-headline-sm font-headline-sm text-on-surface m-0">Studio profile</h2>
+<p class="mt-1 text-sm text-on-surface-variant">Manage the identity and contact details shown to your clients.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+<div class="flex flex-col gap-2">
+<label class="text-label-md font-label-md text-outline" for="display-name">Your name</label>
+<input class="minimal-input text-body-md font-body-md w-full" id="display-name" name="displayName" autocomplete="name" maxlength="120" required />
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-md font-label-md text-outline" for="studio-name">Studio name</label>
+<input class="minimal-input text-body-md font-body-md w-full" id="studio-name" name="studioName" autocomplete="organization" maxlength="120" required />
+</div>
+<div class="flex flex-col gap-2">
+<label class="text-label-md font-label-md text-outline" for="billing-email">Billing email</label>
+<input class="minimal-input text-body-md font-body-md w-full" id="billing-email" name="billingEmail" type="email" autocomplete="email" />
+<span class="text-xs text-outline">Optional. Used for account and billing contact.</span>
+</div>
+<div class="flex flex-col gap-3">
+<span class="text-label-md font-label-md text-outline">Studio logo</span>
+<div class="flex flex-wrap items-center gap-3">
+<label for="studio-logo-file" class="inline-flex cursor-pointer items-center gap-2 border border-outline-variant/40 px-4 py-3 text-sm text-on-surface transition-colors hover:border-secondary hover:text-secondary">
+<span class="material-symbols-outlined" aria-hidden="true">upload</span>
+Choose logo
+</label>
+<input id="studio-logo-file" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" />
+<button type="button" data-remove-studio-logo class="hidden inline-flex items-center gap-2 px-3 py-3 text-sm text-error hover:text-on-error-container">
+<span class="material-symbols-outlined" aria-hidden="true">delete</span>
+Remove logo
+</button>
+</div>
+<span class="text-xs text-outline">JPG, PNG, or WEBP. Maximum 5 MB.</span>
+<span data-logo-status class="min-h-5 text-sm text-on-surface-variant" role="status" aria-live="polite"></span>
+</div>
+</div>
+<p class="mt-6 min-h-5 text-sm" data-settings-status role="status" aria-live="polite"></p>
+</section>
+<section class="glass-panel rounded-xl p-6 md:p-8 lg:col-span-8" aria-labelledby="payment-provider-heading">
+<div class="mb-6 flex items-center gap-3 border-b border-white/10 pb-4">
+    <span class="material-symbols-outlined text-secondary" aria-hidden="true">account_balance</span>
+    <div>
+        <h2 id="payment-provider-heading" class="text-headline-sm font-headline-sm text-on-surface m-0">Payment provider</h2>
+        <p class="mt-1 text-sm text-on-surface-variant">Connect your own merchant account to receive gallery payments directly.</p>
+    </div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+    <div class="flex flex-col gap-2">
+        <label class="text-label-md font-label-md text-outline" for="payment-provider">Provider</label>
+        <select class="minimal-input text-body-md font-body-md w-full" id="payment-provider">
+            <option value="clickpesa">ClickPesa</option>
+            <option value="malipo">Malipo by Tunzaa</option>
+            <option value="stakaba">Stakaba</option>
+        </select>
+    </div>
+    <div class="hidden flex-col gap-2" data-payment-environment-field>
+        <label class="text-label-md font-label-md text-outline" for="payment-environment">Provider environment</label>
+        <select class="minimal-input text-body-md font-body-md w-full" id="payment-environment">
+            <option value="sandbox">Sandbox</option>
+            <option value="production">Production</option>
+        </select>
+    </div>
+    <div class="flex flex-col gap-2" data-clickpesa-client-field>
+        <label class="text-label-md font-label-md text-outline" for="clickpesa-client-id">ClickPesa client ID</label>
+        <input class="minimal-input text-body-md font-body-md w-full" id="clickpesa-client-id" type="password" autocomplete="new-password" spellcheck="false" maxlength="500" placeholder="Enter merchant client ID" data-payment-credential />
+    </div>
+    <div class="flex flex-col gap-2" data-clickpesa-key-field>
+        <label class="text-label-md font-label-md text-outline" for="clickpesa-api-key">ClickPesa API key</label>
+        <input class="minimal-input text-body-md font-body-md w-full" id="clickpesa-api-key" type="password" autocomplete="new-password" spellcheck="false" maxlength="500" placeholder="Enter merchant API key" data-payment-credential />
+    </div>
+    <div class="flex flex-col gap-2" data-clickpesa-checksum-field>
+        <label class="text-label-md font-label-md text-outline" for="clickpesa-checksum-key">ClickPesa checksum key</label>
+        <input class="minimal-input text-body-md font-body-md w-full" id="clickpesa-checksum-key" type="password" autocomplete="new-password" spellcheck="false" maxlength="500" placeholder="If enabled: Developers &rarr; Encryption" data-payment-credential />
+        <span class="text-xs text-outline">Required when checksum validation is enabled for your ClickPesa application.</span>
+    </div>
+    <div class="hidden flex-col gap-2" data-malipo-key-field>
+        <label class="text-label-md font-label-md text-outline" for="malipo-api-key">Malipo API key</label>
+        <input class="minimal-input text-body-md font-body-md w-full" id="malipo-api-key" type="password" autocomplete="new-password" spellcheck="false" maxlength="500" placeholder="Enter merchant API key" data-payment-credential />
+    </div>
+    <div class="hidden flex-col gap-2" data-malipo-secret-field>
+        <label class="text-label-md font-label-md text-outline" for="malipo-secret-key">Malipo secret key</label>
+        <input class="minimal-input text-body-md font-body-md w-full" id="malipo-secret-key" type="password" autocomplete="new-password" spellcheck="false" maxlength="500" placeholder="Enter merchant secret key" data-payment-credential />
+    </div>
+    <div class="hidden flex-col gap-2" data-stakaba-key-field>
+        <label class="text-label-md font-label-md text-outline" for="stakaba-api-key">Stakaba API key</label>
+        <input class="minimal-input text-body-md font-body-md w-full" id="stakaba-api-key" type="password" autocomplete="new-password" spellcheck="false" maxlength="500" placeholder="Enter sandbox or live API key" data-payment-credential />
+    </div>
+</div>
+<div class="mt-6 p-4 rounded-xl bg-white/5 border border-white/10">
+    <h3 class="text-xs uppercase tracking-widest text-outline mb-4 flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">list_alt</span>
+        Configured Providers
+    </h3>
+    <div id="configured-providers-list" class="flex flex-col gap-2">
+        <p class="text-sm text-on-surface-variant italic">No providers configured yet.</p>
+    </div>
+</div>
+<p class="mt-5 text-sm text-on-surface-variant">Credentials are encrypted and never shown after saving. When your merchant account is configured for direct settlement, InGallery does not receive or hold customer payments.</p>
+<p class="mt-3 min-h-5 text-sm text-on-surface-variant" data-payment-settings-status role="status" aria-live="polite">Loading payment settings...</p>
+<div class="mt-4 flex flex-wrap items-center gap-3">
+    <button class="inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-label-md font-label-md text-on-surface transition-colors hover:border-tertiary hover:text-tertiary disabled:cursor-not-allowed disabled:opacity-50" data-payment-settings-test type="button" disabled><span class="material-symbols-outlined" aria-hidden="true">network_check</span>Test connection</button>
+    <button class="inline-flex items-center gap-2 bg-secondary px-5 py-3 text-label-md font-label-md text-on-secondary transition-opacity hover:opacity-90" data-payment-settings-save type="button"><span class="material-symbols-outlined" aria-hidden="true">lock</span>Save provider</button>
+    <button class="inline-flex items-center gap-2 border border-white/20 px-5 py-3 text-label-md font-label-md text-on-surface transition-colors hover:border-error hover:text-error" data-payment-settings-disconnect type="button"><span class="material-symbols-outlined" aria-hidden="true">link_off</span>Disconnect</button>
+</div>
+</section>
+<aside class="glass-panel rounded-xl p-6 lg:col-span-4" aria-labelledby="preview-heading">
+<h2 id="preview-heading" class="text-label-md font-label-md text-outline mb-5 uppercase tracking-widest">Brand preview</h2>
+<div class="flex items-center gap-4 border-b border-white/10 pb-5">
+<div class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden bg-surface-container-high text-secondary">
+<img class="hidden h-full w-full object-cover" data-studio-logo alt="Studio logo preview" />
+<span class="material-symbols-outlined text-3xl" data-studio-logo-fallback aria-hidden="true">photo_camera</span>
+</div>
+<div class="min-w-0">
+<p class="text-xs uppercase tracking-widest text-outline">Photography studio</p>
+<h3 class="mt-1 truncate text-lg font-semibold text-on-surface" data-studio-name-preview>Studio name</h3>
+</div>
+</div>
+<div class="pt-5">
+<p class="text-xs uppercase tracking-widest text-outline">Studio contact</p>
+<p class="mt-2 break-words text-sm text-on-surface-variant" data-display-name-preview>Your name</p>
+<p class="mt-1 break-words text-sm text-on-surface-variant" data-billing-email-preview>No billing email added</p>
+</div>
+</aside>
+</form>
+</div>
+</main>
+<script src="../shared-nav.js?v=8"></script>
+<script type="module">
+    import { createApiService, getApiBaseUrl } from '../app.ts';
+
+    const api = createApiService(getApiBaseUrl());
+    const form = document.getElementById('studio-settings-form');
+    const saveButton = document.querySelector('[data-settings-save]');
+    const discardButton = document.querySelector('[data-settings-discard]');
+    const status = document.querySelector('[data-settings-status]');
+    const fields = {
+        displayName: document.getElementById('display-name'),
+        studioName: document.getElementById('studio-name'),
+        billingEmail: document.getElementById('billing-email'),
+    };
+    const logoFileInput = document.getElementById('studio-logo-file');
+    const logoStatus = document.querySelector('[data-logo-status]');
+    const removeLogoButton = document.querySelector('[data-remove-studio-logo]');
+    const studioNamePreview = document.querySelector('[data-studio-name-preview]');
+    const displayNamePreview = document.querySelector('[data-display-name-preview]');
+    const billingEmailPreview = document.querySelector('[data-billing-email-preview]');
+    const logoPreview = document.querySelector('[data-studio-logo]');
+    const logoFallback = document.querySelector('[data-studio-logo-fallback]');
+    const paymentProvider = document.getElementById('payment-provider');
+    const paymentEnvironment = document.getElementById('payment-environment');
+    const paymentStatus = document.querySelector('[data-payment-settings-status]');
+    const paymentSaveButton = document.querySelector('[data-payment-settings-save]');
+    const paymentTestButton = document.querySelector('[data-payment-settings-test]');
+    const paymentDisconnectButton = document.querySelector('[data-payment-settings-disconnect]');
+    let savedPaymentSettings = { provider: null, environment: 'production', configured: false };
+    let savedValues = null;
+    let logoUrl = '';
+    let profileData = null;
+    let localLogoPreviewUrl = null;
+
+    const updatePaymentProviderFields = () => {
+        const isMalipo = paymentProvider.value === 'malipo';
+        const isStakaba = paymentProvider.value === 'stakaba';
+        const isClickPesa = !isMalipo && !isStakaba;
+        document.querySelector('[data-payment-environment-field]').classList.toggle('hidden', isClickPesa);
+        document.querySelector('[data-clickpesa-client-field]').classList.toggle('hidden', !isClickPesa);
+        document.querySelector('[data-clickpesa-key-field]').classList.toggle('hidden', !isClickPesa);
+        document.querySelector('[data-clickpesa-checksum-field]').classList.toggle('hidden', !isClickPesa);
+        document.querySelector('[data-malipo-key-field]').classList.toggle('hidden', !isMalipo);
+        document.querySelector('[data-malipo-secret-field]').classList.toggle('hidden', !isMalipo);
+        document.querySelector('[data-stakaba-key-field]').classList.toggle('hidden', !isStakaba);
+    };
+
+    const providerLabel = (provider) => provider === 'clickpesa' ? 'ClickPesa' : provider === 'malipo' ? 'Malipo by Tunzaa' : 'Stakaba';
+
+    const loadPaymentSettings = async () => {
+        try {
+            const response = await api.getPaymentSettings();
+            savedPaymentSettings = response.data;
+            if (savedPaymentSettings.selected) paymentProvider.value = savedPaymentSettings.selected;
+            paymentEnvironment.value = savedPaymentSettings.environment;
+            updatePaymentProviderFields();
+            const providersList = document.getElementById('configured-providers-list');
+            if (savedPaymentSettings.providers && savedPaymentSettings.providers.length > 0) {
+                providersList.innerHTML = savedPaymentSettings.providers.map(p => {
+                    const isActive = p.provider === savedPaymentSettings.selected;
+                    return `
+                        <div class="flex items-center justify-between gap-3 p-3 rounded-lg border border-white/10 bg-surface-container-low">
+                            <div class="flex flex-col">
+                                <span class="text-sm font-medium text-on-surface">${providerLabel(p.provider)}</span>
+                                <span class="text-xs text-on-surface-variant">${p.environment}</span>
+                            </div>
+                            <button class="text-xs font-medium text-tertiary hover:text-white disabled:opacity-30 disabled:cursor-not-allowed" onclick="window.setPaymentActive('${p.provider}')" ${isActive ? 'disabled' : ''}>
+                                ${isActive ? 'Active' : 'Set as Active'}
+                            </button>
+                        </div>`;
+                }).join('');
+            } else {
+                providersList.innerHTML = '<p class="text-sm text-on-surface-variant italic">No providers configured yet.</p>';
+            }
+            paymentStatus.textContent = savedPaymentSettings.configured
+                ? `${providerLabel(savedPaymentSettings.selected)} is connected. Saved credentials are encrypted and hidden.`
+                : 'No payment provider connected. Connect your merchant account to accept gallery payments.';
+            updatePaymentTestButton();
+        } catch {
+            paymentStatus.textContent = 'Unable to load payment settings.';
+            paymentStatus.classList.add('text-error');
+        }
+    };
+
+    window.setPaymentActive = async (provider) => {
+        try {
+            await api.selectPaymentProvider({ provider });
+            await loadPaymentSettings();
+            paymentStatus.textContent = `${providerLabel(provider)} is now the active payment provider.`;
+            paymentStatus.classList.add('text-tertiary');
+        } catch (error) {
+            paymentStatus.textContent = error instanceof Error ? error.message : 'Unable to switch active provider.';
+            paymentStatus.classList.add('text-error');
+        }
+    };
+
+    window.setPaymentActive = async (provider) => {
+        try {
+            await api.selectPaymentProvider({ provider });
+            await loadPaymentSettings();
+            paymentStatus.textContent = `${providerLabel(provider)} is now the active payment provider.`;
+            paymentStatus.classList.add('text-tertiary');
+        } catch (error) {
+            paymentStatus.textContent = error instanceof Error ? error.message : 'Unable to switch active provider.';
+            paymentStatus.classList.add('text-error');
+        }
+    };
+
+    paymentProvider.addEventListener('change', () => {
+        updatePaymentProviderFields();
+        updatePaymentTestButton();
+    });
+    updatePaymentProviderFields();
+    const readPaymentCredentials = () => paymentProvider.value === 'clickpesa'
+        ? { clientId: document.getElementById('clickpesa-client-id').value.trim(), apiKey: document.getElementById('clickpesa-api-key').value.trim(), checksumKey: document.getElementById('clickpesa-checksum-key').value.trim() }
+        : paymentProvider.value === 'malipo'
+            ? { apiKey: document.getElementById('malipo-api-key').value.trim(), secretKey: document.getElementById('malipo-secret-key').value.trim() }
+            : { apiKey: document.getElementById('stakaba-api-key').value.trim() };
+
+    let paymentTestInProgress = false;
+    const updatePaymentTestButton = () => {
+        const credentials = readPaymentCredentials();
+        const hasCredentials = paymentProvider.value === 'clickpesa'
+            ? Boolean(credentials.clientId && credentials.apiKey)
+            : paymentProvider.value === 'malipo'
+                ? Boolean(credentials.apiKey && credentials.secretKey)
+                : Boolean(credentials.apiKey);
+        const canReuseSavedCredentials = savedPaymentSettings.configured && savedPaymentSettings.provider === paymentProvider.value;
+        paymentTestButton.disabled = paymentTestInProgress || (!hasCredentials && !canReuseSavedCredentials);
+    };
+    updatePaymentTestButton();
+
+    paymentTestButton.addEventListener('click', async () => {
+        const provider = paymentProvider.value;
+        paymentTestInProgress = true;
+        updatePaymentTestButton();
+        paymentStatus.classList.remove('text-error', 'text-tertiary');
+        paymentStatus.textContent = `Testing ${providerLabel(provider)} credentials...`;
+        try {
+            const response = await api.testPaymentSettings({
+                provider,
+                environment: paymentEnvironment.value,
+                ...readPaymentCredentials()
+            });
+            paymentStatus.textContent = response.message || `${providerLabel(response.data.provider)} connection successful. You can now save this provider.`;
+            paymentStatus.classList.add('text-tertiary');
+        } catch (error) {
+            paymentStatus.textContent = error instanceof Error ? error.message : 'Unable to test payment provider connection.';
+            paymentStatus.classList.add('text-error');
+        } finally {
+            paymentTestInProgress = false;
+            updatePaymentTestButton();
+        }
+    });
+
+    document.querySelectorAll('[data-payment-credential]').forEach((input) => {
+        input.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                paymentSaveButton.click();
+            }
+        });
+        input.addEventListener('input', () => {
+            updatePaymentTestButton();
+            if (!input.value) return;
+            paymentStatus.classList.remove('text-error', 'text-tertiary');
+            paymentStatus.textContent = 'Credentials changed. Test connection before saving.';
+        });
+    });
+    paymentSaveButton.addEventListener('click', async () => {
+        const provider = paymentProvider.value;
+        paymentSaveButton.disabled = true;
+        paymentStatus.classList.remove('text-error', 'text-tertiary');
+        paymentStatus.textContent = 'Saving encrypted merchant credentials...';
+        try {
+            const response = await api.savePaymentSettings({
+                provider,
+                environment: paymentEnvironment.value,
+                ...readPaymentCredentials()
+            });
+            savedPaymentSettings = response.data;
+            document.getElementById('clickpesa-client-id').value = '';
+            document.getElementById('clickpesa-api-key').value = '';
+            document.getElementById('clickpesa-checksum-key').value = '';
+            document.getElementById('malipo-api-key').value = '';
+            document.getElementById('malipo-secret-key').value = '';
+            document.getElementById('stakaba-api-key').value = '';
+            paymentStatus.textContent = `${providerLabel(provider)} connected. Credentials are encrypted and hidden.`;
+            paymentStatus.classList.add('text-tertiary');
+            updatePaymentTestButton();
+        } catch (error) {
+            paymentStatus.textContent = error instanceof Error ? error.message : 'Unable to save payment settings.';
+            paymentStatus.classList.add('text-error');
+        } finally {
+            paymentSaveButton.disabled = false;
+        }
+    });
+
+    paymentDisconnectButton.addEventListener('click', async () => {
+        if (!savedPaymentSettings.configured || !window.confirm('Disconnect this payment provider? New gallery checkouts will stop until another provider is connected.')) return;
+        paymentDisconnectButton.disabled = true;
+        paymentStatus.classList.remove('text-error', 'text-tertiary');
+        paymentStatus.textContent = 'Disconnecting provider...';
+        try {
+            const response = await api.savePaymentSettings({ provider: savedPaymentSettings.provider || 'clickpesa', environment: savedPaymentSettings.environment, disconnect: true });
+            savedPaymentSettings = response.data;
+            paymentStatus.textContent = 'Payment provider disconnected.';
+            updatePaymentTestButton();
+        } catch (error) {
+            paymentStatus.textContent = error instanceof Error ? error.message : 'Unable to disconnect payment provider.';
+            paymentStatus.classList.add('text-error');
+        } finally {
+            paymentDisconnectButton.disabled = false;
+        }
+    });
+
+    const readValues = () => Object.fromEntries(Object.entries(fields).map(([key, field]) => [key, field.value.trim()]));
+    const writeValues = (values) => {
+        Object.entries(fields).forEach(([key, field]) => { field.value = values[key] ?? ''; });
+        updatePreview();
+    };
+    const updatePreview = () => {
+        try {
+            const values = readValues();
+            if (studioNamePreview) studioNamePreview.textContent = values.studioName || 'Studio name';
+            if (displayNamePreview) displayNamePreview.textContent = values.displayName || 'Your name';
+            if (billingEmailPreview) billingEmailPreview.textContent = values.billingEmail || 'No billing email added';
+            if (logoPreview) {
+                if (logoUrl) {
+                    logoPreview.src = logoUrl;
+                    logoPreview.classList.remove('hidden');
+                    if (logoFallback) logoFallback.classList.add('hidden');
+                } else {
+                    logoPreview.removeAttribute('src');
+                    logoPreview.classList.add('hidden');
+                    if (logoFallback) logoFallback.classList.remove('hidden');
+                }
+            }
+            if (removeLogoButton) removeLogoButton.classList.toggle('hidden', !logoUrl);
+        } catch (e) {
+            console.error('Preview update failed:', e);
+        }
+    };
+
+    Object.values(fields).forEach((field) => field.addEventListener('input', updatePreview));
+    logoPreview.addEventListener('error', () => {
+        logoPreview.classList.add('hidden');
+        logoFallback.classList.remove('hidden');
+    });
+
+    const loadProfile = async () => {
+        status.textContent = 'Loading studio profile...';
+        try {
+            const response = await api.getProfile();
+            const profile = response.data;
+            profileData = profile;
+            savedValues = {
+                displayName: profile.display_name ?? '',
+                studioName: profile.studio_name ?? '',
+                billingEmail: profile.billing_email ?? ''
+            };
+            logoUrl = profile.avatarUrl || profile.avatar_url || '';
+            writeValues(savedValues);
+            status.textContent = '';
+        } catch (error) {
+            status.textContent = error instanceof Error ? error.message : 'Unable to load studio settings.';
+            status.classList.add('text-error');
+        }
+    };
+
+    logoFileInput.addEventListener('change', async () => {
+        const file = logoFileInput.files?.[0];
+        if (!file) return;
+        const extension = file.name.split('.').pop()?.toLowerCase();
+        const mimeType = file.type || ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[extension] || '';
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(mimeType) || file.size > 5 * 1024 * 1024) {
+            logoStatus.textContent = 'Choose a JPG, PNG, or WEBP image under 5 MB.';
+            logoStatus.classList.add('text-error');
+            logoFileInput.value = '';
+            return;
+        }
+
+        logoStatus.classList.remove('text-error', 'text-tertiary');
+        logoStatus.textContent = 'Uploading logo...';
+        if (localLogoPreviewUrl) URL.revokeObjectURL(localLogoPreviewUrl);
+        localLogoPreviewUrl = URL.createObjectURL(file);
+        logoUrl = localLogoPreviewUrl;
+        updatePreview();
+        try {
+            const result = await api.uploadStudioLogo(file);
+            if (localLogoPreviewUrl) URL.revokeObjectURL(localLogoPreviewUrl);
+            localLogoPreviewUrl = null;
+            logoUrl = result.data.avatarUrl;
+            profileData = { ...(profileData ?? {}), avatar_url: null, avatar_path: result.data.avatarPath, avatarUrl: result.data.avatarUrl };
+            updatePreview();
+            logoStatus.textContent = 'Logo uploaded and saved.';
+            logoStatus.classList.add('text-tertiary');
+            window.dispatchEvent(new CustomEvent('ingallery:profile-updated', { detail: profileData }));
+        } catch (error) {
+            if (localLogoPreviewUrl) URL.revokeObjectURL(localLogoPreviewUrl);
+            localLogoPreviewUrl = null;
+            logoUrl = profileData?.avatarUrl || profileData?.avatar_url || '';
+            updatePreview();
+            logoStatus.textContent = error instanceof Error ? error.message : 'Unable to upload logo.';
+            logoStatus.classList.add('text-error');
+        } finally {
+            logoFileInput.value = '';
+        }
+    });
+
+    removeLogoButton.addEventListener('click', async () => {
+        removeLogoButton.disabled = true;
+        logoStatus.classList.remove('text-error', 'text-tertiary');
+        logoStatus.textContent = 'Removing logo...';
+        try {
+            await api.clearStudioLogo();
+            logoUrl = '';
+            if (profileData) profileData = { ...profileData, avatar_url: null, avatar_path: null, avatarUrl: null };
+            updatePreview();
+            logoStatus.textContent = 'Logo removed.';
+            logoStatus.classList.add('text-tertiary');
+            window.dispatchEvent(new CustomEvent('ingallery:profile-updated', { detail: profileData }));
+        } catch (error) {
+            logoStatus.textContent = error instanceof Error ? error.message : 'Unable to remove logo.';
+            logoStatus.classList.add('text-error');
+        } finally {
+            removeLogoButton.disabled = false;
+        }
+    });
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const values = readValues();
+        if (!values.studioName) {
+            fields.studioName.focus();
+            status.textContent = 'Studio name is required.';
+            status.classList.add('text-error');
+            return;
+        }
+        saveButton.disabled = true;
+        saveButton.textContent = 'Saving...';
+        status.classList.remove('text-error', 'text-tertiary');
+        status.textContent = 'Saving studio profile...';
+        try {
+            const response = await api.updateProfile(values);
+            const profile = response.data;
+            profileData = profile;
+            savedValues = {
+                displayName: profile.display_name ?? '',
+                studioName: profile.studio_name ?? '',
+                billingEmail: profile.billing_email ?? ''
+            };
+            logoUrl = profile.avatarUrl || profile.avatar_url || logoUrl;
+            writeValues(savedValues);
+            status.textContent = 'Studio settings saved.';
+            status.classList.add('text-tertiary');
+            window.dispatchEvent(new CustomEvent('ingallery:profile-updated', { detail: profile }));
+        } catch (error) {
+            status.textContent = error instanceof Error ? error.message : 'Unable to save studio settings.';
+            status.classList.add('text-error');
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = 'Save Settings';
+        }
+    });
+
+    discardButton.addEventListener('click', () => {
+        if (savedValues) writeValues(savedValues);
+        status.classList.remove('text-error', 'text-tertiary');
+        status.textContent = 'Unsaved changes discarded.';
+    });
+
+    loadProfile();
+    loadPaymentSettings();
+</script>
+</body></html>

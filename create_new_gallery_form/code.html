@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>InGallery - Create New Gallery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Playfair+Display:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed": "#6ffbbe",
+                        "on-tertiary-fixed-variant": "#005236",
+                        "inverse-surface": "#e2e2e2",
+                        "on-secondary-fixed-variant": "#574500",
+                        "inverse-primary": "#5f5e5e",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#c4c7c7",
+                        "outline-variant": "#444748",
+                        "on-primary-container": "#7e7d7d",
+                        "error": "#ffb4ab",
+                        "on-tertiary": "#003824",
+                        "on-background": "#e2e2e2",
+                        "tertiary": "#4edea3",
+                        "surface-container-high": "#282a2b",
+                        "error-container": "#93000a",
+                        "surface": "#121414",
+                        "surface-container": "#1e2020",
+                        "on-tertiary-container": "#008f62",
+                        "on-primary": "#313030",
+                        "tertiary-container": "#00160c",
+                        "surface-dim": "#121414",
+                        "surface-tint": "#c8c6c5",
+                        "secondary-container": "#af8d11",
+                        "background": "#121414",
+                        "on-surface": "#e2e2e2",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-tertiary-fixed": "#002113",
+                        "secondary": "#e9c349",
+                        "surface-variant": "#333535",
+                        "primary-container": "#121212",
+                        "primary-fixed": "#e5e2e1",
+                        "on-primary-fixed": "#1c1b1b",
+                        "outline": "#8e9192",
+                        "on-secondary": "#3c2f00",
+                        "surface-container-lowest": "#0c0f0f",
+                        "tertiary-fixed-dim": "#4edea3",
+                        "surface-container-highest": "#333535",
+                        "secondary-fixed-dim": "#e9c349",
+                        "primary": "#c8c6c5",
+                        "surface-container-low": "#1a1c1c",
+                        "on-secondary-fixed": "#241a00",
+                        "on-secondary-container": "#342800",
+                        "inverse-on-surface": "#2f3131",
+                        "surface-bright": "#37393a",
+                        "secondary-fixed": "#ffe088",
+                        "on-primary-fixed-variant": "#474646"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "20px",
+                        "container-max": "1440px",
+                        "element-gap": "16px",
+                        "margin-desktop": "64px",
+                        "section-gap": "120px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Playfair Display"],
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Playfair Display"],
+                        "headline-md": ["Playfair Display"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Playfair Display"],
+                        "headline-lg": ["Playfair Display"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "500" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "600" }],
+                        "display-lg": ["64px", { "lineHeight": "72px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "headline-lg": ["40px", { "lineHeight": "48px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .form-input {
+            @apply w-full bg-transparent border-0 border-b border-white/20 text-on-surface focus:ring-0 focus:border-secondary transition-colors duration-300 py-3 px-0 font-body-md text-body-md;
+            color: #e2e2e2;
+            background-color: rgba(26, 28, 28, 0.72);
+            caret-color: #e9c349;
+        }
+        .form-input::placeholder {
+            color: #8e9192;
+            opacity: 1;
+        }
+        .form-input option {
+            color: #e2e2e2;
+            background: #1a1c1c;
+        }
+        .form-label {
+            @apply block font-label-sm text-label-sm text-on-surface-variant mb-1 uppercase tracking-wider;
+        }
+        body {
+            background: #0c0f0f;
+        }
+        .create-atmosphere {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 74% 22%, rgba(233, 195, 73, .09), transparent 38%),
+                linear-gradient(135deg, #0c0f0f 0%, #141818 52%, #0c0f0f 100%);
+        }
+        .create-atmosphere::before {
+            content: 'InGallery';
+            position: absolute;
+            top: 44%;
+            left: 50%;
+            color: rgba(233, 195, 73, .035);
+            font: 700 clamp(96px, 19vw, 300px)/.9 'Playfair Display', Georgia, serif;
+            letter-spacing: -.075em;
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+        }
+        .create-atmosphere::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(135deg, transparent 0 22px, rgba(255,255,255,.008) 23px 24px),
+                linear-gradient(180deg, rgba(12, 15, 15, .2), rgba(12, 15, 15, .72));
+        }
+        .create-content {
+            position: relative;
+            z-index: 1;
+        }
+        .create-hero {
+            max-width: 760px;
+            padding: 72px 0 48px;
+        }
+        .create-hero::before {
+            content: 'THE PRIVATE GALLERY WORKSPACE';
+            display: block;
+            margin-bottom: 18px;
+            color: #e9c349;
+            font: 600 11px/16px Inter, sans-serif;
+            letter-spacing: .2em;
+        }
+        .create-form-panel {
+            background: rgba(18, 20, 20, .72);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .22);
+        }
+        .cover-upload-preview {
+            display: none;
+            width: 100%;
+            max-height: 220px;
+            object-fit: cover;
+            margin-top: 16px;
+            border: 1px solid rgba(233, 195, 73, .35);
+        }
+        .cover-design-sample { display:flex; min-height:128px; padding:16px; align-items:center; justify-content:center; text-align:center; color:#fff; overflow:hidden; }
+        .cover-design-sample--classic { background:linear-gradient(135deg,rgba(20,24,24,.35),rgba(5,7,7,.85)),linear-gradient(135deg,#9b816d,#283b3d); }
+        .cover-design-sample--editorial { align-items:flex-end; justify-content:flex-start; text-align:left; background:linear-gradient(0deg,rgba(10,12,12,.9),transparent 88%),linear-gradient(135deg,#af947d,#514c48); }
+        .cover-design-sample--cinematic { background:linear-gradient(0deg,rgba(7,8,8,.8),rgba(7,8,8,.18)),linear-gradient(135deg,#48605f,#151c1c); }
+        .cover-design-sample--minimal { min-height:128px; color:#f4eee4; background:linear-gradient(180deg,#d8d0c2 0 65%,#f4eee4 65%); }
+        .cover-design-sample--minimal strong { color:#26302e; }
+        .cover-upload-progress {
+            display: none;
+            height: 3px;
+            margin-top: 16px;
+            background: linear-gradient(90deg, #e9c349 var(--upload-progress, 0%), rgba(255,255,255,.08) var(--upload-progress, 0%));
+        }
+        @media (max-width: 767px) {
+            .create-hero { padding: 40px 0 32px; }
+        }
+        .toggle-checkbox:checked {
+            @apply right-0 border-secondary;
+            right: 0;
+            border-color: theme('colors.secondary');
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            @apply bg-secondary;
+            background-color: theme('colors.secondary');
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex selection:bg-secondary selection:text-on-secondary">
+<div class="create-atmosphere" aria-hidden="true"></div>
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-full py-8 px-4 h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant/20 z-40">
+<div class="mb-12 px-4">
+<h1 class="text-headline-sm font-headline-sm text-primary tracking-tighter">InGallery</h1>
+<div class="mt-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="Photographer Profile" class="w-full h-full object-cover" data-alt="Close up studio portrait of a professional photographer with soft dramatic lighting, dark background, premium minimalist aesthetic, sharp focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFW6LJxJ0Io2PQl_8XCM9TdZ0VfFI7MlHdWGsAyqGWsw6TSl5bfYcCzHkj_iRflJoZLgO199lgnYop7ruNB3BNj4dKUUj4AAvJxeucJInuVrIoKu_ysAf97VETyWPBqZ_fGLjrmAWsvMQvo1Nw8LlL7Yy9Rdq4EVFy_mgzrbh7KaDQjlZ-LmhzoMuUI6GvFAv9A_GR6WFd2VgBaQjE5MsF1HX68cmIZuRVadHKYR0HnvGGJKpD5Av2dg"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface font-semibold">Studio Admin</p>
+<p class="font-label-sm text-label-sm text-secondary">Premium Plan</p>
+</div>
+</div>
+</div>
+<button class="mb-8 mx-4 bg-secondary text-on-secondary font-label-md text-label-md py-3 rounded-DEFAULT hover:opacity-90 transition-opacity duration-300 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-weight="fill">add</span>
+            Upload New Gallery
+        </button>
+<ul class="flex flex-col gap-2 flex-grow">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary/10 text-secondary border-r-4 border-secondary translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">photo_library</span>
+<span class="font-label-md text-label-md">Galleries</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-label-md text-label-md">Orders</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">cloud_queue</span>
+<span class="font-label-md text-label-md">Storage</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant/20 pt-4 px-4">
+<ul class="flex flex-col gap-2">
+<li>
+<a class="flex items-center gap-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label-sm text-label-sm">Help</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 py-2 text-on-surface-variant hover:text-error transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-sm text-label-sm">Sign Out</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="create-content flex-1 md:ml-64 px-margin-mobile md:px-margin-desktop py-12 md:py-20 overflow-y-auto">
+<div class="max-w-[1024px] mx-auto">
+<!-- Header -->
+<div class="create-hero mb-12">
+<a class="inline-flex items-center gap-2 text-outline hover:text-on-surface transition-colors duration-300 font-label-md text-label-md mb-6" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    Back to Galleries
+                </a>
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2">Create New Gallery</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Configure settings for your upcoming client gallery.</p>
+</div>
+<form class="space-y-section-gap">
+<section aria-label="Gallery setup progress" class="mb-10 rounded-xl border border-white/10 bg-surface-container/70 p-5 sm:p-6">
+<div class="mb-4 flex items-center justify-between gap-4"><div><p class="text-xs uppercase tracking-[.18em] text-secondary" data-wizard-caption>Step 1 of 3</p><h3 class="mt-1 text-lg font-semibold text-on-surface" data-wizard-step-title>General Information</h3></div><span class="text-sm text-on-surface-variant" data-wizard-percent>33% complete</span></div>
+<div class="mb-5 h-1.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="Gallery setup progress" aria-valuemin="1" aria-valuemax="3" aria-valuenow="1"><div data-wizard-progress-bar class="h-full rounded-full bg-secondary transition-all duration-300" style="width:33%"></div></div>
+<ol class="grid grid-cols-3 gap-2 text-center text-[11px] sm:text-xs">
+<li data-wizard-indicator aria-current="step" class="text-secondary"><span class="mx-auto mb-1 grid h-7 w-7 place-items-center rounded-full border border-secondary bg-secondary/10">1</span><span>Details</span></li>
+<li data-wizard-indicator class="text-on-surface-variant"><span class="mx-auto mb-1 grid h-7 w-7 place-items-center rounded-full border border-white/15">2</span><span>Media</span></li>
+<li data-wizard-indicator class="text-on-surface-variant"><span class="mx-auto mb-1 grid h-7 w-7 place-items-center rounded-full border border-white/15">3</span><span>Access &amp; Delivery</span></li>
+</ol>
+</section>
+<!-- Section 1: General Info -->
+<section data-wizard-panel="0" class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 relative">
+<div class="md:col-span-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">General Information</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Basic details to identify the gallery and assign it to a client.</p>
+</div>
+<div class="md:col-span-8 glass-panel create-form-panel p-8 rounded-xl space-y-8">
+<div>
+<label class="form-label" for="gallery-title">Gallery Title</label>
+<input class="form-input" id="gallery-title" placeholder="e.g. Smith Wedding 2024" type="text" required maxlength="120"/>
+</div>
+<div>
+<label class="form-label" for="event-date">Event Date</label>
+<input class="form-input text-on-surface-variant" id="event-date" type="date"/>
+</div>
+<div>
+<label class="form-label" for="event-type">Event Type</label>
+<input id="event-type" name="eventType" type="hidden" value="Portrait" />
+<div class="flex flex-wrap gap-3 mt-3">
+<button class="event-type-option px-4 py-2 rounded-full border border-outline-variant/30 font-label-md text-label-md text-on-surface-variant hover:border-secondary hover:text-secondary transition-colors" data-event-type="Wedding" type="button">Wedding</button>
+<button class="event-type-option px-4 py-2 rounded-full border border-secondary text-secondary bg-secondary/10 font-label-md text-label-md transition-colors" data-event-type="Portrait" type="button" aria-pressed="true">Portrait</button>
+<button class="event-type-option px-4 py-2 rounded-full border border-outline-variant/30 font-label-md text-label-md text-on-surface-variant hover:border-secondary hover:text-secondary transition-colors" data-event-type="Editorial" type="button">Editorial</button>
+<button class="event-type-option px-4 py-2 rounded-full border border-outline-variant/30 font-label-md text-label-md text-on-surface-variant hover:border-secondary hover:text-secondary transition-colors" data-event-type="Commercial" type="button">Commercial</button>
+</div>
+</div>
+<div>
+<label class="form-label" for="description">Description (Optional)</label>
+<textarea class="form-input resize-none" id="description" placeholder="Add any private notes or client instructions here..." rows="3"></textarea>
+</div>
+</div>
+</section>
+<!-- Section 2: Media & Branding -->
+<section data-wizard-panel="1" hidden class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 relative">
+<div class="md:col-span-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Media &amp; Branding</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Add photos now or create an empty gallery and upload them at the event. You can print its QR code ahead of time.</p>
+</div>
+<div class="md:col-span-8 glass-panel create-form-panel p-8 rounded-xl space-y-8">
+<div>
+<label class="form-label mb-4" for="cover-image">Cover Page</label>
+<label for="cover-image" class="border-2 border-dashed border-outline-variant/30 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-secondary/50 hover:bg-surface-variant/30 transition-all duration-300 cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-secondary transition-colors">add_photo_alternate</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface mb-1">Upload or replace the cover page</p>
+<p class="font-body-md text-body-md text-outline">JPG, PNG or WEBP (Max 10MB)</p>
+</label>
+<input id="cover-image" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" />
+<img class="cover-upload-preview" data-cover-preview alt="Gallery cover preview" />
+<div class="mt-5 hidden" data-existing-cover-section>
+<p class="form-label mb-3">Or choose a photo already in this gallery</p>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" data-existing-cover-photos></div>
+</div>
+</div>
+<div>
+<p class="form-label mb-3">Cover Design</p>
+<p class="mb-4 text-sm text-on-surface-variant">Choose how the gallery title and cover appear to clients. You can change this later.</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="coverDesign" value="classic" checked><div class="rounded-lg border border-white/10 p-2 transition-colors peer-checked:border-secondary peer-checked:bg-secondary/5"><div class="cover-design-sample cover-design-sample--classic"><div><span class="block text-[9px] uppercase tracking-[.24em] text-white/70">The Gallery</span><strong data-cover-sample-title class="mt-2 block font-serif text-xl">Your Gallery</strong></div></div><span class="mt-2 block text-sm font-medium">Classic</span><span class="text-xs text-on-surface-variant">Centered title over a full cover</span></div></label>
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="coverDesign" value="editorial"><div class="rounded-lg border border-white/10 p-2 transition-colors peer-checked:border-secondary peer-checked:bg-secondary/5"><div class="cover-design-sample cover-design-sample--editorial"><div><span class="block text-[9px] uppercase tracking-[.24em] text-white/70">The Gallery</span><strong data-cover-sample-title class="mt-2 block font-serif text-xl">Your Gallery</strong></div></div><span class="mt-2 block text-sm font-medium">Editorial</span><span class="text-xs text-on-surface-variant">Large title anchored at the bottom</span></div></label>
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="coverDesign" value="cinematic"><div class="rounded-lg border border-white/10 p-2 transition-colors peer-checked:border-secondary peer-checked:bg-secondary/5"><div class="cover-design-sample cover-design-sample--cinematic"><div><span class="block text-[9px] uppercase tracking-[.35em] text-white/75">The Gallery</span><strong data-cover-sample-title class="mt-2 block font-sans text-lg uppercase tracking-[.12em]">Your Gallery</strong></div></div><span class="mt-2 block text-sm font-medium">Cinematic</span><span class="text-xs text-on-surface-variant">Wide, dramatic title treatment</span></div></label>
+<label class="cursor-pointer"><input class="peer sr-only" type="radio" name="coverDesign" value="minimal"><div class="rounded-lg border border-white/10 p-2 transition-colors peer-checked:border-secondary peer-checked:bg-secondary/5"><div class="cover-design-sample cover-design-sample--minimal"><div><strong data-cover-sample-title class="block font-serif text-xl">Your Gallery</strong><span class="mt-2 block text-[9px] uppercase tracking-[.24em] text-[#52605b]">The Gallery</span></div></div><span class="mt-2 block text-sm font-medium">Minimal</span><span class="text-xs text-on-surface-variant">Soft, clean cover with restrained text</span></div></label>
+</div>
+</div>
+<div>
+<label class="form-label mb-4" for="gallery-images">Gallery Photos</label>
+<label for="gallery-images" class="border-2 border-dashed border-outline-variant/30 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-secondary/50 hover:bg-surface-variant/30 transition-all duration-300 cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
+<span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-secondary transition-colors">collections</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface mb-1">Add gallery photos</p>
+<p class="font-body-md text-body-md text-outline">Select multiple JPG, PNG or WEBP images. Optional: upload now or later.</p>
+</label>
+<input id="gallery-images" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4" data-gallery-preview-list></div>
+<div class="cover-upload-progress" data-cover-progress aria-hidden="true"></div>
+<p class="text-label-sm text-secondary mt-3" data-upload-status aria-live="polite"></p>
+</div>
+<div>
+<label class="form-label mb-4">Cover Video (Optional)</label>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+<div>
+<label class="font-label-sm text-label-sm text-outline block mb-1" for="cover-video-url">YouTube video link</label>
+<input id="cover-video-url" class="form-input" placeholder="https://youtu.be/..." type="url" autocomplete="url"/>
+</div>
+<label for="cover-video-file" class="py-3 px-4 border border-outline-variant/50 rounded-DEFAULT font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:border-white/50 transition-all flex items-center justify-center gap-2 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">upload</span>
+                                    Upload MP4 or WebM
+                                </label>
+<input id="cover-video-file" class="sr-only" type="file" accept="video/mp4,video/webm" />
+</div>
+<p class="mt-3 text-sm text-outline" data-cover-video-status>Choose a YouTube link or upload one MP4/WebM video (up to 150 MB).</p>
+<button class="mt-2 hidden text-sm text-error hover:text-on-error-container" type="button" data-remove-cover-video>Remove cover video</button>
+</div>
+<hr class="border-outline-variant/20"/>
+<div class="flex items-center justify-between">
+<div>
+<label class="font-label-md text-label-md text-on-surface font-semibold block mb-1">Watermark Protection</label>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Apply studio watermark to all preview images.</p>
+</div>
+<!-- Toggle -->
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface border-4 border-outline-variant appearance-none cursor-pointer transition-transform duration-300 ease-in-out checked:translate-x-6 checked:border-secondary" id="watermark-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-surface-container-high cursor-pointer transition-colors duration-300 ease-in-out" for="watermark-toggle"></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Access & Delivery -->
+<section data-wizard-panel="2" hidden class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 relative">
+<div class="md:col-span-4">
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Access &amp; Delivery</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage client access, downloads, and monetization.</p>
+</div>
+<div class="md:col-span-8 glass-panel create-form-panel p-8 rounded-xl space-y-8">
+<div class="flex items-center justify-between">
+<div>
+<label class="font-label-md text-label-md text-on-surface font-semibold block mb-1">Require Payment</label>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Client must pay to access full resolution downloads.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface border-4 border-outline-variant appearance-none cursor-pointer transition-transform duration-300 ease-in-out checked:translate-x-6 checked:border-secondary" id="payment-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-secondary cursor-pointer transition-colors duration-300 ease-in-out" for="payment-toggle"></label>
+</div>
+</div>
+<!-- Conditional Payment Fields (Visible because toggle is checked in this mockup) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 bg-surface-container-lowest/50 rounded-lg border border-outline-variant/10">
+<div>
+<label class="form-label" for="amount">Amount (TZS)</label>
+<div class="relative">
+<span class="absolute left-0 top-3 text-on-surface-variant font-body-md">TZS</span>
+<input class="form-input pl-10" id="amount" placeholder="0.00" type="number" value="0"/>
+</div>
+</div>
+<div>
+<label class="form-label" for="preview-limit">Free Preview Limit</label>
+<input class="form-input" id="preview-limit" placeholder="0" type="number" value="0"/>
+<p class="text-xs text-outline mt-1 font-body-md">Number of photos viewable before paywall.</p>
+</div>
+</div>
+<hr class="border-outline-variant/20"/>
+<div class="flex items-center justify-between">
+<div>
+<label class="font-label-md text-label-md text-on-surface font-semibold block mb-1">Allow Downloads</label>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Enable clients to download images.</p>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-surface border-4 border-outline-variant appearance-none cursor-pointer transition-transform duration-300 ease-in-out checked:translate-x-6 checked:border-secondary" id="download-toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-secondary cursor-pointer transition-colors duration-300 ease-in-out" for="download-toggle"></label>
+</div>
+</div>
+<div class="space-y-3">
+<label class="form-label">Download Quality</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-secondary bg-surface-container border-outline-variant focus:ring-secondary focus:ring-offset-background" name="quality" type="radio" value="original"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-secondary transition-colors">Original Resolution <span class="text-outline text-sm ml-2">Best for printing</span></span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 text-secondary bg-surface-container border-outline-variant focus:ring-secondary focus:ring-offset-background" name="quality" type="radio" value="high"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-secondary transition-colors">High Resolution (3000px) <span class="text-outline text-sm ml-2">Balanced size/quality</span></span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 text-secondary bg-surface-container border-outline-variant focus:ring-secondary focus:ring-offset-background" name="quality" type="radio" value="web"/>
+<span class="font-body-md text-body-md text-on-surface group-hover:text-secondary transition-colors">Web Size (2048px) <span class="text-outline text-sm ml-2">Fastest downloads, social media ready</span></span>
+</label>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<label class="form-label" for="password">Gallery Password (Optional)</label>
+<input class="form-input" id="password" placeholder="Leave blank for public" type="text"/>
+</div>
+<div>
+<label class="form-label" for="expiration">Expiration Date (Optional)</label>
+<input class="form-input text-on-surface-variant" id="expiration" type="date"/>
+</div>
+</div>
+<hr class="border-outline-variant/20"/>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface font-semibold">Publishing</h4>
+<p class="mb-4 mt-1 text-sm text-on-surface-variant">Choose the gallery status when it is created.</p>
+<div class="grid grid-cols-2 gap-3">
+<label class="cursor-pointer"><input checked class="peer sr-only" name="status" type="radio" value="draft"/><span class="block rounded-lg border border-outline-variant/30 p-3 text-center text-sm text-on-surface-variant peer-checked:border-secondary peer-checked:bg-secondary/10 peer-checked:text-secondary">Draft</span></label>
+<label class="cursor-pointer"><input class="peer sr-only" name="status" type="radio" value="processing"/><span class="block rounded-lg border border-outline-variant/30 p-3 text-center text-sm text-on-surface-variant peer-checked:border-[#10B981] peer-checked:bg-[#10B981]/10 peer-checked:text-[#10B981]">Processing</span></label>
+<label class="cursor-pointer"><input class="peer sr-only" name="status" type="radio" value="active"/><span class="block rounded-lg border border-outline-variant/30 p-3 text-center text-sm text-on-surface-variant peer-checked:border-secondary peer-checked:bg-secondary/10 peer-checked:text-secondary">Active</span></label>
+<label class="cursor-pointer"><input class="peer sr-only" name="status" type="radio" value="archived"/><span class="block rounded-lg border border-outline-variant/30 p-3 text-center text-sm text-on-surface-variant peer-checked:border-outline peer-checked:bg-surface-variant/50 peer-checked:text-on-surface">Archived</span></label>
+</div>
+</div>
+</div>
+</section>
+<!-- Floating Action Bar for Form Submission -->
+<div class="fixed bottom-0 right-0 md:left-64 left-0 bg-surface/90 backdrop-blur-md border-t border-white/5 py-4 px-margin-mobile md:px-margin-desktop z-30">
+<div class="max-w-[1024px] mx-auto flex items-center justify-between gap-4">
+<button class="px-6 py-3 border border-outline/30 rounded-DEFAULT font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:border-white/50 transition-all tracking-wider" type="button" data-cancel-gallery>
+                            Cancel
+                        </button>
+<div class="flex items-center gap-3">
+<button class="hidden px-5 py-3 border border-outline/30 rounded-DEFAULT font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:border-white/50 transition-all tracking-wider" type="button" data-wizard-back>Back</button>
+<button class="px-8 py-3 bg-secondary text-on-secondary font-label-md text-label-md rounded-DEFAULT hover:opacity-90 hover:scale-[1.02] transition-all tracking-wider font-semibold" type="button" data-wizard-next>Continue</button>
+<button hidden class="px-8 py-3 bg-secondary text-on-secondary font-label-md text-label-md rounded-DEFAULT hover:opacity-90 hover:scale-[1.02] transition-all tracking-wider font-semibold" type="button" data-create-gallery-submit>
+                            Create Gallery
+                        </button>
+</div>
+</div>
+</div>
+<div id="gallery-upload-toast" class="pointer-events-none fixed left-4 top-4 z-[60] hidden max-w-sm rounded-lg border border-secondary/30 bg-surface-container/95 px-4 py-3 text-sm text-on-surface shadow-2xl backdrop-blur-md"></div>
+</form>
+</div>
+</main>
+<script type="module">
+    import { createApiService, getApiBaseUrl, getCurrentSession } from '../app.ts';
+
+    const form = document.querySelector('form');
+    const titleInput = document.getElementById('gallery-title');
+    const coverDesignOptions = document.querySelectorAll('[name="coverDesign"]');
+    const coverInput = document.getElementById('cover-image');
+    const coverVideoInput = document.getElementById('cover-video-file');
+    const coverVideoUrlInput = document.getElementById('cover-video-url');
+    const coverVideoStatus = document.querySelector('[data-cover-video-status]');
+    const removeCoverVideoButton = document.querySelector('[data-remove-cover-video]');
+    const galleryInput = document.getElementById('gallery-images');
+    const eventTypeInput = document.getElementById('event-type');
+    const coverPreview = document.querySelector('[data-cover-preview]');
+    const existingCoverSection = document.querySelector('[data-existing-cover-section]');
+    const existingCoverPhotos = document.querySelector('[data-existing-cover-photos]');
+    const galleryPreviewList = document.querySelector('[data-gallery-preview-list]');
+    const progressBar = document.querySelector('[data-cover-progress]');
+    const uploadStatus = document.querySelector('[data-upload-status]');
+    const submitButton = form?.querySelector('[data-create-gallery-submit]');
+    const cancelButton = document.querySelector('[data-cancel-gallery]');
+    const wizardPanels = Array.from(form?.querySelectorAll('[data-wizard-panel]') ?? []);
+    const wizardBackButton = form?.querySelector('[data-wizard-back]');
+    const wizardNextButton = form?.querySelector('[data-wizard-next]');
+    const wizardCaption = form?.querySelector('[data-wizard-caption]');
+    const wizardStepTitle = form?.querySelector('[data-wizard-step-title]');
+    const wizardPercent = form?.querySelector('[data-wizard-percent]');
+    const wizardProgressBar = form?.querySelector('[data-wizard-progress-bar]');
+    const wizardProgress = form?.querySelector('[role="progressbar"]');
+    const wizardIndicators = Array.from(form?.querySelectorAll('[data-wizard-indicator]') ?? []);
+    const wizardStepTitles = ['General Information', 'Media & Branding', 'Access & Delivery'];
+    const wizardStepKeys = ['details', 'media', 'access'];
+    let currentWizardStep = 0;
+    const readWizardStepFromUrl = () => {
+        const requestedStep = new URLSearchParams(window.location.search).get('step');
+        const index = wizardStepKeys.indexOf(requestedStep ?? '');
+        return index >= 0 ? index : 0;
+    };
+    const renderWizardStep = (step, shouldScroll = true, updateHistory = false) => {
+        currentWizardStep = Math.max(0, Math.min(step, wizardPanels.length - 1));
+        if (updateHistory) {
+            const nextUrl = new URL(window.location.href);
+            nextUrl.searchParams.set('step', wizardStepKeys[currentWizardStep]);
+            window.history.pushState({ galleryWizardStep: currentWizardStep }, '', nextUrl);
+        }
+        wizardPanels.forEach((panel, index) => { panel.hidden = index !== currentWizardStep; });
+        if (wizardBackButton) wizardBackButton.hidden = currentWizardStep === 0;
+        if (wizardNextButton) wizardNextButton.hidden = currentWizardStep === wizardPanels.length - 1;
+        if (submitButton) submitButton.hidden = currentWizardStep !== wizardPanels.length - 1;
+        const stepNumber = currentWizardStep + 1;
+        const completion = Math.round((stepNumber / wizardPanels.length) * 100);
+        if (wizardCaption) wizardCaption.textContent = `Step ${stepNumber} of ${wizardPanels.length}`;
+        if (wizardStepTitle) wizardStepTitle.textContent = wizardStepTitles[currentWizardStep] ?? 'Gallery Setup';
+        if (wizardPercent) wizardPercent.textContent = `${completion}% complete`;
+        if (wizardProgressBar) wizardProgressBar.style.width = `${completion}%`;
+        wizardProgress?.setAttribute('aria-valuenow', String(stepNumber));
+        wizardIndicators.forEach((indicator, index) => {
+            const dot = indicator.querySelector('span');
+            indicator.classList.toggle('text-secondary', index <= currentWizardStep);
+            indicator.classList.toggle('text-on-surface-variant', index > currentWizardStep);
+            if (index === currentWizardStep) indicator.setAttribute('aria-current', 'step');
+            else indicator.removeAttribute('aria-current');
+            dot?.classList.toggle('border-secondary', index <= currentWizardStep);
+            dot?.classList.toggle('bg-secondary/10', index <= currentWizardStep);
+            dot?.classList.toggle('border-white/15', index > currentWizardStep);
+        });
+        document.title = `InGallery - ${wizardStepTitles[currentWizardStep] ?? 'Gallery Setup'}`;
+        if (shouldScroll) document.querySelector('.create-hero')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+    wizardNextButton?.addEventListener('click', () => {
+        if (currentWizardStep === 0 && titleInput && !titleInput.reportValidity()) return;
+        renderWizardStep(currentWizardStep + 1, true, true);
+    });
+    wizardBackButton?.addEventListener('click', () => renderWizardStep(currentWizardStep - 1, true, true));
+    window.addEventListener('popstate', () => renderWizardStep(readWizardStepFromUrl(), true));
+    renderWizardStep(readWizardStepFromUrl(), false);
+    const uploadToast = document.getElementById('gallery-upload-toast');
+    const api = createApiService(getApiBaseUrl());
+    const editId = new URLSearchParams(window.location.search).get('edit');
+    let selectedCoverFile = coverInput?.files?.[0] ?? null;
+    let selectedCoverStoragePath = null;
+    let selectedCoverMimeType = 'image/jpeg';
+    let selectedCoverVideoFile = null;
+    let removeExistingCoverVideo = false;
+    let selectedGalleryFiles = Array.from(galleryInput?.files ?? []);
+    const getCoverDesign = () => form?.querySelector('[name="coverDesign"]:checked')?.value ?? 'classic';
+    const updateCoverDesignSamples = () => {
+        const sampleTitle = titleInput?.value.trim() || 'Your Gallery';
+        document.querySelectorAll('[data-cover-sample-title]').forEach((node) => { node.textContent = sampleTitle; });
+    };
+    coverDesignOptions.forEach((option) => option.addEventListener('change', updateCoverDesignSamples));
+    titleInput?.addEventListener('input', updateCoverDesignSamples);
+
+    const getSupportedImageMimeType = (file) => {
+        const mimeType = file.type.trim().toLowerCase();
+        if (mimeType === 'image/jpg') return 'image/jpeg';
+        if (['image/jpeg', 'image/png', 'image/webp'].includes(mimeType)) return mimeType;
+        if (mimeType) return null;
+        const extension = file.name.split('.').pop()?.toLowerCase();
+        return ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[extension] ?? null;
+    };
+
+    const resolveGalleryUploadPlan = ({ galleryFiles, coverFile, hasCoverVideo = false, isEdit = false }) => {
+        const selectedGalleryFiles = Array.from(galleryFiles ?? []).filter(Boolean);
+        const cover = coverFile ?? null;
+        const sameFile = (file, comparisonFile) => {
+            if (!comparisonFile) return false;
+            return file === comparisonFile || (
+                file.name === comparisonFile.name &&
+                file.size === comparisonFile.size &&
+                file.lastModified === comparisonFile.lastModified
+            );
+        };
+
+        const photoFiles = selectedGalleryFiles.filter((file) => !sameFile(file, cover));
+        const hasCover = Boolean(cover);
+
+        return {
+            hasCover,
+            photoFiles,
+            canProceed: isEdit ? true : photoFiles.length > 0 || hasCover || hasCoverVideo
+        };
+    };
+
+    const showToast = (message) => {
+        if (!uploadToast) return;
+        uploadToast.textContent = message;
+        uploadToast.classList.remove('hidden');
+        uploadToast.classList.add('opacity-100');
+        clearTimeout(showToast.timeoutId);
+        showToast.timeoutId = setTimeout(() => {
+            uploadToast.classList.add('hidden');
+        }, 4200);
+    };
+
+    const sendUploadWorkerMessage = (worker, message, timeoutMs = 300000) => new Promise((resolve, reject) => {
+        const channel = new MessageChannel();
+        const timeout = window.setTimeout(() => {
+            channel.port1.close();
+            reject(new Error('The upload queue is taking too long to respond. Please retry.'));
+        }, timeoutMs);
+        channel.port1.onmessage = (event) => {
+            window.clearTimeout(timeout);
+            channel.port1.close();
+            if (event.data?.ok) resolve(event.data);
+            else reject(new Error(event.data?.message || 'The upload could not be queued. Please retry.'));
+        };
+        try {
+            worker.postMessage(message, [channel.port2]);
+        } catch {
+            window.clearTimeout(timeout);
+            channel.port1.close();
+            reject(new Error('The selected photos could not be sent to the upload queue. Try fewer photos at a time.'));
+        }
+    });
+
+    const clearGalleryPreviews = () => {
+        galleryPreviewList?.querySelectorAll('img').forEach((preview) => URL.revokeObjectURL(preview.src));
+        galleryPreviewList?.replaceChildren();
+    };
+
+    const resetFormState = () => {
+        form?.reset();
+        selectedCoverFile = null;
+        selectedCoverStoragePath = null;
+        selectedCoverVideoFile = null;
+        removeExistingCoverVideo = false;
+        selectedGalleryFiles = [];
+        if (coverPreview) {
+            coverPreview.src = '';
+            coverPreview.style.display = 'none';
+        }
+        clearGalleryPreviews();
+        setProgress(0);
+        setUploadStatus('');
+    };
+
+    const setProgress = (value) => {
+        if (progressBar) {
+            progressBar.style.setProperty('--upload-progress', `${Math.max(0, Math.min(100, value))}%`);
+            progressBar.style.width = `${Math.max(0, Math.min(100, value))}%`;
+        }
+    };
+
+    const setUploadStatus = (message) => {
+        if (uploadStatus) uploadStatus.textContent = message;
+    };
+
+    const ensureSession = async () => {
+        const currentSession = getCurrentSession();
+        if (!currentSession?.accessToken) throw new Error('Sign in before creating or uploading to a gallery.');
+        try {
+            const validatedSession = await api.getSession();
+            if (validatedSession?.ok && validatedSession.data) {
+                const refreshedSession = { ...currentSession, ...validatedSession.data, isAuthenticated: true };
+                window.localStorage.setItem('ingallery:session', JSON.stringify(refreshedSession));
+                return refreshedSession;
+            }
+        } catch {
+            throw new Error('Your session has expired. Sign in again before uploading.');
+        }
+        throw new Error('Your session has expired. Sign in again before uploading.');
+    };
+
+    document.querySelectorAll('.event-type-option').forEach((option) => {
+        option.addEventListener('click', () => {
+            document.querySelectorAll('.event-type-option').forEach((item) => {
+                item.classList.remove('border-secondary', 'text-secondary', 'bg-secondary/10');
+                item.classList.add('border-outline-variant/30', 'text-on-surface-variant');
+                item.setAttribute('aria-pressed', 'false');
+            });
+            option.classList.remove('border-outline-variant/30', 'text-on-surface-variant');
+            option.classList.add('border-secondary', 'text-secondary', 'bg-secondary/10');
+            option.setAttribute('aria-pressed', 'true');
+            if (eventTypeInput) eventTypeInput.value = option.dataset.eventType ?? '';
+        });
+    });
+
+    coverInput?.addEventListener('change', () => {
+        const file = coverInput.files?.[0] ?? null;
+        const mimeType = file ? getSupportedImageMimeType(file) : null;
+        if (file && !mimeType) {
+            selectedCoverFile = null;
+            coverInput.value = '';
+            setUploadStatus('Cover must be a JPG, PNG, or WEBP image.');
+            return;
+        }
+        selectedCoverFile = file;
+        selectedCoverStoragePath = null;
+        selectedCoverMimeType = mimeType ?? 'image/jpeg';
+        existingCoverPhotos?.querySelectorAll('[data-select-cover]').forEach((button) => button.classList.remove('ring-2', 'ring-secondary'));
+        if (!file || !coverPreview) return;
+        coverPreview.src = URL.createObjectURL(file);
+        coverPreview.style.display = 'block';
+        setUploadStatus(`Cover selected: ${file.name}`);
+    });
+
+    coverVideoInput?.addEventListener('change', () => {
+        const file = coverVideoInput.files?.[0] ?? null;
+        if (!file) return;
+        const extension = file.name.split('.').pop()?.toLowerCase();
+        const mimeType = file.type || ({ mp4: 'video/mp4', webm: 'video/webm' })[extension] || '';
+        if (!['video/mp4', 'video/webm'].includes(mimeType) || file.size > 150 * 1024 * 1024) {
+            selectedCoverVideoFile = null;
+            coverVideoInput.value = '';
+            if (coverVideoStatus) coverVideoStatus.textContent = 'Choose an MP4 or WebM video under 150 MB.';
+            return;
+        }
+        selectedCoverVideoFile = file;
+        removeExistingCoverVideo = false;
+        if (coverVideoUrlInput) coverVideoUrlInput.value = '';
+        if (coverVideoStatus) coverVideoStatus.textContent = `Selected video: ${file.name}`;
+        removeCoverVideoButton?.classList.add('hidden');
+    });
+
+    coverVideoUrlInput?.addEventListener('input', () => {
+        if (coverVideoUrlInput.value.trim()) {
+            selectedCoverVideoFile = null;
+            if (coverVideoInput) coverVideoInput.value = '';
+            removeExistingCoverVideo = false;
+            if (coverVideoStatus) coverVideoStatus.textContent = 'YouTube video selected. It will alternate with the cover photo in the gallery hero.';
+            removeCoverVideoButton?.classList.add('hidden');
+        }
+    });
+
+    removeCoverVideoButton?.addEventListener('click', () => {
+        selectedCoverVideoFile = null;
+        removeExistingCoverVideo = true;
+        if (coverVideoInput) coverVideoInput.value = '';
+        if (coverVideoUrlInput) coverVideoUrlInput.value = '';
+        if (coverVideoStatus) coverVideoStatus.textContent = 'Cover video will be removed when you save.';
+        removeCoverVideoButton.classList.add('hidden');
+    });
+
+    galleryInput?.addEventListener('change', () => {
+        if (!galleryPreviewList) return;
+        const selectedFiles = Array.from(galleryInput.files ?? []);
+        galleryInput.value = '';
+        if (!selectedFiles.length) return;
+
+        const invalidFiles = selectedFiles.filter((file) => !getSupportedImageMimeType(file));
+        const existingFiles = new Set(selectedGalleryFiles.map((file) => `${file.name}:${file.size}:${file.lastModified}`));
+        selectedFiles.forEach((file) => {
+            const key = `${file.name}:${file.size}:${file.lastModified}`;
+            if (getSupportedImageMimeType(file) && !existingFiles.has(key)) {
+                selectedGalleryFiles.push(file);
+                existingFiles.add(key);
+            }
+        });
+
+        clearGalleryPreviews();
+        selectedGalleryFiles.forEach((file) => {
+            const preview = document.createElement('img');
+            preview.className = 'w-full aspect-square object-cover rounded-lg border border-secondary/30';
+            preview.alt = file.name;
+            preview.src = URL.createObjectURL(file);
+            galleryPreviewList.appendChild(preview);
+        });
+
+        if (!selectedGalleryFiles.length) {
+            setUploadStatus('No gallery photos selected yet.');
+            return;
+        }
+
+        if (invalidFiles.length) {
+            setUploadStatus(`${invalidFiles.length} unsupported file${invalidFiles.length === 1 ? '' : 's'} skipped. ${selectedGalleryFiles.length} photo${selectedGalleryFiles.length === 1 ? '' : 's'} selected.`);
+        } else {
+            setUploadStatus(`${selectedGalleryFiles.length} gallery photo${selectedGalleryFiles.length === 1 ? '' : 's'} selected. Upload will continue until the storage quota is reached.`);
+        }
+    });
+
+    const loadExistingGallery = async () => {
+        if (!editId) return;
+        const galleryResponse = await api.getGallery(editId);
+        const gallery = galleryResponse.data;
+        if (titleInput) titleInput.value = gallery.title;
+        const amountInput = document.getElementById('amount');
+        if (amountInput) amountInput.value = String(gallery.accessPrice ?? gallery.access_price ?? 0);
+        const selectedDesign = gallery.coverDesign || gallery.cover_design || 'classic';
+        const designOption = form?.querySelector(`[name="coverDesign"][value="${selectedDesign}"]`);
+        if (designOption) designOption.checked = true;
+        updateCoverDesignSamples();
+        const paymentToggle = document.getElementById('payment-toggle');
+        if (paymentToggle) paymentToggle.checked = Number(gallery.accessPrice ?? gallery.access_price ?? 0) > 0;
+        document.title = `InGallery - Edit ${gallery.title}`;
+        const heading = document.querySelector('h2');
+        if (heading) heading.textContent = 'Edit Gallery';
+        if (submitButton) submitButton.textContent = 'Save Changes';
+        if (coverPreview && gallery.coverUrl) {
+            coverPreview.src = gallery.coverUrl;
+            coverPreview.style.display = 'block';
+        }
+        if (gallery.coverVideoUrl) {
+            if (gallery.coverVideoPath) {
+                if (coverVideoStatus) coverVideoStatus.textContent = 'An uploaded cover video is set. Upload another video or add a YouTube link to replace it.';
+            } else if (coverVideoUrlInput) {
+                coverVideoUrlInput.value = gallery.coverVideoUrl;
+                if (coverVideoStatus) coverVideoStatus.textContent = 'Saved YouTube cover video.';
+            }
+            removeCoverVideoButton?.classList.remove('hidden');
+        }
+
+        const imageResponse = await api.getGalleryImages(editId);
+        const selectableImages = imageResponse.data.filter((image) => image.previewUrl);
+        if (!selectableImages.length || !existingCoverPhotos || !existingCoverSection) return;
+        existingCoverSection.classList.remove('hidden');
+        existingCoverPhotos.innerHTML = selectableImages.map((image) => `
+            <button type="button" data-select-cover="${String(image.storagePath).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]))}" data-cover-mime-type="${String(image.mimeType).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]))}" data-preview-url="${String(image.previewUrl).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]))}" class="relative overflow-hidden rounded-lg border border-white/10 text-left focus:outline-none focus:ring-2 focus:ring-secondary">
+                <img src="${String(image.previewUrl).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]))}" alt="" loading="lazy" class="aspect-square w-full object-cover">
+                <span class="block truncate px-2 py-1 text-xs text-on-surface">${String(image.fileName).replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]))}</span>
+            </button>`).join('');
+        existingCoverPhotos.querySelectorAll('[data-select-cover]').forEach((button) => {
+            button.addEventListener('click', () => {
+                selectedCoverStoragePath = button.getAttribute('data-select-cover');
+                selectedCoverMimeType = button.getAttribute('data-cover-mime-type') ?? 'image/jpeg';
+                selectedCoverFile = null;
+                if (coverInput) coverInput.value = '';
+                existingCoverPhotos.querySelectorAll('[data-select-cover]').forEach((item) => item.classList.remove('ring-2', 'ring-secondary'));
+                button.classList.add('ring-2', 'ring-secondary');
+                if (coverPreview) {
+                    coverPreview.src = button.getAttribute('data-preview-url') ?? '';
+                    coverPreview.style.display = 'block';
+                }
+                setUploadStatus('Existing gallery photo selected as the cover.');
+            });
+        });
+    };
+
+    loadExistingGallery().catch((error) => {
+        setUploadStatus(error instanceof Error ? error.message : 'Unable to load this gallery for editing.');
+    });
+
+    let isSubmitting = false;
+
+    const handleGallerySubmit = async () => {
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        const title = titleInput?.value.trim();
+        const amountInput = document.getElementById('amount');
+        const amountValue = Number(amountInput?.value ?? 0);
+        const coverFile = selectedCoverFile ?? coverInput?.files?.[0] ?? null;
+        const coverVideoFile = selectedCoverVideoFile ?? coverVideoInput?.files?.[0] ?? null;
+        const coverVideoUrl = coverVideoUrlInput?.value.trim() ?? '';
+        const hasCoverVideo = Boolean(coverVideoFile || coverVideoUrl);
+        const files = selectedGalleryFiles.length ? selectedGalleryFiles : Array.from(galleryInput?.files ?? []);
+        const uploadPlan = resolveGalleryUploadPlan({
+            galleryFiles: files,
+            coverFile,
+            hasCoverVideo,
+            isEdit: Boolean(editId)
+        });
+        const photoFiles = uploadPlan.photoFiles;
+
+        if (!title) {
+            isSubmitting = false;
+            titleInput?.focus();
+            return;
+        }
+
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = editId ? 'Saving...' : 'Creating...';
+        }
+
+        let createdGalleryId = null;
+        let uploadJobQueued = false;
+        let queuedJobId = null;
+        let queueWorker = null;
+        try {
+            setUploadStatus(editId ? 'Saving gallery changes...' : 'Creating gallery...');
+            const session = await ensureSession();
+            const galleryResponse = editId
+                ? await api.updateGallery(editId, { title, accessPrice: Number.isFinite(amountValue) ? amountValue : 0, currency: 'TZS', coverDesign: getCoverDesign() })
+                : await api.createGallery(title, Number.isFinite(amountValue) ? amountValue : 0, 'TZS', getCoverDesign());
+            const gallery = galleryResponse.data;
+            const galleryId = gallery.id;
+            createdGalleryId = editId ? null : galleryId;
+            if (editId && selectedCoverStoragePath) {
+                await api.setCoverImage(galleryId, { storagePath: selectedCoverStoragePath, mimeType: selectedCoverMimeType });
+            }
+
+            if (coverVideoUrl) {
+                await api.setCoverVideo(galleryId, { youtubeUrl: coverVideoUrl });
+            } else if (coverVideoFile) {
+                setUploadStatus('Uploading cover video...');
+                await api.uploadCoverVideo(galleryId, coverVideoFile);
+            } else if (editId && removeExistingCoverVideo) {
+                await api.setCoverVideo(galleryId, { clear: true });
+            }
+
+            if (editId && !photoFiles.length && !coverFile) {
+                showToast('Gallery changes saved.');
+                window.location.href = '../ingallery_photography_studio_platform/code.html';
+                return;
+            }
+
+            if (!photoFiles.length && !coverFile) {
+                uploadJobQueued = true;
+                window.localStorage.setItem('ingallery:lastGallery', JSON.stringify({ title, createdAt: new Date().toISOString() }));
+                showToast(hasCoverVideo ? 'Gallery created with its cover video.' : 'Empty gallery created. Download its QR code from your gallery list.');
+                window.location.href = '../ingallery_photography_studio_platform/code.html';
+                return;
+            }
+
+            const registration = await navigator.serviceWorker.ready;
+            const worker = registration.active || navigator.serviceWorker.controller;
+            if (!worker) throw new Error('Background uploads are unavailable in this browser. Please retry.');
+
+            const jobId = crypto.randomUUID();
+            queuedJobId = jobId;
+            queueWorker = worker;
+            await sendUploadWorkerMessage(worker, {
+                type: 'START_GALLERY_UPLOAD',
+                job: {
+                    id: jobId,
+                    galleryId,
+                    slug: gallery.slug,
+                    title,
+                    apiBaseUrl: getApiBaseUrl(),
+                    accessToken: session.accessToken,
+                    photoCount: photoFiles.length,
+                    hasCover: Boolean(coverFile),
+                    coverName: coverFile?.name ?? ''
+                }
+            });
+
+            const filesPerQueueMessage = 1;
+            const queueMessageCount = Math.max(1, Math.ceil(photoFiles.length / filesPerQueueMessage));
+            for (let batchIndex = 0; batchIndex < queueMessageCount; batchIndex += 1) {
+                const startIndex = batchIndex * filesPerQueueMessage;
+                const batchFiles = photoFiles.slice(startIndex, startIndex + filesPerQueueMessage);
+                await sendUploadWorkerMessage(worker, {
+                    type: 'ADD_GALLERY_UPLOAD_FILES',
+                    jobId,
+                    startIndex,
+                    files: batchFiles,
+                    coverFile: batchIndex === 0 ? coverFile : null
+                });
+                setUploadStatus(`Preparing upload queue: ${Math.min(startIndex + batchFiles.length, photoFiles.length)} of ${photoFiles.length} photos saved.`);
+            }
+
+            await sendUploadWorkerMessage(worker, { type: 'QUEUE_GALLERY_UPLOAD', jobId });
+
+            uploadJobQueued = true;
+            window.localStorage.setItem('ingallery:lastGallery', JSON.stringify({ title, createdAt: new Date().toISOString() }));
+            showToast(`Gallery upload queued: ${photoFiles.length} photo${photoFiles.length === 1 ? '' : 's'}. You can keep working.`);
+            resetFormState();
+            setUploadStatus('Upload queued. Progress will stay visible while you work elsewhere.');
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = editId ? 'Save Changes' : 'Create Gallery';
+            }
+            isSubmitting = false;
+        } catch (error) {
+            if (queuedJobId && queueWorker && !uploadJobQueued) {
+                await sendUploadWorkerMessage(queueWorker, { type: 'CANCEL_GALLERY_UPLOAD_STAGING', jobId: queuedJobId }).catch(() => {});
+            }
+            if (createdGalleryId && !uploadJobQueued) {
+                try {
+                    await api.deleteGallery(createdGalleryId);
+                } catch {
+                    // Keep the queue failure message generic if cleanup is unavailable.
+                }
+            }
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = editId ? 'Save Changes' : 'Create Gallery';
+            }
+            setProgress(0);
+            isSubmitting = false;
+            showToast(error instanceof Error ? error.message : 'Unable to create gallery.');
+            window.alert(error instanceof Error ? error.message : 'Unable to create gallery.');
+        }
+    };
+
+    form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        if (currentWizardStep < wizardPanels.length - 1) {
+            if (currentWizardStep === 0 && titleInput && !titleInput.reportValidity()) return;
+            renderWizardStep(currentWizardStep + 1, true, true);
+        } else {
+            handleGallerySubmit();
+        }
+    });
+
+    submitButton?.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        handleGallerySubmit();
+    });
+
+    cancelButton?.addEventListener('click', () => {
+        if (isSubmitting) {
+            showToast('Upload is already running in the background.');
+            return;
+        }
+        resetFormState();
+        window.location.href = '../ingallery_photography_studio_platform/code.html';
+    });
+</script>
+<script src="../shared-nav.js?v=8"></script>
+</body></html>

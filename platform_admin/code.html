@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InGallery Platform Admin</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <script>tailwind.config={darkMode:'class',theme:{extend:{colors:{background:'#121414',surface:'#1e2020',panel:'#191b1b',secondary:'#e9c349',onsecondary:'#3c2f00',muted:'#c4c7c7',outline:'#444748',error:'#ffb4ab',success:'#4edea3'},fontFamily:{sans:['Inter','sans-serif'],display:['Playfair Display','serif']}}}}</script>
+<style>body{background:#121414;color:#e2e2e2}.admin-tab{display:flex;align-items:center;gap:.75rem;width:100%;padding:.8rem .9rem;border:0;border-left:2px solid transparent;text-align:left;color:#c4c7c7}.admin-tab[aria-selected="true"]{color:#e9c349;border-left-color:#e9c349;background:#252727}.admin-section[hidden]{display:none}input,select{background:#121414!important;border-color:#444748!important;color:#e2e2e2!important}th{text-align:left;color:#c4c7c7;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:600}td,th{padding:.8rem .7rem;border-bottom:1px solid rgba(255,255,255,.08);vertical-align:top}.action{border:1px solid #e9c349;color:#e9c349;padding:.55rem .85rem;font-size:.8rem;font-weight:600}.action:hover{background:#e9c349;color:#121414}.card{background:#191b1b;border:1px solid rgba(255,255,255,.08);padding:1.1rem}.label{display:block;color:#c4c7c7;font-size:.73rem;margin-bottom:.35rem}.field{width:100%;padding:.55rem .65rem;border:1px solid #444748}.table-wrap{overflow-x:auto}.feature-check{display:flex;align-items:center;gap:.5rem;color:#c4c7c7;font-size:.8rem}.feature-check input{accent-color:#e9c349}.admin-dialog{background:#191b1b;color:#e2e2e2;border:1px solid #444748;width:min(42rem,calc(100vw - 2rem));padding:1.4rem}.admin-dialog::backdrop{background:#000b;backdrop-filter:blur(3px)}@media(max-width:767px){.admin-tab{width:auto;white-space:nowrap}.admin-sidebar{width:100%;border-right:0;border-bottom:1px solid rgba(255,255,255,.1)}.admin-nav{display:flex;overflow-x:auto}.admin-layout{display:block!important}.admin-main{padding:1.1rem!important}}</style>
+<style>@media(max-width:767px){.admin-sidebar{position:relative!important;height:auto!important;width:100%!important}}</style>
+</head>
+<body class="min-h-screen font-sans">
+<div class="admin-layout flex min-h-screen">
+  <aside class="admin-sidebar sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r border-white/10 bg-panel p-4">
+    <div class="mb-8 px-3 pt-3"><div class="font-display text-xl text-secondary">InGallery</div><div class="mt-1 text-xs uppercase tracking-[.18em] text-muted">Platform admin</div></div>
+    <nav class="admin-nav flex flex-1 flex-col gap-1" aria-label="Admin sections">
+      <button class="admin-tab" aria-selected="true" data-tab="overview"><span class="material-symbols-outlined">dashboard</span>Overview</button>
+      <button class="admin-tab" aria-selected="false" data-tab="users"><span class="material-symbols-outlined">photo_camera</span>Photographers</button>
+      <button class="admin-tab" aria-selected="false" data-tab="plans"><span class="material-symbols-outlined">deployed_code</span>Packages</button>
+      <button class="admin-tab" aria-selected="false" data-tab="payments"><span class="material-symbols-outlined">payments</span>Platform gateway</button>
+      <button class="admin-tab" aria-selected="false" data-tab="revenue"><span class="material-symbols-outlined">monitoring</span>Revenue</button>
+      <button class="admin-tab" aria-selected="false" data-tab="logs"><span class="material-symbols-outlined">troubleshoot</span>System logs</button>
+    </nav>
+    <div class="border-t border-white/10 px-3 pt-4 text-xs text-muted">System owner console</div>
+  </aside>
+  <div class="min-w-0 flex-1">
+  <header class="sticky top-0 z-10 border-b border-white/10 bg-background/95 backdrop-blur">
+    <div class="mx-auto flex max-w-screen-2xl items-center justify-between px-5 py-4 lg:px-10">
+      <div class="flex items-center gap-4"><span id="admin-email" class="hidden text-sm text-muted sm:inline"></span><button id="sign-out" class="action">Sign out</button></div>
+    </div>
+  </header>
+  <main class="mx-auto max-w-screen-2xl px-5 py-8 lg:px-10">
+    <div class="mb-8"><h1 class="font-display text-3xl">System overview</h1><p class="mt-2 text-sm text-muted">Manage photographers, packages, platform payments, revenue, and service activity.</p></div>
+    <div id="admin-message" role="status" class="mb-5 text-sm text-error"></div>
+    <section class="admin-section" data-section="overview">
+      <div id="metrics" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4"></div>
+      <div class="mt-4 grid gap-4 xl:grid-cols-2"><div class="card"><h2 class="font-display text-xl">Service health</h2><p id="health" class="mt-3 text-sm text-muted">Loading health data...</p><p class="mt-2 text-xs text-muted">Traffic and errors are counted from logged API requests over the last 24 hours.</p></div><div class="card"><h2 class="font-display text-xl">Package revenue by currency</h2><div id="overview-revenue" class="mt-3 grid gap-2 sm:grid-cols-2"></div></div></div>
+      <div class="mt-4 grid gap-4 xl:grid-cols-2"><div class="card"><h2 class="font-display text-xl">Latest package payments</h2><div id="overview-payments" class="mt-3 space-y-3 text-sm text-muted">Loading payments...</div></div><div class="card"><h2 class="font-display text-xl">Latest system issues</h2><div id="overview-issues" class="mt-3 space-y-3 text-sm text-muted">Loading issues...</div></div></div>
+    </section>
+    <section class="admin-section" data-section="users" hidden>
+      <div class="mb-4 flex items-center justify-between"><h2 class="font-display text-2xl">Photographer accounts</h2><button class="action" data-reload="users">Refresh</button></div>
+      <div class="table-wrap card"><table class="w-full min-w-[1100px]"><thead><tr><th>Photographer</th><th>Studio</th><th>Joined</th><th>Last sign in</th><th>Package</th><th>Account</th><th>Actions</th></tr></thead><tbody id="users-table"><tr><td colspan="7">Loading accounts...</td></tr></tbody></table></div>
+      <div class="mt-3 flex items-center justify-between text-sm text-muted"><span id="users-page-label"></span><div class="flex gap-2"><button class="action" id="users-prev">Previous</button><button class="action" id="users-next">Next</button></div></div>
+    </section>
+    <section class="admin-section" data-section="plans" hidden>
+      <div class="mb-4 flex items-center justify-between"><h2 class="font-display text-2xl">Packages</h2><button class="action" data-reload="plans">Refresh</button></div>
+      <div id="plans-list" class="grid gap-4 xl:grid-cols-2"></div>
+      <form id="new-plan-form" class="card mt-6"><h3 class="mb-4 font-display text-xl">Add package</h3><div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <label><span class="label">Name</span><input class="field" name="name" required maxlength="80"></label><label><span class="label">Price</span><input class="field" name="price" type="number" min="0" step="0.01" required></label>
+        <label><span class="label">Currency</span><select class="field" name="currency"><option>TZS</option><option>USD</option></select></label><label><span class="label">Billing period</span><select class="field" name="billingInterval"><option value="month">Monthly</option><option value="year">Yearly</option><option value="lifetime">Lifetime</option></select></label><label><span class="label">Storage (GB)</span><input class="field" name="storageGB" type="number" min="0" step="1" required></label>
+        <label><span class="label">Team members</span><input class="field" name="maxUsers" type="number" min="1" required></label><label><span class="label">Active galleries (0 = unlimited)</span><input class="field" name="maxProjects" type="number" min="0" required></label><label><span class="label">Photos per gallery</span><input class="field" name="maxPhotosPerGallery" type="number" min="0" required></label><label><span class="label">Watermarks</span><select class="field" name="watermarkLevel"><option value="basic">Basic</option><option value="advanced">Advanced</option></select></label><label><span class="label">Support</span><select class="field" name="supportLevel"><option value="standard">Standard</option><option value="priority">Priority</option></select></label><label><span class="label">Status</span><select class="field" name="status"><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+      </div><fieldset class="mt-4 border-t border-white/10 pt-4"><legend class="mb-2 text-sm text-secondary">Included features</legend><div id="new-plan-features" class="grid gap-2 sm:grid-cols-2"></div></fieldset><button class="action mt-4">Create package</button></form>
+    </section>
+    <section class="admin-section" data-section="payments" hidden>
+      <div class="mb-4"><h2 class="font-display text-2xl">Platform package payments</h2><p class="mt-2 text-sm text-muted">These credentials collect InGallery package fees. Photographer gallery-payment credentials remain separate.</p></div>
+      <div id="gateway-status" class="card mb-4 text-sm text-muted">Loading gateway status...</div>
+      <form id="gateway-form" class="card max-w-3xl">
+        <div class="grid gap-4 sm:grid-cols-2"><label><span class="label">Provider</span><select class="field" name="provider" id="gateway-provider"><option value="clickpesa">ClickPesa</option><option value="malipo">Malipo by Tunzaa</option><option value="stakaba">Stakaba</option></select></label>
+          <label><span class="label">Environment</span><select class="field" name="environment"><option value="production">Production</option><option value="sandbox">Sandbox</option></select></label></div>
+        <div id="gateway-credentials" class="mt-4 grid gap-4 sm:grid-cols-2"></div>
+        <div class="mt-5 flex flex-wrap gap-3"><button type="button" id="test-gateway" class="action">Test connection</button><button class="action">Save gateway</button></div>
+      </form>
+    </section>
+    <section class="admin-section" data-section="revenue" hidden>
+      <div class="mb-4 flex items-center justify-between"><div><h2 class="font-display text-2xl">Revenue</h2><p class="mt-2 text-sm text-muted">Platform package payment history. Overview totals include verified successful payments only.</p></div><button class="action" data-reload="revenue">Refresh</button></div>
+      <div class="table-wrap card"><table class="w-full min-w-[850px]"><thead><tr><th>Date</th><th>Type</th><th>Reference</th><th>Source</th><th>Amount</th><th>Status</th></tr></thead><tbody id="revenue-table"><tr><td colspan="6">Loading revenue...</td></tr></tbody></table></div>
+    </section>
+    <section class="admin-section" data-section="logs" hidden>
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3"><div><h2 class="font-display text-2xl">System logs and traffic</h2><p class="mt-2 text-sm text-muted">Recent API request outcomes. Request bodies, passwords, and authorization headers are not stored.</p></div><div class="flex gap-2"><select id="log-level" class="field"><option value="all">All activity</option><option value="error">Errors</option><option value="warning">Warnings</option><option value="info">Successful</option></select><button class="action" data-reload="logs">Refresh</button></div></div>
+      <div class="table-wrap card"><table class="w-full min-w-[1000px]"><thead><tr><th>Time</th><th>Level</th><th>Request</th><th>Status</th><th>Duration</th><th>Explanation and suggested action</th></tr></thead><tbody id="logs-table"><tr><td colspan="6">Loading logs...</td></tr></tbody></table></div>
+    </section>
+  </main>
+  </div>
+  <dialog id="photographer-dialog" class="admin-dialog"><form id="photographer-form"><div class="mb-5 flex items-center justify-between"><h2 class="font-display text-2xl">Edit photographer</h2><button type="button" class="action" id="close-photographer-dialog">Close</button></div><input type="hidden" name="userId"><label class="mb-3 block"><span class="label">Name</span><input class="field" name="name" required maxlength="100"></label><label class="mb-3 block"><span class="label">Email</span><input class="field" name="email" type="email" required></label><label class="mb-3 block"><span class="label">Studio name</span><input class="field" name="studioName" maxlength="120"></label><label class="mb-3 block"><span class="label">Package</span><select class="field" name="planId" id="photographer-plan"></select></label><label class="mb-5 flex items-center gap-2 text-sm"><input type="checkbox" name="active"> Account active</label><div class="flex justify-end gap-2"><button class="action">Save photographer</button></div></form></dialog>
+  </div>
+  <script type="module" src="./admin.ts"></script>
+</body>
+</html>
