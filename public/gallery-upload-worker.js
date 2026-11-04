@@ -2,6 +2,7 @@ const DATABASE_NAME = 'ingallery-background-uploads';
 const JOBS_STORE = 'jobs';
 const FILES_STORE = 'files';
 const runningJobs = new Set();
+const MAX_CONCURRENT_PHOTO_UPLOADS = 3;
 
 const openDatabase = () => new Promise((resolve, reject) => {
   const request = indexedDB.open(DATABASE_NAME, 1);
@@ -213,15 +214,47 @@ const processJob = async (jobId) => {
       await updateJob(job, { stage: 'photos', currentFile: '' });
     }
 
-    for (let index = job.uploadedPhotos; index < job.photoCount; index += 1) {
-      const photo = await readStoredFile(`${job.id}:photo:${index}`);
-      if (!photo) throw new Error('A selected photo is unavailable');
-      await updateJob(job, { stage: 'photo', currentFile: photo.name });
-      await getAuthorizedUpload(job, photo);
-      job.uploadedPhotos = index + 1;
-      await deleteStoredFile(`${job.id}:photo:${index}`);
-      await updateJob(job, { uploadedPhotos: job.uploadedPhotos });
-    }
+    const uploadedPhotoIndexes = new Set(Array.isArray(job.uploadedPhotoIndexes)
+      ? job.uploadedPhotoIndexes
+      : Array.from({ length: Math.min(Number(job.uploadedPhotos) || 0, job.photoCount) }, (_, index) => index));
+    job.uploadedPhotoIndexes = Array.from(uploadedPhotoIndexes);
+    job.uploadedPhotos = uploadedPhotoIndexes.size;
+    const pendingPhotoIndexes = Array.from({ length: job.photoCount }, (_, index) => index)
+      .filter((index) => !uploadedPhotoIndexes.has(index));
+    let nextPhotoPosition = 0;
+    let firstUploadError = null;
+    const uploadNextPhoto = async () => {
+      while (!firstUploadError) {
+        const photoPosition = nextPhotoPosition++;
+        if (photoPosition >= pendingPhotoIndexes.length) return;
+        const index = pendingPhotoIndexes[photoPosition];
+        try {
+          const photo = await readStoredFile(`${job.id}:photo:${index}`);
+          if (!photo) throw new Error('A selected photo is unavailable');
+          await updateJob(job, {
+            stage: 'photo',
+            currentFile: `up to ${Math.min(MAX_CONCURRENT_PHOTO_UPLOADS, pendingPhotoIndexes.length)} photos in parallel`
+          });
+          await getAuthorizedUpload(job, photo);
+
+          uploadedPhotoIndexes.add(index);
+          job.uploadedPhotoIndexes = Array.from(uploadedPhotoIndexes).sort((left, right) => left - right);
+          job.uploadedPhotos = uploadedPhotoIndexes.size;
+          await updateJob(job, {
+            stage: 'photo',
+            uploadedPhotos: job.uploadedPhotos,
+            uploadedPhotoIndexes: job.uploadedPhotoIndexes,
+            currentFile: `up to ${Math.min(MAX_CONCURRENT_PHOTO_UPLOADS, pendingPhotoIndexes.length)} photos in parallel`
+          });
+          await deleteStoredFile(`${job.id}:photo:${index}`).catch(() => {});
+        } catch (error) {
+          firstUploadError ??= error;
+        }
+      }
+    };
+    const workerCount = Math.min(MAX_CONCURRENT_PHOTO_UPLOADS, pendingPhotoIndexes.length);
+    await Promise.all(Array.from({ length: workerCount }, () => uploadNextPhoto()));
+    if (firstUploadError) throw firstUploadError;
 
     await updateJob(job, {
       status: 'complete',
@@ -273,6 +306,7 @@ self.addEventListener('message', (event) => {
           photoCount: incoming.photoCount,
           stagedPhotos: 0,
           uploadedPhotos: 0,
+          uploadedPhotoIndexes: [],
           hasCover: incoming.hasCover,
           coverName: incoming.coverName,
           coverStaged: !incoming.hasCover,

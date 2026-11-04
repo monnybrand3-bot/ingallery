@@ -992,7 +992,7 @@
                 }
             });
 
-            const filesPerQueueMessage = 1;
+            const filesPerQueueMessage = 4;
             const queueMessageCount = Math.max(1, Math.ceil(photoFiles.length / filesPerQueueMessage));
             for (let batchIndex = 0; batchIndex < queueMessageCount; batchIndex += 1) {
                 const startIndex = batchIndex * filesPerQueueMessage;
