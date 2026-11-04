@@ -48,7 +48,7 @@ Paid access is granted per verified order, not by making the gallery public. The
 
 1. The authenticated API checks gallery ownership and tenant quota, reserves the original file size, and returns a short-lived signed R2 PUT URL.
 2. The browser uploads the original bytes directly to R2. Object keys are tenant/gallery scoped and include a random identifier; the original is not recompressed or overwritten.
-   The browser stages selected files in small batches and uploads up to three original photos concurrently to reduce per-file wait time without reducing image quality.
+   The browser stages selected files in small batches and uploads up to four original photos concurrently to reduce per-file wait time without reducing image quality.
 3. The API verifies the uploaded object and reservation, records the original metadata, and enqueues variant work. The request does not wait for image decoding/resizing.
 4. A bounded API-side background queue uses Sharp to create WebP preview (max 380×480), medium (max 1200×1500), and large (max 2000×2500) variants. It stores them under separate immutable keys beside the original and tracks `queued`, `processing`, `ready`, or `failed` in `gallery_images`.
    Standalone gallery covers are also converted asynchronously to a separate WebP cover preview; choosing a gallery photo as the cover reuses that photo's generated preview.

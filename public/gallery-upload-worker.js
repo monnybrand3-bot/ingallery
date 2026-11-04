@@ -2,7 +2,7 @@ const DATABASE_NAME = 'ingallery-background-uploads';
 const JOBS_STORE = 'jobs';
 const FILES_STORE = 'files';
 const runningJobs = new Set();
-const MAX_CONCURRENT_PHOTO_UPLOADS = 3;
+const MAX_CONCURRENT_PHOTO_UPLOADS = 4;
 
 const openDatabase = () => new Promise((resolve, reject) => {
   const request = indexedDB.open(DATABASE_NAME, 1);
@@ -233,7 +233,7 @@ const processJob = async (jobId) => {
           if (!photo) throw new Error('A selected photo is unavailable');
           await updateJob(job, {
             stage: 'photo',
-            currentFile: `up to ${Math.min(MAX_CONCURRENT_PHOTO_UPLOADS, pendingPhotoIndexes.length)} photos in parallel`
+            currentFile: 'photos'
           });
           await getAuthorizedUpload(job, photo);
 
@@ -244,7 +244,7 @@ const processJob = async (jobId) => {
             stage: 'photo',
             uploadedPhotos: job.uploadedPhotos,
             uploadedPhotoIndexes: job.uploadedPhotoIndexes,
-            currentFile: `up to ${Math.min(MAX_CONCURRENT_PHOTO_UPLOADS, pendingPhotoIndexes.length)} photos in parallel`
+            currentFile: 'photos'
           });
           await deleteStoredFile(`${job.id}:photo:${index}`).catch(() => {});
         } catch (error) {
