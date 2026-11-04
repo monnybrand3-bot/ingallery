@@ -13,6 +13,15 @@
   const page = window.location.pathname;
   const isClientFacingPage = /public_gallery_unpaid|client_checkout_flow|payment_pending_status/.test(page);
   const prefix = '/';
+  if (!isClientFacingPage) {
+    let session = null;
+    try { session = JSON.parse(window.localStorage.getItem('ingallery:session') || 'null'); } catch {}
+    if (!session?.isAuthenticated || !session?.accessToken) {
+      document.documentElement.style.visibility = 'hidden';
+      window.location.replace(`${prefix}index.html`);
+      return;
+    }
+  }
   const resolveApiBaseUrl = () => {
     const configured = (window.INGALLERY_API_BASE_URL || 'http://localhost:8787').replace(/\/$/, '');
     return configured;
@@ -117,10 +126,12 @@
     'back to galleries': `${prefix}ingallery_photography_studio_platform/code.html`,
     'client access': `${prefix}client_detail_view/code.html`
   };
-  document.querySelectorAll('a').forEach((link) => {
-    const label = (link.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
-    if (link.getAttribute('href') === '#' && pageLinks[label]) link.setAttribute('href', pageLinks[label]);
-  });
+  if (!isClientFacingPage) {
+    document.querySelectorAll('a').forEach((link) => {
+      const label = (link.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      if (link.getAttribute('href') === '#' && pageLinks[label]) link.setAttribute('href', pageLinks[label]);
+    });
+  }
 
   let sidebar = null;
   if (!isClientFacingPage) {
