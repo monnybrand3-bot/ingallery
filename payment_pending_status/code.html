@@ -147,10 +147,10 @@
 </svg>
 <span class="material-symbols-outlined absolute inset-0 flex items-center justify-center text-secondary text-4xl" data-icon="mobile_friendly" style="font-variation-settings: 'FILL' 1;">mobile_friendly</span>
 </div>
-<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4">Package Payment in Progress</h1>
+<h1 data-payment-heading class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background mb-4">Payment in Progress</h1>
 <!-- Plan Summary Card -->
 <div class="w-full bg-surface-container-low/50 border border-outline-variant/10 p-6 mb-8 flex flex-col gap-2">
-<div class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Package Summary</div>
+<div data-summary-label class="font-label-sm text-label-sm text-outline uppercase tracking-widest">Payment Summary</div>
 <div class="font-body-lg text-body-lg text-on-background truncate" data-order-title>Loading package...</div>
 <div class="font-headline-sm text-headline-sm text-secondary mt-2" data-order-amount>Loading amount...</div>
 </div>
@@ -160,7 +160,7 @@
 <span class="font-label-md text-label-md" data-payment-status>Waiting for confirmation...</span>
 </div>
 <!-- Secondary Actions -->
-<div class="flex flex-col gap-4 w-full">
+<div data-payment-secondary-actions class="flex flex-col gap-4 w-full">
 <button class="font-label-md text-label-md text-on-background border border-outline-variant/30 hover:border-outline-variant py-4 transition-colors uppercase tracking-widest w-full hover:bg-surface-container-low">Resend Package Payment Request</button>
 <button class="font-label-md text-label-md text-on-surface-variant hover:text-on-background transition-colors w-full py-2">Change Payment Phone Number</button>
 </div>
@@ -178,14 +178,24 @@
 
     const params = new URLSearchParams(window.location.search);
     const transactionId = params.get('transactionId');
+    const paymentProvider = params.get('provider') || '';
     let pendingPayment = null;
     try { pendingPayment = JSON.parse(sessionStorage.getItem('ingallery:pending-package-payment') || 'null'); } catch {}
-    const isPackagePayment = params.get('type') === 'package' || Boolean(pendingPayment?.orderReference && !params.has('galleryId') && !params.has('gallery'));
-    const orderReference = params.get('reference') || pendingPayment?.orderReference || '';
+    let pendingGalleryPayment = null;
+    try { pendingGalleryPayment = JSON.parse(sessionStorage.getItem('ingallery:pending-gallery-payment') || 'null'); } catch {}
+    const galleryId = params.get('galleryId') || pendingGalleryPayment?.galleryId || '';
+    const galleryTitle = params.get('gallery') || pendingGalleryPayment?.galleryTitle || '';
+    const isPackagePayment = params.get('type') === 'package' || Boolean(pendingPayment?.orderReference && !galleryId);
+    const orderReference = params.get('reference') || pendingGalleryPayment?.orderReference || pendingPayment?.orderReference || '';
     const packageName = params.get('package') || pendingPayment?.packageName || pendingPayment?.name || '';
     const titleNode = document.querySelector('[data-order-title]');
     const amountNode = document.querySelector('[data-order-amount]');
     const statusNode = document.querySelector('[data-payment-status]');
+    if (galleryId) {
+        document.querySelector('[data-payment-heading]').textContent = 'Gallery Payment in Progress';
+        document.querySelector('[data-summary-label]').textContent = 'Gallery Summary';
+        document.querySelector('[data-payment-secondary-actions]')?.remove();
+    }
 
     const formatAmount = (amount, currency = 'TZS') => {
         const formatted = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(amount ?? 0));
@@ -201,9 +211,9 @@
     };
 
     const updateSummary = () => {
-        if (titleNode) titleNode.textContent = packageName || 'Selected package';
-        const amount = params.get('amount') || pendingPayment?.amount;
-        const currency = params.get('currency') || pendingPayment?.currency || 'TZS';
+        if (titleNode) titleNode.textContent = galleryId ? galleryTitle || 'Selected gallery' : packageName || 'Selected package';
+        const amount = params.get('amount') || pendingGalleryPayment?.amount || pendingPayment?.amount;
+        const currency = params.get('currency') || pendingGalleryPayment?.currency || pendingPayment?.currency || 'TZS';
         if (amountNode) amountNode.textContent = amount == null ? 'Amount unavailable' : formatAmount(amount, currency);
     };
 
@@ -212,14 +222,14 @@
 
     const pollPayment = async () => {
         if (!transactionId && !orderReference) {
-            if (statusNode) statusNode.textContent = 'Missing payment reference for this package.';
+            if (statusNode) statusNode.textContent = 'Missing payment reference.';
             return;
         }
 
         try {
             const statusUrl = isPackagePayment
                 ? `${getApiBaseUrl()}/api/platform/payments/orders/${encodeURIComponent(orderReference)}/status`
-                : transactionId
+                : transactionId && paymentProvider !== 'clickpesa'
                     ? `${getApiBaseUrl()}/api/payments/malipo/status/${encodeURIComponent(transactionId)}`
                     : `${getApiBaseUrl()}/api/payments/orders/${encodeURIComponent(orderReference)}/status`;
             const response = await fetch(statusUrl);
@@ -236,6 +246,16 @@
                 const accessToken = payload?.data?.accessToken;
                 if (!accessToken) {
                     if (statusNode) statusNode.textContent = 'Payment confirmed, but package access could not be issued. Contact support.';
+                    return;
+                }
+                if (galleryId) {
+                    try { sessionStorage.setItem(`ingallery:paid-gallery:${galleryId}`, accessToken); } catch {}
+                    try { sessionStorage.removeItem('ingallery:pending-gallery-payment'); } catch {}
+                    if (statusNode) statusNode.textContent = 'Payment confirmed. Opening your gallery...';
+                    const galleryUrl = new URL('/public_gallery_unpaid/code.html', window.location.origin);
+                    galleryUrl.searchParams.set('galleryId', galleryId);
+                    if (galleryTitle) galleryUrl.searchParams.set('gallery', galleryTitle);
+                    window.setTimeout(() => window.location.replace(galleryUrl.toString()), 650);
                     return;
                 }
                 if (statusNode) statusNode.textContent = 'Package payment confirmed.';

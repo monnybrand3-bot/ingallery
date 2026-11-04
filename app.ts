@@ -143,6 +143,12 @@ export interface CheckoutLink {
   transactionId?: string;
 }
 
+export interface PublicGalleryPaymentOptions {
+  provider: TenantPaymentProvider | null;
+  supportsMobileMoneyPush: boolean;
+  supportsOtherMethods: boolean;
+}
+
 export type TenantPaymentProvider = 'clickpesa' | 'malipo' | 'stakaba';
 
 export interface TenantPaymentSettings {
@@ -620,7 +626,8 @@ export interface ApiService {
   setCoverVideo: (galleryId: string, video: { youtubeUrl?: string; storagePath?: string; mimeType?: string; fileSize?: number; clear?: boolean }) => Promise<ApiResponse<unknown>>;
   getPublicGallery: (slug: string, accessToken?: string) => Promise<ApiResponse<PublicGalleryRecord>>;
   getPublicGalleryImages: (slug: string, offset: number, accessToken?: string) => Promise<ApiResponse<PublicGalleryImagesPage>>;
-  createCheckout: (galleryId: string, customer: { name?: string; email: string; phone: string; network?: string }) => Promise<ApiResponse<CheckoutLink>>;
+  getPublicGalleryPaymentOptions: (galleryId: string) => Promise<ApiResponse<PublicGalleryPaymentOptions>>;
+  createCheckout: (galleryId: string, customer: { name?: string; email: string; phone: string; network?: string; paymentMethod?: 'mobile_money' | 'other' }) => Promise<ApiResponse<CheckoutLink>>;
   login: (email: string, password: string) => Promise<ApiResponse<UserSession | null>>;
   signup: (email: string, password: string, name: string) => Promise<ApiResponse<UserSession | null>>;
   requestPasswordRecovery: (email: string) => Promise<ApiResponse<{ sent: boolean }>>;
@@ -823,6 +830,7 @@ export const createApiService = (baseUrl: string): ApiService => {
       `/api/public/galleries/${encodeURIComponent(slug)}/images?offset=${encodeURIComponent(String(offset))}`,
       { headers: accessToken ? { 'X-Gallery-Access-Token': accessToken } : undefined }
     ),
+    getPublicGalleryPaymentOptions: (galleryId) => request<PublicGalleryPaymentOptions>(`/api/public/galleries/${encodeURIComponent(galleryId)}/payment-options`),
     createCheckout: (galleryId, customer) => request<CheckoutLink>('/api/payments/initiate', {
       method: 'POST',
       body: JSON.stringify({
@@ -830,7 +838,8 @@ export const createApiService = (baseUrl: string): ApiService => {
         customerName: customer.name,
         customerEmail: customer.email,
         customerPhone: customer.phone,
-        network: customer.network
+        network: customer.network,
+        paymentMethod: customer.paymentMethod
       })
     }),
     login: async (email, password) => {

@@ -66,6 +66,7 @@ interface CheckoutBody {
   customerEmail?: string;
   customerPhone?: string;
   network?: string;
+  paymentMethod?: 'mobile_money' | 'other';
 }
 
 interface PaymentSettingsBody {
@@ -4313,10 +4314,29 @@ const normalizeStakabaPhone = (value: string): string => {
   return digits.length === 9 ? `255${digits}` : digits;
 };
 
+app.get('/api/public/galleries/:galleryId/payment-options', rateLimiter(60, 15 * 60 * 1000), async (request: Request, response: Response) => {
+  const galleryId = String(request.params.galleryId);
+  const { data: gallery, error } = await supabase.from('galleries').select('id, owner_id, currency').eq('id', galleryId).maybeSingle();
+  if (error || !gallery) { response.status(404).json({ ok: false, message: 'Gallery not found.' }); return; }
+  try {
+    const tenantContext = await ensureTenantForUser(gallery.owner_id);
+    const configuration = await loadTenantPaymentConfiguration(tenantContext.tenantId);
+    const provider = configuration?.provider ?? null;
+    response.json({ ok: true, data: {
+      provider,
+      supportsMobileMoneyPush: provider === 'clickpesa' && gallery.currency === 'TZS',
+      supportsOtherMethods: provider === 'clickpesa'
+    } });
+  } catch (error) {
+    console.error('public_gallery_payment_options_failed', error);
+    response.status(503).json({ ok: false, message: 'Unable to load the gallery payment options.' });
+  }
+});
+
 const initiateGalleryPayment = async (request: Request, response: Response): Promise<void> => {
   const body = request.body as CheckoutBody;
   if (!body.galleryId || !body.customerPhone) { response.status(400).json({ ok: false, message: 'Gallery and customer phone are required' }); return; }
-  const { data: gallery, error: galleryError } = await supabase.from('galleries').select('id, owner_id, title, access_price, currency, is_unlocked').eq('id', body.galleryId).single();
+  const { data: gallery, error: galleryError } = await supabase.from('galleries').select('id, owner_id, title, slug, access_price, currency, is_unlocked').eq('id', body.galleryId).single();
   if (galleryError || !gallery) { response.status(404).json({ ok: false, message: 'Gallery not found' }); return; }
   if (Number(gallery.access_price) <= 0) { response.status(409).json({ ok: false, message: 'This gallery is free and does not require checkout.' }); return; }
 
@@ -4381,12 +4401,67 @@ const initiateGalleryPayment = async (request: Request, response: Response): Pro
       pendingUrl.searchParams.set('transactionId', paymentBody.transactionID);
       pendingUrl.searchParams.set('galleryId', gallery.id);
       pendingUrl.searchParams.set('gallery', gallery.title);
+      pendingUrl.searchParams.set('amount', String(order.amount));
+      pendingUrl.searchParams.set('currency', order.currency);
       response.status(202).json({ ok: true, data: { orderReference, transactionId: paymentBody.transactionID, checkoutUrl: pendingUrl.toString() } });
       return;
     }
 
     if (tenantConfiguration.provider === 'clickpesa' && tenantConfiguration.credentials.provider === 'clickpesa') {
       const token = await getClickPesaToken(tenantConfiguration.credentials);
+      if (body.paymentMethod === 'mobile_money') {
+        if (gallery.currency !== 'TZS') throw new Error('Mobile money phone prompts are available for TZS galleries. Choose another payment method.');
+        const phoneNumber = normalizeStakabaPhone(body.customerPhone);
+        if (!/^255\d{9}$/.test(phoneNumber)) throw new Error('Enter a valid Tanzanian mobile number starting with +255.');
+        const previewPayload: Record<string, unknown> = {
+          amount: String(order.amount),
+          currency: 'TZS',
+          orderReference,
+          phoneNumber,
+          fetchSenderDetails: false
+        };
+        if (tenantConfiguration.credentials.checksumKey) {
+          previewPayload.checksum = createClickPesaChecksum(tenantConfiguration.credentials.checksumKey, previewPayload);
+        }
+        const previewResponse = await fetch('https://api.clickpesa.com/third-parties/payments/preview-ussd-push-request', {
+          method: 'POST',
+          headers: { Authorization: token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(previewPayload)
+        });
+        const previewBody = await previewResponse.json() as { activeMethods?: Array<{ status?: string; name?: string }>; sender?: { accountProvider?: string }; message?: string };
+        if (!previewResponse.ok) throw new Error(previewBody.message ?? 'ClickPesa could not validate this mobile number for payment.');
+        const pushPayload: Record<string, unknown> = {
+          amount: String(order.amount),
+          currency: 'TZS',
+          orderReference,
+          phoneNumber
+        };
+        if (tenantConfiguration.credentials.checksumKey) {
+          pushPayload.checksum = createClickPesaChecksum(tenantConfiguration.credentials.checksumKey, pushPayload);
+        }
+        const pushResponse = await fetch('https://api.clickpesa.com/third-parties/payments/initiate-ussd-push-request', {
+          method: 'POST',
+          headers: { Authorization: token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(pushPayload)
+        });
+        const pushBody = await pushResponse.json() as { id?: string; status?: string; channel?: string; orderReference?: string; message?: string };
+        if (!pushResponse.ok || !pushBody.id) throw new Error(pushBody.message ?? 'ClickPesa could not send a payment prompt to this phone.');
+        const { error: updateError } = await supabase.from('orders').update({
+          payment_reference: pushBody.id,
+          provider_payload: { ...pushBody, detectedChannel: previewBody.sender?.accountProvider ?? pushBody.channel, activeMethods: previewBody.activeMethods ?? [] },
+          updated_at: new Date().toISOString()
+        }).eq('id', order.id);
+        if (updateError) throw updateError;
+        const pendingUrl = new URL('/payment_pending_status/code.html', resolveFrontendOrigin(request));
+        pendingUrl.searchParams.set('reference', orderReference);
+        pendingUrl.searchParams.set('galleryId', gallery.id);
+        pendingUrl.searchParams.set('gallery', gallery.title);
+        pendingUrl.searchParams.set('amount', String(order.amount));
+        pendingUrl.searchParams.set('currency', order.currency);
+        pendingUrl.searchParams.set('provider', 'clickpesa');
+        response.status(202).json({ ok: true, data: { orderReference, transactionId: pushBody.id, checkoutUrl: pendingUrl.toString() } });
+        return;
+      }
       const callbackUrl = `${process.env.PUBLIC_API_BASE_URL ?? `http://localhost:${port}`}/api/payments/clickpesa/webhook`;
       const clickPesaResponse = await fetch('https://api.clickpesa.com/third-parties/checkout-link/generate-checkout-url', {
         method: 'POST',
@@ -4438,6 +4513,8 @@ const initiateGalleryPayment = async (request: Request, response: Response): Pro
       pendingUrl.searchParams.set('reference', orderReference);
       pendingUrl.searchParams.set('galleryId', gallery.id);
       pendingUrl.searchParams.set('gallery', gallery.title);
+      pendingUrl.searchParams.set('amount', String(order.amount));
+      pendingUrl.searchParams.set('currency', order.currency);
       response.status(202).json({ ok: true, data: { orderReference, transactionId: internalReference, checkoutUrl: pendingUrl.toString() } });
       return;
     }
