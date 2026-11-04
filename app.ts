@@ -42,6 +42,8 @@ export interface DashboardSnapshot {
   revenueByCurrency: Record<'TZS' | 'USD', number>;
   pendingByCurrency: Record<'TZS' | 'USD', number>;
   activeClients: number;
+  totalGalleries?: number;
+  activeGalleries?: number;
   recentGalleries: GallerySummary[];
 }
 
@@ -502,6 +504,8 @@ export const buildDefaultDashboardSnapshot = (): DashboardSnapshot => ({
   revenueByCurrency: { TZS: 0, USD: 0 },
   pendingByCurrency: { TZS: 0, USD: 0 },
   activeClients: 0,
+  totalGalleries: 0,
+  activeGalleries: 0,
   recentGalleries: []
 });
 
@@ -559,6 +563,13 @@ export const getApiBaseUrl = (): string => {
     return process.env.VITE_API_BASE_URL as string;
   }
 
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.local') || /^192\.168\./.test(hostname)) {
+      return `http://${hostname}:8787`;
+    }
+    return 'https://ingallery-bd.onrender.com';
+  }
   return 'http://localhost:8787';
 };
 
@@ -699,11 +710,7 @@ export const createApiService = (baseUrl: string): ApiService => {
 
   return {
     getDashboard: async () => {
-      try {
-        return await authorizedRequest<DashboardSnapshot>('/api/dashboard');
-      } catch {
-        return { ok: false, data: buildDefaultDashboardSnapshot(), message: 'Unable to load dashboard data' };
-      }
+      return authorizedRequest<DashboardSnapshot>('/api/dashboard');
     },
     getGalleries: () => authorizedRequest<GalleryRecord[]>('/api/galleries'),
     getGallery: (galleryId) => authorizedRequest<GalleryRecord>(`/api/galleries/${encodeURIComponent(galleryId)}`),

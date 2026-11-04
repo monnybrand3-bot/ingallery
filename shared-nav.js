@@ -747,25 +747,26 @@
   const updateSidebarStorage = async () => {
     try {
         if (isClientFacingPage) return;
-        let session = null;
-        try { session = JSON.parse(window.localStorage.getItem('ingallery:session') || 'null'); } catch {}
-        if (!session?.isAuthenticated || !session?.accessToken) return;
-        const response = await fetch(`${resolveApiBaseUrl()}/api/storage`, {
-          headers: { Authorization: `Bearer ${session.accessToken}` },
-          cache: 'no-store'
-        });
-        if (!response.ok) return;
-        const { data } = await response.json();
-        const used = data.totalUsedBytes || 0;
-        const limit = data.effectiveLimitBytes || 1;
-        const usedGB = (used / (1024**3)).toFixed(1);
-        const limitGB = (limit / (1024**3)).toFixed(1);
-        const percent = Math.min(100, Math.round((used / limit) * 100));
+        const session = JSON.parse(window.localStorage.getItem('ingallery:session') || 'null');
         const valueEl = document.querySelector('.ingallery-sidebar__storage-value');
         const fillEl = document.querySelector('.ingallery-sidebar__storage-fill');
+        if (!session?.isAuthenticated || !session?.accessToken) {
+          if (valueEl) valueEl.textContent = 'Sign in required';
+          return;
+        }
+        const { data } = await apiRequest('/api/storage', { cache: 'no-store' });
+        const used = data.totalUsedBytes || 0;
+        const limit = data.effectiveLimitBytes || 0;
+        const usedGB = (used / (1024**3)).toFixed(1);
+        const limitGB = (limit / (1024**3)).toFixed(1);
+        const percent = limit ? Math.min(100, Math.round((used / limit) * 100)) : 0;
         if (valueEl) valueEl.textContent = `${usedGB} / ${limitGB} GB`;
         if (fillEl) fillEl.style.width = `${percent}%`;
-    } catch (e) { console.error('Sidebar storage update failed', e); }
+    } catch (e) {
+      console.error('Sidebar storage update failed', e);
+      const valueEl = document.querySelector('.ingallery-sidebar__storage-value');
+      if (valueEl) valueEl.textContent = 'Unavailable';
+    }
   };
   updateSidebarStorage();
   setInterval(updateSidebarStorage, 60000);

@@ -430,11 +430,12 @@
                 const list = document.querySelector('[data-live-gallery-list]');
                 const showGalleryList = () => list?.classList.remove('hidden');
                 if (!getCurrentSession()?.accessToken) {
-                            if (list) list.innerHTML = signInGalleryState;
-                            showGalleryList();
-                        setText('[data-dashboard-total-galleries]', '0');
-                        setText('[data-dashboard-active-galleries]', '0');
-                        setText('[data-dashboard-revenue]', 'TZS 0');
+                        if (list) list.innerHTML = signInGalleryState;
+                        showGalleryList();
+                        setText('[data-dashboard-total-galleries]', '—');
+                        setText('[data-dashboard-active-galleries]', '—');
+                        setText('[data-dashboard-revenue]', 'Sign in required');
+                        setText('[data-dashboard-storage]', 'Sign in required');
                         return;
                 }
 
@@ -442,8 +443,8 @@
                         const response = await createApiService(getApiBaseUrl()).getDashboard();
                         if (!response.ok) throw new Error(response.message);
                         const snapshot = response.data;
-                        const totalGalleries = snapshot.recentGalleries.length;
-                        const activeGalleries = snapshot.recentGalleries.filter((gallery) => gallery.status === 'published').length;
+                        const totalGalleries = snapshot.totalGalleries ?? snapshot.recentGalleries.length;
+                        const activeGalleries = snapshot.activeGalleries ?? snapshot.recentGalleries.filter((gallery) => gallery.status === 'published').length;
                         setText('[data-dashboard-heading]', snapshot.studioName ? `Welcome back, ${snapshot.studioName}` : 'Overview');
                         setText('[data-dashboard-revenue]', formatCurrencyTotals(snapshot.revenueByCurrency));
                         setText('[data-dashboard-total-galleries]', String(totalGalleries));
@@ -521,7 +522,12 @@
                                 });
                         });
                         showGalleryList();
-                } catch {
+                } catch (error) {
+                        console.error('Unable to load dashboard data', error);
+                        setText('[data-dashboard-total-galleries]', 'Unavailable');
+                        setText('[data-dashboard-active-galleries]', 'Unavailable');
+                        setText('[data-dashboard-revenue]', 'Unavailable');
+                        setText('[data-dashboard-storage]', 'Unavailable');
                         if (list) list.innerHTML = '<p class="text-body-md text-error md:col-span-2">Unable to load dashboard data.</p>';
                         showGalleryList();
                 }
@@ -530,5 +536,5 @@
         window.addEventListener('ingallery:gallery-upload-complete', () => hydrateDashboard());
         hydrateDashboard();
 </script>
-<script src="../shared-nav.js?v=8"></script>
+<script src="../shared-nav.js?v=10"></script>
 </body></html>

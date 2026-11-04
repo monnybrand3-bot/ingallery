@@ -1119,11 +1119,13 @@ app.get('/api/dashboard', requireUser, async (request: AuthenticatedRequest, res
     extraBytes: tenantContext.extraBytes
   });
 
-  const [{ data: profile }, { data: plan }, { data: orders }, { count: activeClients }] = await Promise.all([
+  const [{ data: profile }, { data: plan }, { data: orders }, { count: activeClients }, { count: totalGalleries }, { count: activeGalleries }] = await Promise.all([
     supabase.from('profiles').select('studio_name, display_name').eq('id', request.userId).maybeSingle(),
     supabase.from('tenant_subscriptions').select('plans(name)').eq('tenant_id', tenantContext.tenantId).eq('status', 'active').order('starts_at', { ascending: false }).limit(1).maybeSingle(),
     supabase.from('orders').select('amount, currency, status').eq('owner_id', request.userId),
-    supabase.from('clients').select('id', { count: 'exact', head: true }).eq('owner_id', request.userId).eq('status', 'active')
+    supabase.from('clients').select('id', { count: 'exact', head: true }).eq('owner_id', request.userId).eq('status', 'active'),
+    supabase.from('galleries').select('id', { count: 'exact', head: true }).eq('owner_id', request.userId),
+    supabase.from('galleries').select('id', { count: 'exact', head: true }).eq('owner_id', request.userId).eq('status', 'published')
   ]);
   const revenueByCurrency: Record<'TZS' | 'USD', number> = { TZS: 0, USD: 0 };
   const pendingByCurrency: Record<'TZS' | 'USD', number> = { TZS: 0, USD: 0 };
@@ -1164,6 +1166,8 @@ app.get('/api/dashboard', requireUser, async (request: AuthenticatedRequest, res
       revenueByCurrency,
       pendingByCurrency,
       activeClients: activeClients ?? 0,
+      totalGalleries: totalGalleries ?? 0,
+      activeGalleries: activeGalleries ?? 0,
       recentGalleries
     }
   });
