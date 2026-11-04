@@ -418,17 +418,48 @@
     }
   }
 
-  const apiRequest = async (path, options = {}) => {
+  let sessionRefreshInFlight = null;
+  const refreshStoredSession = async () => {
     const session = JSON.parse(window.localStorage.getItem('ingallery:session') || 'null');
-        const apiBaseUrl = resolveApiBaseUrl();
-    let response;
-    try {
-      response = await fetch(`${apiBaseUrl}${path}`, {
+    if (!session?.refreshToken) return null;
+    if (!sessionRefreshInFlight) {
+      sessionRefreshInFlight = fetch(`${resolveApiBaseUrl()}/api/auth/refresh`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refreshToken: session.refreshToken })
+      }).then(async (response) => {
+        const result = await response.json();
+        if (!response.ok || !result.data?.accessToken) throw new Error(result.message || 'Session expired. Sign in again.');
+        const refreshed = { ...session, accessToken: result.data.accessToken, refreshToken: result.data.refreshToken };
+        window.localStorage.setItem('ingallery:session', JSON.stringify(refreshed));
+        return refreshed;
+      }).catch(() => {
+        window.localStorage.removeItem('ingallery:session');
+        return null;
+      }).finally(() => { sessionRefreshInFlight = null; });
+    }
+    return sessionRefreshInFlight;
+  };
+
+  const apiRequest = async (path, options = {}) => {
+    let session = JSON.parse(window.localStorage.getItem('ingallery:session') || 'null');
+    const apiBaseUrl = resolveApiBaseUrl();
+    const send = async () => {
+      let response;
+      try {
+        response = await fetch(`${apiBaseUrl}${path}`, {
         ...options,
         headers: { 'Content-Type': 'application/json', ...(session?.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {}), ...(options.headers || {}) }
       });
-    } catch {
-      throw new Error('InGallery API is offline. Configure .env, run npm run dev:server, and try again.');
+      } catch {
+        throw new Error('InGallery API is offline. Configure .env, run npm run dev:server, and try again.');
+      }
+      return response;
+    };
+    let response = await send();
+    if (response.status === 401 && session?.refreshToken) {
+      const refreshed = await refreshStoredSession();
+      if (refreshed) { session = refreshed; response = await send(); }
     }
     const result = await response.json();
     if (!response.ok) throw new Error(result.message || 'Request failed');

@@ -491,6 +491,7 @@ Loading gallery data...
         const result = await response.json();
         if (!response.ok || !result.ok) throw new Error(result.message || 'Unable to load photo reactions');
         Object.entries(result.data ?? {}).forEach(([id, state]) => interactionSummary.set(id, state));
+        Object.keys(result.data ?? {}).forEach(updateInteractionControls);
     };
     const likePhoto = async (imageId) => {
         const response = await fetch(`${getApiBaseUrl()}/api/public/galleries/${encodeURIComponent(activeGallerySlug)}/images/${encodeURIComponent(imageId)}/like`, {
@@ -795,11 +796,8 @@ Loading gallery data...
                 .filter((image) => image.processingStatus === 'ready' && image.previewUrl);
             const { previewImages, lockedImages } = partitionPublicGalleryImages(readyImages, gallery.isUnlocked);
             nextImageOffset = gallery.nextImageOffset;
-            try {
-                await loadInteractionSummary(gallery.slug, gallery.images.map((image) => image.id));
-            } catch (error) {
-                console.warn('Photo reaction counts are unavailable', error);
-            }
+            void loadInteractionSummary(gallery.slug, gallery.images.map((image) => image.id))
+                .catch((error) => console.warn('Photo reaction counts are unavailable', error));
             galleryTitleNodes.forEach((heading) => { heading.textContent = gallery.title; });
             if (galleryStudioName && gallery.studioName) galleryStudioName.textContent = gallery.studioName;
             if (galleryStudioLogo && gallery.studioLogoUrl) {
@@ -886,8 +884,9 @@ Loading gallery data...
                     try {
                         const page = await api.getPublicGalleryImages(activeGalleryRecord.slug, nextImageOffset, galleryAccessToken);
                         const pageData = page.data;
-                        await loadInteractionSummary(activeGalleryRecord.slug, pageData.images.map((image) => image.id));
                         renderGalleryImages(pageData.images, activeGalleryRecord.isUnlocked, true);
+                        void loadInteractionSummary(activeGalleryRecord.slug, pageData.images.map((image) => image.id))
+                            .catch((error) => console.warn('Photo reaction counts are unavailable', error));
                         nextImageOffset = pageData.nextOffset;
                         activeGalleryRecord.hasMoreImages = pageData.hasMore;
                         activeGalleryRecord.nextImageOffset = pageData.nextOffset;

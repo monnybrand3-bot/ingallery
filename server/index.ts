@@ -24,7 +24,7 @@ import {
 } from './storage.js';
 
 const PUBLIC_GALLERY_PREVIEW_LIMIT = 10;
-const PUBLIC_GALLERY_PAGE_SIZE = 60;
+const PUBLIC_GALLERY_PAGE_SIZE = 24;
 
 const archiverModule = createRequire(import.meta.url)('archiver') as {
   ZipArchive: new (options: { level: number }) => Archiver;
@@ -627,6 +627,20 @@ app.post('/api/auth/login', async (request: Request<unknown, unknown, AuthBody>,
   }
 
   response.status(401).json({ ok: false, message: error?.message ?? 'Unable to sign in' });
+});
+
+app.post('/api/auth/refresh', async (request: Request, response: Response) => {
+  const refreshToken = String(request.body?.refreshToken ?? '').trim();
+  if (!refreshToken) {
+    response.status(400).json({ ok: false, message: 'A refresh token is required.' });
+    return;
+  }
+  const { data, error } = await supabaseAuth.auth.refreshSession({ refresh_token: refreshToken });
+  if (error || !data.session) {
+    response.status(401).json({ ok: false, message: 'Session expired. Sign in again.' });
+    return;
+  }
+  response.json({ ok: true, data: { accessToken: data.session.access_token, refreshToken: data.session.refresh_token } });
 });
 
 app.post('/api/auth/password/request', rateLimiter(5, 15 * 60 * 1000), async (request: Request, response: Response) => {
@@ -2861,20 +2875,9 @@ app.get('/api/public/galleries/:slug', rateLimiter(100, 15 * 60 * 1000), async (
     return;
   }
 
-  const { count: actualImageCount, error: imageError } = await supabase
-    .from('gallery_images')
-    .select('id', { count: 'exact', head: true })
-    .eq('gallery_id', gallery.id)
-
-  if (imageError) {
-    response.status(500).json({ ok: false, message: imageError.message });
-    return;
-  }
-
-  const imageCount = actualImageCount ?? Number(gallery.image_count ?? 0);
-  if (imageCount !== Number(gallery.image_count ?? 0)) {
-    await supabase.from('galleries').update({ image_count: imageCount }).eq('id', gallery.id);
-  }
+  // The gallery row is kept in sync when photos are added or removed, so avoid
+  // a separate exact-count query on every client page view.
+  const imageCount = Number(gallery.image_count ?? 0);
 
   let isUnlocked: boolean;
   try {
@@ -2889,54 +2892,39 @@ app.get('/api/public/galleries/:slug', rateLimiter(100, 15 * 60 * 1000), async (
 
   let publicImages;
   try {
-    publicImages = await getPublicGalleryImagePage({
-      galleryId: gallery.id,
-      isUnlocked,
-      offset: 0,
-      limit: PUBLIC_GALLERY_PAGE_SIZE
+    const [images, coverUrl, coverVideoUrl, profileResult] = await Promise.all([
+      getPublicGalleryImagePage({ galleryId: gallery.id, isUnlocked, offset: 0, limit: PUBLIC_GALLERY_PAGE_SIZE }),
+      gallery.cover_processing_status === 'ready' && gallery.cover_preview_path
+        ? createPresignedDownloadUrl({ key: gallery.cover_preview_path, expiresIn: 600 }) : Promise.resolve(null),
+      gallery.cover_video_url || (gallery.cover_video_path
+        ? createPresignedDownloadUrl({ key: gallery.cover_video_path, expiresIn: 3600 }) : Promise.resolve(null)),
+      supabase.from('profiles').select('studio_name, display_name, avatar_url, avatar_path').eq('id', gallery.owner_id).maybeSingle()
+    ]);
+    publicImages = images;
+    const studioProfile = profileResult.data;
+    const studioLogoUrl = studioProfile?.avatar_path
+      ? await createPresignedDownloadUrl({ key: studioProfile.avatar_path, expiresIn: 3600 })
+      : studioProfile?.avatar_url ?? null;
+    void recordPublicGalleryView(gallery, request).catch((trackingError) => {
+      console.warn('gallery_view_tracking_failed', { galleryId: gallery.id, message: String(trackingError) });
+    });
+    response.json({
+      ok: true,
+      data: {
+        id: gallery.id, title: gallery.title, slug: gallery.slug, status: gallery.status,
+        isUnlocked, accessPrice: gallery.access_price, currency: gallery.currency, imageCount,
+        coverDesign: gallery.cover_design ?? 'classic', coverPath: gallery.cover_path, coverUrl,
+        coverVideoPath: gallery.cover_video_path, coverVideoUrl,
+        studioName: studioProfile?.studio_name || studioProfile?.display_name || null,
+        studioLogoUrl, nextImageOffset: publicImages.length,
+        hasMoreImages: publicImages.length < imageCount, images: publicImages
+      }
     });
   } catch (pageError) {
     console.error('public_gallery_image_page_failed', pageError);
     response.status(500).json({ ok: false, message: 'Unable to load gallery previews.' });
     return;
   }
-  const coverUrl = gallery.cover_processing_status === 'ready' && gallery.cover_preview_path
-    ? await createPresignedDownloadUrl({ key: gallery.cover_preview_path, expiresIn: 600 })
-    : null;
-  const coverVideoUrl = gallery.cover_video_url || (gallery.cover_video_path
-    ? await createPresignedDownloadUrl({ key: gallery.cover_video_path, expiresIn: 3600 })
-    : null);
-  const { data: studioProfile } = await supabase.from('profiles').select('studio_name, display_name, avatar_url, avatar_path')
-    .eq('id', gallery.owner_id).maybeSingle();
-  const studioLogoUrl = studioProfile?.avatar_path
-    ? await createPresignedDownloadUrl({ key: studioProfile.avatar_path, expiresIn: 3600 })
-    : studioProfile?.avatar_url ?? null;
-
-  await recordPublicGalleryView(gallery, request);
-
-  response.json({
-    ok: true,
-    data: {
-      id: gallery.id,
-      title: gallery.title,
-      slug: gallery.slug,
-      status: gallery.status,
-      isUnlocked,
-      accessPrice: gallery.access_price,
-      currency: gallery.currency,
-      imageCount,
-      coverDesign: gallery.cover_design ?? 'classic',
-      coverPath: gallery.cover_path,
-      coverUrl,
-      coverVideoPath: gallery.cover_video_path,
-      coverVideoUrl,
-      studioName: studioProfile?.studio_name || studioProfile?.display_name || null,
-      studioLogoUrl,
-      nextImageOffset: publicImages.length,
-      hasMoreImages: publicImages.length < imageCount,
-      images: publicImages
-    }
-  });
 });
 
 app.get('/api/public/galleries/:slug/images', rateLimiter(100, 15 * 60 * 1000), async (request: Request, response: Response) => {

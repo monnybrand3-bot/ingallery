@@ -658,15 +658,43 @@ export const createApiService = (baseUrl: string): ApiService => {
     return body;
   };
 
+  let refreshInFlight: Promise<UserSession | null> | null = null;
+  const refreshCurrentSession = async (): Promise<UserSession | null> => {
+    const current = getCurrentSession();
+    if (!current?.refreshToken) return null;
+    if (!refreshInFlight) {
+      refreshInFlight = request<{ accessToken: string; refreshToken: string }>('/api/auth/refresh', {
+        method: 'POST',
+        body: JSON.stringify({ refreshToken: current.refreshToken })
+      }).then((response) => {
+        const refreshed = { ...current, accessToken: response.data.accessToken, refreshToken: response.data.refreshToken };
+        getStorage().setItem('ingallery:session', JSON.stringify(refreshed));
+        return refreshed;
+      }).catch(() => {
+        clearCurrentSession();
+        return null;
+      }).finally(() => { refreshInFlight = null; });
+    }
+    return refreshInFlight;
+  };
+
   const authorizedRequest = async <T>(path: string, init?: RequestInit): Promise<ApiResponse<T>> => {
     const session = getCurrentSession();
-    return request<T>(path, {
+    const send = (accessToken?: string) => request<T>(path, {
       ...init,
       headers: {
-        ...(session?.accessToken ? { Authorization: `Bearer ${session.accessToken}` } : {}),
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
         ...init?.headers
       }
     });
+    try {
+      return await send(session?.accessToken);
+    } catch (error) {
+      if ((error as Error & { status?: number }).status !== 401) throw error;
+      const refreshed = await refreshCurrentSession();
+      if (!refreshed) throw error;
+      return send(refreshed.accessToken);
+    }
   };
 
   return {
