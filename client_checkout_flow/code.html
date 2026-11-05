@@ -158,7 +158,6 @@
 </div>
 <div class="w-full h-px bg-white/10 mb-8"></div>
 <div class="flex-grow flex flex-col justify-center">
-<div data-mobile-network>
 <label class="text-label-sm font-label-sm text-on-surface-variant uppercase mb-2 flex items-center gap-2" for="network">
 <span class="material-symbols-outlined text-[18px]">network_cell</span>
 Mobile money network
@@ -170,7 +169,6 @@ Mobile money network
 <option value="AirtelMoney">Airtel Money</option>
 <option value="HaloPesa">HaloPesa</option>
 </select>
-</div>
 <label class="text-label-sm font-label-sm text-on-surface-variant uppercase mb-4 flex items-center gap-2" for="phone">
 <span class="material-symbols-outlined text-[18px]">smartphone</span>
                                 Mobile Payment Number
@@ -220,8 +218,6 @@ Mobile money network
         const orderTotalNode = document.querySelector('[data-order-total]');
         const checkoutStudioName = document.querySelector('[data-checkout-studio-name]');
         const checkoutStudioLogo = document.querySelector('[data-checkout-studio-logo]');
-        const mobileNetwork = document.querySelector('[data-mobile-network]');
-        let paymentProvider = null;
         let checkoutAmount = null;
         let checkoutCurrency = 'TZS';
 
@@ -270,15 +266,6 @@ Mobile money network
                     coverUrl: response.data.coverUrl
                 });
                 setCheckoutSummary(summary);
-                try {
-                    const options = await api.getPublicGalleryPaymentOptions(response.data.id);
-                    paymentProvider = options.data.provider;
-                    if (paymentProvider === 'clickpesa') {
-                        mobileNetwork.hidden = true;
-                    }
-                } catch (optionsError) {
-                    console.warn('Unable to load payment methods', optionsError);
-                }
             } catch (error) {
                 const fallbackTitle = params.get('gallery') || 'Gallery unavailable';
                 if (galleryTitleNode) galleryTitleNode.textContent = fallbackTitle;
@@ -298,12 +285,11 @@ Mobile money network
             const phoneInput = document.getElementById('phone');
             const phone = phoneInput?.value.trim() ?? '';
             const network = document.getElementById('network')?.value ?? '';
-            const paymentMethod = paymentProvider === 'clickpesa' ? 'mobile_money' : undefined;
             if (!phone) {
                 if (errorMessage) errorMessage.textContent = 'Enter a mobile payment number to continue.';
                 return;
             }
-            if (mobileNetwork && !mobileNetwork.hidden && !network) {
+            if (!network) {
                 if (errorMessage) errorMessage.textContent = 'Choose your mobile money network to continue.';
                 return;
             }
@@ -314,8 +300,7 @@ Mobile money network
                 const result = await api.createCheckout(galleryId, {
                     email: params.get('email') ?? 'client@example.com',
                     phone,
-                    network,
-                    ...(paymentMethod ? { paymentMethod } : {})
+                    network
                 });
                 try {
                     sessionStorage.setItem('ingallery:pending-gallery-payment', JSON.stringify({
