@@ -1300,24 +1300,47 @@ export const initNavigation = (): void => {
   if (loginForm) {
     loginForm.addEventListener('submit', async (event: SubmitEvent) => {
       event.preventDefault();
+      if (loginForm.dataset.submitting === 'true') return;
+      loginForm.dataset.submitting = 'true';
       const emailInput = loginForm.querySelector<HTMLInputElement>('#email, input[type="email"]');
       const passwordInput = loginForm.querySelector<HTMLInputElement>('#password, input[autocomplete="current-password"]');
       const messageNode = loginForm.querySelector<HTMLElement>('[data-login-message]');
+      const submitButton = loginForm.querySelector<HTMLButtonElement>('button[type="submit"]');
       const email = emailInput?.value.trim() ?? '';
       const password = passwordInput?.value ?? '';
-      const result = await createApiService(getApiBaseUrl()).login(email, password);
-
+      const originalButtonText = submitButton?.textContent ?? 'Sign In';
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Signing in…';
+        submitButton.setAttribute('aria-busy', 'true');
+      }
       if (messageNode) {
-        messageNode.textContent = result.message ?? 'Authentication updated';
-        messageNode.style.color = result.ok ? '#4edea3' : '#ffb4ab';
+        messageNode.textContent = 'Connecting to your account…';
+        messageNode.style.color = '#c4c7c7';
       }
 
-      if (result.ok && result.data) {
-        const redirectTarget = result.data.role === 'platform-admin'
-          ? 'platform_admin/code.html'
-          : loginForm.dataset.redirect ?? 'photographer_dashboard_overview/code.html';
-        if (result.data.role !== 'platform-admin') getStorage().setItem('ingallery:onboarding', JSON.stringify(createOnboardingState(result.data.id)));
-        window.location.href = redirectTarget;
+      try {
+        const result = await createApiService(getApiBaseUrl()).login(email, password);
+
+        if (messageNode) {
+          messageNode.textContent = result.message ?? 'Authentication updated';
+          messageNode.style.color = result.ok ? '#4edea3' : '#ffb4ab';
+        }
+
+        if (result.ok && result.data) {
+          const redirectTarget = result.data.role === 'platform-admin'
+            ? 'platform_admin/code.html'
+            : loginForm.dataset.redirect ?? 'photographer_dashboard_overview/code.html';
+          if (result.data.role !== 'platform-admin') getStorage().setItem('ingallery:onboarding', JSON.stringify(createOnboardingState(result.data.id)));
+          window.location.href = redirectTarget;
+        }
+      } finally {
+        loginForm.dataset.submitting = 'false';
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          submitButton.removeAttribute('aria-busy');
+        }
       }
     });
   }

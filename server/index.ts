@@ -607,15 +607,19 @@ app.post('/api/auth/login', async (request: Request<unknown, unknown, AuthBody>,
   }
   const attemptLogin = async (loginEmail: string, loginPassword: string) => supabaseAuth.auth.signInWithPassword({ email: loginEmail, password: loginPassword });
 
-  const { data, error } = await attemptLogin(email, password);
+  // Authentication and the platform-admin allowlist lookup are independent, so
+  // run them together instead of making every photographer wait for two requests.
+  const [loginResult, adminResult] = await Promise.all([
+    attemptLogin(email, password),
+    supabase.from('platform_admins').select('email').eq('email', email).eq('enabled', true).maybeSingle()
+  ]);
+  const { data, error } = loginResult;
   if (!error && data.session && data.user) {
     if (data.user.id === DEMO_USER_ID) {
       response.status(401).json({ ok: false, message: 'This sample account is disabled. Sign in with your own account.' });
       return;
     }
-    const { data: platformAdmin } = data.user.email
-      ? await supabase.from('platform_admins').select('email').eq('email', data.user.email.toLowerCase()).eq('enabled', true).maybeSingle()
-      : { data: null };
+    const platformAdmin = adminResult.data;
     response.json({
       ok: true,
       data: {
