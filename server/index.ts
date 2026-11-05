@@ -4370,6 +4370,12 @@ const initiateGalleryPayment = async (request: Request, response: Response): Pro
   }
 
   const orderReference = `IG${randomBytes(9).toString('hex').toUpperCase()}`;
+  const clickPesaTokenPromise = tenantConfiguration.provider === 'clickpesa' && tenantConfiguration.credentials.provider === 'clickpesa'
+    ? getClickPesaToken(tenantConfiguration.credentials).then(
+      token => ({ token } as const),
+      error => ({ error } as const)
+    )
+    : null;
   const { data: order, error: orderError } = await supabase.from('orders').insert({
     gallery_id: gallery.id,
     owner_id: gallery.owner_id,
@@ -4408,7 +4414,10 @@ const initiateGalleryPayment = async (request: Request, response: Response): Pro
     }
 
     if (tenantConfiguration.provider === 'clickpesa' && tenantConfiguration.credentials.provider === 'clickpesa') {
-      const token = await getClickPesaToken(tenantConfiguration.credentials);
+      const tokenResult = await clickPesaTokenPromise;
+      if (!tokenResult) throw new Error('Unable to authorize with ClickPesa.');
+      if ('error' in tokenResult) throw tokenResult.error;
+      const token = tokenResult.token;
       if (body.paymentMethod === 'mobile_money') {
         if (gallery.currency !== 'TZS') throw new Error('Mobile money phone prompts are available for TZS galleries. Choose another payment method.');
         const phoneNumber = normalizeStakabaPhone(body.customerPhone);

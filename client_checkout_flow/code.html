@@ -181,7 +181,7 @@ Mobile money network
 <!-- Primary Button -->
 <button class="w-full bg-secondary text-on-secondary py-4 text-label-sm font-label-sm uppercase tracking-widest rounded-DEFAULT hover:scale-[1.02] transition-transform duration-300 flex justify-center items-center gap-2 group" id="pay-now" type="button">
 <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">lock</span>
-                                Pay Now
+<span data-pay-label>Pay Now</span>
                             </button>
 </div>
 </div>
@@ -206,6 +206,8 @@ Mobile money network
         import { createApiService, getApiBaseUrl, normalizeGalleryCheckoutState } from '../app.ts';
 
         const button = document.getElementById('pay-now');
+        const buttonIcon = button?.querySelector('.material-symbols-outlined');
+        const buttonLabel = button?.querySelector('[data-pay-label]');
         const form = document.getElementById('checkout-form');
         const pending = document.getElementById('pending-state');
         const errorMessage = document.getElementById('payment-error');
@@ -295,6 +297,12 @@ Mobile money network
             }
 
             button.setAttribute('disabled', 'true');
+            if (buttonIcon) {
+                buttonIcon.textContent = 'progress_activity';
+                buttonIcon.classList.add('animate-spin');
+                buttonIcon.classList.remove('group-hover:translate-x-1');
+            }
+            if (buttonLabel) buttonLabel.textContent = 'Preparing secure checkout…';
             if (errorMessage) errorMessage.textContent = '';
             try {
                 const result = await api.createCheckout(galleryId, {
@@ -318,6 +326,12 @@ Mobile money network
                 window.location.href = result.data.checkoutUrl;
             } catch (error) {
                 button.removeAttribute('disabled');
+                if (buttonIcon) {
+                    buttonIcon.textContent = 'lock';
+                    buttonIcon.classList.remove('animate-spin');
+                    buttonIcon.classList.add('group-hover:translate-x-1');
+                }
+                if (buttonLabel) buttonLabel.textContent = 'Pay Now';
                 if (errorMessage) errorMessage.textContent = error instanceof Error ? error.message : 'Unable to start payment.';
             }
         });
