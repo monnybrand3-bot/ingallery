@@ -909,6 +909,12 @@ Loading gallery data...
             if (previewGrid) previewGrid.hidden = false;
         } catch (error) {
             console.error('Unable to load public gallery', error);
+            if (status) {
+                const message = error instanceof Error ? error.message : 'Unknown connection error';
+                status.textContent = message === 'Failed to fetch'
+                    ? 'Unable to connect to the gallery service. Please try again shortly.'
+                    : `Unable to load this gallery: ${message}`;
+            }
         }
     };
 

@@ -156,6 +156,9 @@ const port = Number(process.env.PORT ?? 8787);
 const configuredOrigins = (process.env.FRONTEND_ORIGIN ?? 'http://localhost:5175,http://localhost:5173,http://localhost:5174').split(',').map((origin) => origin.trim()).filter(Boolean);
 const allowedOrigins = new Set([
   ...configuredOrigins,
+  // Keep the public Render frontend working even if the API's FRONTEND_ORIGIN
+  // setting is missing or still contains only a local development address.
+  'https://ingallery.onrender.com',
   ...Array.from({ length: 11 }, (_, index) => 5173 + index).flatMap((portNumber) => [
     `http://localhost:${portNumber}`,
     `http://127.0.0.1:${portNumber}`
