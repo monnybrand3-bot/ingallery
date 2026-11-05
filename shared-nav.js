@@ -244,14 +244,14 @@
     if (detail) {
       if (job.status === 'complete') detail.textContent = job.hasCover && job.photoCount === 0
         ? 'Cover updated. Gallery is ready.'
-        : `${job.photoCount} photos uploaded. Gallery is ready.`;
+        : `${job.photoCount} media files uploaded. Gallery is ready.`;
       else if (job.status === 'failed') detail.textContent = job.stage === 'cover'
         ? `Cover upload failed. ${job.errorMessage || 'Retry to continue.'}`
-        : `${job.uploadedPhotos} of ${job.photoCount} photos uploaded. ${job.errorMessage || 'Retry to continue.'}`;
-      else if (job.status === 'staging') detail.textContent = `Saving ${job.stagedPhotos || 0} of ${job.photoCount} photos to the background queue.`;
+        : `${job.uploadedPhotos} of ${job.photoCount} media files uploaded. ${job.errorMessage || 'Retry to continue.'}`;
+      else if (job.status === 'staging') detail.textContent = `Saving ${job.stagedPhotos || 0} of ${job.photoCount} media files to the background queue.`;
       else if (job.stage === 'cover') detail.textContent = `Uploading cover${job.currentFile ? `: ${job.currentFile}` : '...'}`;
-      else if (job.stage === 'photo') detail.textContent = `Uploaded ${job.uploadedPhotos} of ${job.photoCount} photos. Now uploading ${job.currentFile || 'next photo'}.`;
-      else detail.textContent = `${job.uploadedPhotos} of ${job.photoCount} photos uploaded. Preparing upload...`;
+      else if (job.stage === 'photo') detail.textContent = `Uploaded ${job.uploadedPhotos} of ${job.photoCount} media files. Now uploading ${job.currentFile || 'next file'}.`;
+      else detail.textContent = `${job.uploadedPhotos} of ${job.photoCount} media files uploaded. Preparing upload...`;
     }
     if (percent) percent.textContent = `${value}%`;
     if (track) track.setAttribute('aria-valuenow', String(value));

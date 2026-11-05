@@ -162,6 +162,13 @@
         [data-gallery-photo-tile] img.is-loaded {
             opacity: 1;
         }
+        [data-gallery-photo-tile] video {
+            display: block;
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+            background: #121414;
+        }
         [data-gallery-photo-tile][aria-label="Locked photo"],
         [data-gallery-photo-tile][aria-label="Photo is being optimized"],
         [data-gallery-photo-tile][aria-label="Photo preview unavailable"] {
@@ -701,6 +708,7 @@ Loading gallery data...
         const failedImages = unlockedCandidates.filter((image) => image.processingStatus === 'failed');
         const lockedImages = isUnlocked ? [] : images.slice(PUBLIC_PREVIEW_LIMIT);
         const previewMarkup = previewImages.map((image) => {
+            const isVideo = image.mimeType?.startsWith('video/');
             const previewCandidates = [
                 image.previewUrl && `${image.previewUrl} ${Number(image.previewWidth) || 380}w`,
                 image.mediumUrl && `${image.mediumUrl} ${Number(image.mediumWidth) || 1200}w`,
@@ -708,9 +716,9 @@ Loading gallery data...
             ].filter(Boolean).join(', ');
             return `
                 <div data-gallery-photo-tile data-preview-width="${Number(image.previewWidth) || 0}" data-preview-height="${Number(image.previewHeight) || 0}" class="group">
-                    <button type="button" data-view-image="${escapeHtml(image.id)}" class="absolute inset-0 h-full w-full cursor-zoom-in" aria-label="View ${escapeHtml(image.fileName)}">
-                        <img data-preview-width="${Number(image.previewWidth) || 0}" data-preview-height="${Number(image.previewHeight) || 0}" class="object-cover transition-transform duration-500 group-hover:scale-105" src="${escapeHtml(image.previewUrl)}" ${previewCandidates ? `srcset="${escapeHtml(previewCandidates)}" sizes="(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 20vw"` : ''} alt="${escapeHtml(image.fileName)}" loading="lazy" decoding="async" fetchpriority="low">
-                    </button>
+                    ${isVideo
+                        ? `<video class="h-full w-full object-cover" src="${escapeHtml(image.previewUrl)}" controls playsinline preload="metadata" aria-label="${escapeHtml(image.fileName)}"></video>`
+                        : `<button type="button" data-view-image="${escapeHtml(image.id)}" class="absolute inset-0 h-full w-full cursor-zoom-in" aria-label="View ${escapeHtml(image.fileName)}"><img data-preview-width="${Number(image.previewWidth) || 0}" data-preview-height="${Number(image.previewHeight) || 0}" class="object-cover transition-transform duration-500 group-hover:scale-105" src="${escapeHtml(image.previewUrl)}" ${previewCandidates ? `srcset="${escapeHtml(previewCandidates)}" sizes="(max-width: 767px) 100vw, (max-width: 1023px) 33vw, 20vw"` : ''} alt="${escapeHtml(image.fileName)}" loading="lazy" decoding="async" fetchpriority="low"></button>`}
                     <div class="photo-tile-actions" aria-label="Photo actions">
                         <button type="button" data-like-image="${escapeHtml(image.id)}" aria-pressed="${getPhotoInteraction(image.id).likedByVisitor}" aria-label="Like photo, ${getPhotoInteraction(image.id).likes} likes" title="Like photo">
                             <span class="material-symbols-outlined" aria-hidden="true">favorite</span><span data-like-count>${getPhotoInteraction(image.id).likes}</span>
@@ -754,7 +762,7 @@ Loading gallery data...
             if (image.complete && image.naturalWidth) markLoaded();
             else image.addEventListener('load', markLoaded, { once: true });
         });
-        lightboxImages = [...galleryImages.values()].filter((image) => image.processingStatus === 'ready' && image.previewUrl);
+        lightboxImages = [...galleryImages.values()].filter((image) => image.processingStatus === 'ready' && image.previewUrl && !image.mimeType?.startsWith('video/'));
         const layoutPhotoTiles = () => {
             previewGrid.querySelectorAll('[data-gallery-photo-tile]').forEach((tile) => {
                 const image = tile.querySelector('img');
@@ -830,8 +838,8 @@ Loading gallery data...
                 const newPhotoCount = Math.max(0, gallery.imageCount - previousCount);
                 try { sessionStorage.setItem(previousCountKey, String(Math.max(previousCount, gallery.imageCount))); } catch {}
                 status.innerHTML = gallery.isUnlocked
-                    ? `<span class="text-tertiary">${gallery.imageCount} photos in this gallery.</span> ${pendingImages.length ? `${pendingImages.length} photos are being optimized. ` : ''}${failedImages.length ? `${failedImages.length} previews are unavailable; original files remain available for download. ` : ''}Download the original files any time.`
-                    : `<span class="text-tertiary">${previewImages.length} preview photos available.</span> ${Math.max(0, gallery.imageCount - PUBLIC_PREVIEW_LIMIT)} additional photos are locked. ${pendingImages.length ? `${pendingImages.length} preview photos are being optimized. ` : ''}${failedImages.length ? `${failedImages.length} preview files could not be processed. ` : ''}Unlock the gallery to view all photos and download full-resolution images.`;
+                    ? `<span class="text-tertiary">${gallery.imageCount} media items in this gallery.</span> ${pendingImages.length ? `${pendingImages.length} items are being prepared. ` : ''}${failedImages.length ? `${failedImages.length} previews are unavailable; original files remain available for download. ` : ''}Download the original files any time.`
+                    : `<span class="text-tertiary">${previewImages.length} preview items available.</span> ${Math.max(0, gallery.imageCount - PUBLIC_PREVIEW_LIMIT)} additional items are locked. ${pendingImages.length ? `${pendingImages.length} preview items are being prepared. ` : ''}${failedImages.length ? `${failedImages.length} preview files could not be processed. ` : ''}Unlock the gallery to view all media and download the original files.`;
                 if (gallery.imageCount === 0) {
                     status.innerHTML = '<span class="text-tertiary">This gallery is ready.</span> The photographer will add event photos here. Keep this link to view them when they are uploaded.';
                 } else if (newPhotoCount > 0) {
@@ -873,7 +881,7 @@ Loading gallery data...
             if (gallery.images.length && previewGrid) {
                 renderGalleryImages(gallery.images, gallery.isUnlocked);
             } else if (previewGrid) {
-                previewGrid.innerHTML = '<p class="text-body-md text-on-surface-variant col-span-full text-center py-12">No photos have been uploaded to this gallery yet.</p>';
+                    previewGrid.innerHTML = '<p class="text-body-md text-on-surface-variant col-span-full text-center py-12">No media has been uploaded to this gallery yet.</p>';
             }
             if (loadMoreButton) {
                 loadMoreButton.hidden = !gallery.isUnlocked || !gallery.hasMoreImages;

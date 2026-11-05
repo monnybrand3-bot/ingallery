@@ -1425,8 +1425,8 @@ app.get('/api/galleries/:galleryId/images', requireUser, async (request: Authent
       mimeType: image.mime_type,
       fileSize: image.file_size,
       processingStatus: image.processing_status,
-      previewUrl: image.processing_status === 'ready' && image.preview_path
-        ? await createPresignedDownloadUrl({ key: image.preview_path, expiresIn: 600 })
+      previewUrl: image.processing_status === 'ready' && (image.preview_path || image.mime_type.startsWith('video/'))
+        ? await createPresignedDownloadUrl({ key: image.mime_type.startsWith('video/') ? image.storage_path : image.preview_path, expiresIn: 3600 })
         : null
     })))
   });
@@ -2201,10 +2201,11 @@ app.post('/api/galleries/:galleryId/upload-url', requireUser, async (request: Au
   const body = request.body as Pick<ImageBody, 'fileName' | 'mimeType' | 'fileSize'>;
   const fileName = body.fileName?.trim();
   const fileSize = Number(body.fileSize);
-  const mimeType = body.mimeType?.trim();
+  const mimeType = body.mimeType?.trim().toLowerCase();
 
-  if (!fileName || !mimeType?.startsWith('image/') || !Number.isSafeInteger(fileSize) || fileSize <= 0) {
-    response.status(400).json({ ok: false, message: 'A valid image file is required' });
+  const isAlbumVideo = ['video/mp4', 'video/webm'].includes(mimeType?.toLowerCase() ?? '');
+  if (!fileName || !(mimeType?.startsWith('image/') || isAlbumVideo) || !Number.isSafeInteger(fileSize) || fileSize <= 0) {
+    response.status(400).json({ ok: false, message: 'Choose a JPG, PNG, WEBP, MP4, or WebM media file.' });
     return;
   }
 
@@ -2267,7 +2268,7 @@ app.post('/api/galleries/:galleryId/upload-url', requireUser, async (request: Au
     }
     storageReserved = true;
 
-    const { url } = await createPresignedUploadUrl({ key: storageKey, contentType: mimeType, expiresIn: 300 });
+    const { url } = await createPresignedUploadUrl({ key: storageKey, contentType: mimeType as string, expiresIn: 300 });
     const { error: reservationRecordError } = await supabase.from('files').insert({
       tenant_id: tenantId,
       user_id: request.userId as string,
@@ -2276,7 +2277,7 @@ app.post('/api/galleries/:galleryId/upload-url', requireUser, async (request: Au
       original_filename: fileName,
       storage_key: storageKey,
       size_bytes: fileSize,
-      mime_type: mimeType,
+      mime_type: mimeType as string,
       status: 'processing'
     });
     if (reservationRecordError) throw reservationRecordError;
@@ -2535,10 +2536,12 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
   const galleryId = getGalleryIdParam(request);
   const storagePath = body.storagePath?.trim();
   const fileName = body.fileName?.trim();
+  const mimeType = body.mimeType?.trim().toLowerCase();
   const fileSize = Number(body.fileSize);
 
-  if (!storagePath || !fileName || !body.mimeType?.startsWith('image/') || !Number.isSafeInteger(fileSize) || fileSize <= 0) {
-    response.status(400).json({ ok: false, message: 'Invalid image metadata' });
+  const isAlbumVideo = ['video/mp4', 'video/webm'].includes(mimeType ?? '');
+  if (!storagePath || !fileName || !(mimeType?.startsWith('image/') || isAlbumVideo) || !Number.isSafeInteger(fileSize) || fileSize <= 0) {
+    response.status(400).json({ ok: false, message: 'Invalid gallery media details.' });
     return;
   }
 
@@ -2555,7 +2558,7 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
       owner_id: request.userId as string,
       storage_path: storagePath,
       file_name: fileName,
-      mime_type: body.mimeType,
+      mime_type: mimeType as string,
       file_size: fileSize,
       created_at: new Date().toISOString()
     } satisfies DemoGalleryImage;
@@ -2578,7 +2581,7 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
   let originalStorageAccounted = false;
   try {
     const { data: reservation, error: reservationError } = await supabase.from('files')
-      .select('id, size_bytes')
+      .select('id, size_bytes, mime_type')
       .eq('tenant_id', tenantContext.tenantId)
       .eq('gallery_id', galleryId)
       .eq('user_id', request.userId)
@@ -2586,21 +2589,21 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
       .eq('status', 'processing')
       .maybeSingle();
     if (reservationError) throw reservationError;
-    if (!reservation || Number(reservation.size_bytes) !== fileSize) {
+    if (!reservation || Number(reservation.size_bytes) !== fileSize || reservation.mime_type !== mimeType) {
       response.status(404).json({ ok: false, message: 'Upload reservation not found for this gallery.' });
       return;
     }
 
     if (!(await verifyObjectInR2(storagePath))) {
       await cancelPendingUpload({ tenantId: tenantContext.tenantId, galleryId, ownerId: request.userId as string, storagePath });
-      response.status(400).json({ ok: false, message: 'The image did not reach R2. Please retry the upload.' });
+      response.status(400).json({ ok: false, message: 'The media file did not reach R2. Please retry the upload.' });
       return;
     }
 
     const actualFileSize = await getR2ObjectSize(storagePath);
     if (actualFileSize !== fileSize) {
       await cancelPendingUpload({ tenantId: tenantContext.tenantId, galleryId, ownerId: request.userId as string, storagePath });
-      response.status(400).json({ ok: false, message: 'Uploaded photo size did not match its storage reservation. Please retry.' });
+      response.status(400).json({ ok: false, message: 'Uploaded media size did not match its storage reservation. Please retry.' });
       return;
     }
 
@@ -2609,9 +2612,9 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
       owner_id: request.userId,
       tenant_id: tenantContext.tenantId,
       storage_path: storagePath,
-      processing_status: 'queued',
+      processing_status: isAlbumVideo ? 'ready' : 'queued',
       file_name: fileName,
-      mime_type: body.mimeType,
+      mime_type: mimeType,
       file_size: fileSize
     }).select('id, gallery_id, storage_path, file_name, mime_type, file_size, created_at, processing_status').single();
 
@@ -2631,7 +2634,7 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
       original_filename: fileName,
       storage_key: storagePath,
       size_bytes: fileSize,
-      mime_type: body.mimeType,
+      mime_type: mimeType,
       status: 'processing',
       updated_at: new Date().toISOString()
     }, { onConflict: 'tenant_id,storage_key' });
@@ -2648,7 +2651,7 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
     const { count } = await supabase.from('gallery_images').select('id', { count: 'exact', head: true }).eq('gallery_id', galleryId);
     await supabase.from('galleries').update({ image_count: count ?? 0, updated_at: new Date().toISOString() }).eq('id', galleryId).eq('owner_id', request.userId);
     response.status(201).json({ ok: true, data: image });
-    void processGalleryImageVariants(image.id);
+    if (!isAlbumVideo) void processGalleryImageVariants(image.id);
   } catch (error) {
     if (insertedImageId) {
       const { error: deleteImageError } = await supabase.from('gallery_images').delete().eq('id', insertedImageId);
@@ -2797,10 +2800,11 @@ const getPublicGalleryImagePage = async ({
 
   return Promise.all((images ?? []).map(async (image, pageIndex) => {
     const index = offset + pageIndex;
-    const isReady = image.processing_status === 'ready' && Boolean(image.preview_path);
+    const isVideo = image.mime_type.startsWith('video/');
+    const isReady = image.processing_status === 'ready' && (isVideo || Boolean(image.preview_path));
     const canPreview = isReady && (isUnlocked || index < PUBLIC_GALLERY_PREVIEW_LIMIT);
     const previewUrl = canPreview
-      ? await createPresignedDownloadUrl({ key: image.preview_path, expiresIn: 600 })
+      ? await createPresignedDownloadUrl({ key: isVideo ? image.storage_path : image.preview_path, expiresIn: isVideo ? 3600 : 600 })
       : null;
     const mediumUrl = isUnlocked && isReady && image.medium_path
       ? await createPresignedDownloadUrl({ key: image.medium_path, expiresIn: 600 })

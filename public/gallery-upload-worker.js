@@ -54,9 +54,15 @@ const getSupportedImageMimeType = (file) => {
   const mimeType = String(file.type || '').trim().toLowerCase();
   if (mimeType === 'image/jpg') return 'image/jpeg';
   if (['image/jpeg', 'image/png', 'image/webp'].includes(mimeType)) return mimeType;
+  if (['video/mp4', 'video/webm'].includes(mimeType)) return mimeType;
   if (mimeType) return null;
   const extension = String(file.name || '').split('.').pop()?.toLowerCase();
-  return ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[extension] ?? null;
+  return ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', mp4: 'video/mp4', webm: 'video/webm' })[extension] ?? null;
+};
+
+const getSupportedGalleryMediaMimeType = (file) => {
+  const mimeType = getSupportedImageMimeType(file);
+  return mimeType && (mimeType.startsWith('image/') || ['video/mp4', 'video/webm'].includes(mimeType)) ? mimeType : null;
 };
 
 const readJobs = async () => {
@@ -124,8 +130,8 @@ const cancelUploadReservation = async (job, headers, storagePath) => {
 };
 
 const getAuthorizedUpload = async (job, file) => {
-  const mimeType = getSupportedImageMimeType(file);
-  if (!mimeType) throw new Error(`${file.name || 'Selected file'} is not a supported JPG, PNG, or WEBP image.`);
+  const mimeType = getSupportedGalleryMediaMimeType(file);
+  if (!mimeType) throw new Error(`${file.name || 'Selected file'} is not a supported JPG, PNG, WEBP, MP4, or WebM file.`);
   const headers = {
     Authorization: `Bearer ${job.accessToken}`,
     'Content-Type': 'application/json'
@@ -137,7 +143,7 @@ const getAuthorizedUpload = async (job, file) => {
   });
   const uploadDetails = await uploadUrlResponse.json().catch(() => null);
   if (!uploadUrlResponse.ok || !uploadDetails?.ok) {
-    const error = new Error(uploadDetails?.message || 'Unable to reserve storage for this photo.');
+    const error = new Error(uploadDetails?.message || 'Unable to reserve storage for this media file.');
     error.name = 'StorageQuotaError';
     throw error;
   }
@@ -152,11 +158,11 @@ const getAuthorizedUpload = async (job, file) => {
     });
   } catch {
     await cancelUploadReservation(job, headers, upload.storagePath);
-    throw new Error('Photo upload to storage failed. Retry to continue.');
+    throw new Error('Media upload to storage failed. Retry to continue.');
   }
   if (!storageResponse.ok) {
     await cancelUploadReservation(job, headers, upload.storagePath);
-    throw new Error('Photo upload to storage failed. Retry to continue.');
+    throw new Error('Media upload to storage failed. Retry to continue.');
   }
 
   const confirmationResponse = await fetch(`${job.apiBaseUrl}/api/galleries/${encodeURIComponent(job.galleryId)}/images`, {
@@ -172,7 +178,7 @@ const getAuthorizedUpload = async (job, file) => {
   const confirmation = await confirmationResponse.json().catch(() => null);
   if (!confirmationResponse.ok || !confirmation?.ok) {
     await cancelUploadReservation(job, headers, upload.storagePath);
-    throw new Error(confirmation?.message || 'Photo metadata could not be saved. Retry to continue.');
+    throw new Error(confirmation?.message || 'Media metadata could not be saved. Retry to continue.');
   }
   return normalizeUploadRecord(confirmation.data);
 };
@@ -347,8 +353,8 @@ self.addEventListener('message', (event) => {
       } catch (error) {
         console.error('gallery_background_files_stage_failed', error);
         const messageText = error?.name === 'QuotaExceededError'
-          ? 'Your browser does not have enough local storage to queue all selected photos. Try fewer photos at a time.'
-          : error instanceof Error ? error.message : 'Could not save the selected photos.';
+          ? 'Your browser does not have enough local storage to queue all selected media files. Try fewer files at a time.'
+          : error instanceof Error ? error.message : 'Could not save the selected media files.';
         replyToMessage(event, { ok: false, message: messageText });
       }
     })());
@@ -356,7 +362,7 @@ self.addEventListener('message', (event) => {
     event.waitUntil((async () => {
       const job = await readValue(JOBS_STORE, message.jobId);
       if (!job || job.stagedPhotos !== job.photoCount || !job.coverStaged) {
-        replyToMessage(event, { ok: false, message: 'Not all selected photos were saved to the upload queue.' });
+        replyToMessage(event, { ok: false, message: 'Not all selected media files were saved to the upload queue.' });
         return;
       }
       await updateJob(job, { status: 'queued', stage: 'queued' });

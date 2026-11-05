@@ -620,9 +620,10 @@ export interface ApiService {
   createGallery: (title: string, accessPrice: number, currency?: 'TZS' | 'USD', coverDesign?: GalleryRecord['coverDesign']) => Promise<ApiResponse<GalleryRecord>>;
   createUploadUrl: (galleryId: string, file: File) => Promise<ApiResponse<UploadUrl>>;
   uploadImage: (galleryId: string, file: File) => Promise<ApiResponse<{ storagePath: string; fileName: string; mimeType: string; fileSize: number }>>;
+  uploadGalleryVideo: (galleryId: string, file: File, onProgress?: (percent: number) => void) => Promise<ApiResponse<unknown>>;
   confirmImage: (galleryId: string, upload: Pick<UploadUrl, 'storagePath' | 'fileName' | 'mimeType' | 'fileSize'>) => Promise<ApiResponse<unknown>>;
   setCoverImage: (galleryId: string, upload: Pick<UploadUrl, 'storagePath' | 'mimeType'>) => Promise<ApiResponse<unknown>>;
-  uploadCoverVideo: (galleryId: string, file: File) => Promise<ApiResponse<unknown>>;
+  uploadCoverVideo: (galleryId: string, file: File, onProgress?: (percent: number) => void) => Promise<ApiResponse<unknown>>;
   setCoverVideo: (galleryId: string, video: { youtubeUrl?: string; storagePath?: string; mimeType?: string; fileSize?: number; clear?: boolean }) => Promise<ApiResponse<unknown>>;
   getPublicGallery: (slug: string, accessToken?: string) => Promise<ApiResponse<PublicGalleryRecord>>;
   getPublicGalleryImages: (slug: string, offset: number, accessToken?: string) => Promise<ApiResponse<PublicGalleryImagesPage>>;
@@ -715,6 +716,23 @@ export const createApiService = (baseUrl: string): ApiService => {
     }
   };
 
+  const putFileToStorage = (signedUrl: string, file: File, mimeType: string, onProgress?: (percent: number) => void): Promise<void> =>
+    new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', signedUrl);
+      xhr.setRequestHeader('Content-Type', mimeType);
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) onProgress?.(Math.round((event.loaded / event.total) * 100));
+      });
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) resolve();
+        else reject(new Error('Video upload to storage failed. Please retry.'));
+      });
+      xhr.addEventListener('error', () => reject(new Error('Video upload connection failed. Please retry.')));
+      xhr.addEventListener('abort', () => reject(new Error('Video upload was cancelled.')));
+      xhr.send(file);
+    });
+
   return {
     getDashboard: async () => {
       return authorizedRequest<DashboardSnapshot>('/api/dashboard');
@@ -759,7 +777,7 @@ export const createApiService = (baseUrl: string): ApiService => {
           headers: { 'Content-Type': file.type },
           body: file
         });
-        if (!storageResponse.ok) throw new Error('Photo upload to storage failed.');
+        if (!storageResponse.ok) throw new Error('Media upload to storage failed.');
 
         return await authorizedRequest<{ storagePath: string; fileName: string; mimeType: string; fileSize: number }>(`/api/galleries/${encodeURIComponent(galleryId)}/images`, {
           method: 'POST',
@@ -778,6 +796,28 @@ export const createApiService = (baseUrl: string): ApiService => {
         throw error;
       }
     },
+    uploadGalleryVideo: async (galleryId, file, onProgress) => {
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      const mimeType = file.type || ({ mp4: 'video/mp4', webm: 'video/webm' } as Record<string, string>)[extension ?? ''] || '';
+      if (!['video/mp4', 'video/webm'].includes(mimeType)) throw new Error('Choose an MP4 or WebM gallery video.');
+      const upload = await authorizedRequest<UploadUrl>(`/api/galleries/${encodeURIComponent(galleryId)}/upload-url`, {
+        method: 'POST',
+        body: JSON.stringify({ fileName: file.name, mimeType, fileSize: file.size })
+      });
+      try {
+        await putFileToStorage(upload.data.signedUrl, file, mimeType, onProgress);
+        return await authorizedRequest<unknown>(`/api/galleries/${encodeURIComponent(galleryId)}/images`, {
+          method: 'POST',
+          body: JSON.stringify({ storagePath: upload.data.storagePath, fileName: file.name, mimeType, fileSize: file.size })
+        });
+      } catch (error) {
+        await authorizedRequest(`/api/galleries/${encodeURIComponent(galleryId)}/upload-cancel`, {
+          method: 'POST',
+          body: JSON.stringify({ storagePath: upload.data.storagePath })
+        }).catch(() => {});
+        throw error;
+      }
+    },
     confirmImage: (galleryId, upload) => authorizedRequest<unknown>(`/api/galleries/${encodeURIComponent(galleryId)}/images`, {
       method: 'POST',
       body: JSON.stringify(upload)
@@ -786,7 +826,7 @@ export const createApiService = (baseUrl: string): ApiService => {
       method: 'POST',
       body: JSON.stringify(upload)
     }),
-    uploadCoverVideo: async (galleryId, file) => {
+    uploadCoverVideo: async (galleryId, file, onProgress) => {
       const extension = file.name.split('.').pop()?.toLowerCase();
       const mimeType = file.type || ({ mp4: 'video/mp4', webm: 'video/webm' } as Record<string, string>)[extension ?? ''] || '';
       if (!['video/mp4', 'video/webm'].includes(mimeType)) throw new Error('Choose an MP4 or WebM cover video.');
@@ -795,12 +835,7 @@ export const createApiService = (baseUrl: string): ApiService => {
         body: JSON.stringify({ fileName: file.name, mimeType, fileSize: file.size })
       });
       try {
-        const storageResponse = await fetch(upload.data.signedUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': mimeType },
-          body: file
-        });
-        if (!storageResponse.ok) throw new Error('Video upload to storage failed.');
+        await putFileToStorage(upload.data.signedUrl, file, mimeType, onProgress);
         return await authorizedRequest<unknown>(`/api/galleries/${encodeURIComponent(galleryId)}/cover-video`, {
           method: 'POST',
           body: JSON.stringify({ storagePath: upload.data.storagePath, mimeType, fileSize: file.size })

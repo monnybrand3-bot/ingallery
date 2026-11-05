@@ -377,18 +377,19 @@
 </div>
 </div>
 <div>
-<label class="form-label mb-4" for="gallery-images">Gallery Photos</label>
+<label class="form-label mb-4" for="gallery-images">Gallery Photos & Videos</label>
 <label for="gallery-images" class="border-2 border-dashed border-outline-variant/30 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-secondary/50 hover:bg-surface-variant/30 transition-all duration-300 cursor-pointer group">
 <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4 group-hover:bg-secondary/20 transition-colors">
 <span class="material-symbols-outlined text-[32px] text-on-surface-variant group-hover:text-secondary transition-colors">collections</span>
 </div>
-<p class="font-label-md text-label-md text-on-surface mb-1">Add gallery photos</p>
-<p class="font-body-md text-body-md text-outline">Select multiple JPG, PNG or WEBP images. Optional: upload now or later.</p>
+<p class="font-label-md text-label-md text-on-surface mb-1">Add gallery photos and videos</p>
+<p class="font-body-md text-body-md text-outline">Select JPG, PNG, WEBP, MP4, or WebM files. Upload now or later; each file uses your available studio storage.</p>
 </label>
-<input id="gallery-images" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+<input id="gallery-images" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm" multiple />
 <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4" data-gallery-preview-list></div>
 <div class="cover-upload-progress" data-cover-progress aria-hidden="true"></div>
 <p class="text-label-sm text-secondary mt-3" data-upload-status aria-live="polite"></p>
+<p class="mt-2 text-xs text-on-surface-variant" data-gallery-storage-remaining>Checking available studio storage…</p>
 </div>
 <div>
 <label class="form-label mb-4">Cover Video (Optional)</label>
@@ -539,6 +540,7 @@
     const galleryPreviewList = document.querySelector('[data-gallery-preview-list]');
     const progressBar = document.querySelector('[data-cover-progress]');
     const uploadStatus = document.querySelector('[data-upload-status]');
+    const storageRemainingStatus = document.querySelector('[data-gallery-storage-remaining]');
     const submitButton = form?.querySelector('[data-create-gallery-submit]');
     const cancelButton = document.querySelector('[data-cancel-gallery]');
     const wizardPanels = Array.from(form?.querySelectorAll('[data-wizard-panel]') ?? []);
@@ -627,6 +629,47 @@
         return ({ jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp' })[extension] ?? null;
     };
 
+    const getSupportedGalleryMediaMimeType = (file) => {
+        const imageMimeType = getSupportedImageMimeType(file);
+        if (imageMimeType) return imageMimeType;
+        const mimeType = file.type.trim().toLowerCase();
+        if (['video/mp4', 'video/webm'].includes(mimeType)) return mimeType;
+        const extension = file.name.split('.').pop()?.toLowerCase();
+        return ({ mp4: 'video/mp4', webm: 'video/webm' })[extension] ?? null;
+    };
+
+    const renderSelectedGalleryMedia = () => {
+        if (!galleryPreviewList) return;
+        clearGalleryPreviews();
+        selectedGalleryFiles.forEach((file) => {
+            const isVideo = getSupportedGalleryMediaMimeType(file)?.startsWith('video/');
+            const preview = document.createElement(isVideo ? 'video' : 'img');
+            preview.className = 'w-full aspect-square object-cover rounded-lg border border-secondary/30';
+            preview.alt = file.name;
+            preview.src = URL.createObjectURL(file);
+            if (isVideo) {
+                preview.muted = true;
+                preview.playsInline = true;
+                preview.preload = 'metadata';
+            }
+            galleryPreviewList.appendChild(preview);
+        });
+    };
+
+    const refreshStorageRemaining = async () => {
+        if (!storageRemainingStatus) return;
+        try {
+            const response = await api.getStorage();
+            storageRemainingStatus.textContent = `Studio storage: ${response.data.usedDisplay} used · ${response.data.remainingDisplay} remaining of ${response.data.limitDisplay}.`;
+        } catch {
+            storageRemainingStatus.textContent = 'Studio storage usage is available on the Storage page.';
+        }
+    };
+    void refreshStorageRemaining();
+    navigator.serviceWorker?.addEventListener('message', (event) => {
+        if (event.data?.type === 'INGALLERY_UPLOAD_UPDATE') void refreshStorageRemaining();
+    });
+
     const resolveGalleryUploadPlan = ({ galleryFiles, coverFile, hasCoverVideo = false, isEdit = false }) => {
         const selectedGalleryFiles = Array.from(galleryFiles ?? []).filter(Boolean);
         const cover = coverFile ?? null;
@@ -677,7 +720,7 @@
         } catch {
             window.clearTimeout(timeout);
             channel.port1.close();
-            reject(new Error('The selected photos could not be sent to the upload queue. Try fewer photos at a time.'));
+            reject(new Error('The selected media files could not be sent to the upload queue. Try fewer files at a time.'));
         }
     });
 
@@ -805,34 +848,27 @@
         galleryInput.value = '';
         if (!selectedFiles.length) return;
 
-        const invalidFiles = selectedFiles.filter((file) => !getSupportedImageMimeType(file));
+        const invalidFiles = selectedFiles.filter((file) => !getSupportedGalleryMediaMimeType(file));
         const existingFiles = new Set(selectedGalleryFiles.map((file) => `${file.name}:${file.size}:${file.lastModified}`));
         selectedFiles.forEach((file) => {
             const key = `${file.name}:${file.size}:${file.lastModified}`;
-            if (getSupportedImageMimeType(file) && !existingFiles.has(key)) {
+            if (getSupportedGalleryMediaMimeType(file) && !existingFiles.has(key)) {
                 selectedGalleryFiles.push(file);
                 existingFiles.add(key);
             }
         });
 
-        clearGalleryPreviews();
-        selectedGalleryFiles.forEach((file) => {
-            const preview = document.createElement('img');
-            preview.className = 'w-full aspect-square object-cover rounded-lg border border-secondary/30';
-            preview.alt = file.name;
-            preview.src = URL.createObjectURL(file);
-            galleryPreviewList.appendChild(preview);
-        });
+        renderSelectedGalleryMedia();
 
         if (!selectedGalleryFiles.length) {
-            setUploadStatus('No gallery photos selected yet.');
+            setUploadStatus('No gallery media selected yet.');
             return;
         }
 
         if (invalidFiles.length) {
-            setUploadStatus(`${invalidFiles.length} unsupported file${invalidFiles.length === 1 ? '' : 's'} skipped. ${selectedGalleryFiles.length} photo${selectedGalleryFiles.length === 1 ? '' : 's'} selected.`);
+            setUploadStatus(`${invalidFiles.length} unsupported file${invalidFiles.length === 1 ? '' : 's'} skipped. ${selectedGalleryFiles.length} media file${selectedGalleryFiles.length === 1 ? '' : 's'} selected.`);
         } else {
-            setUploadStatus(`${selectedGalleryFiles.length} gallery photo${selectedGalleryFiles.length === 1 ? '' : 's'} selected. Upload will continue until the storage quota is reached.`);
+            setUploadStatus(`${selectedGalleryFiles.length} gallery media file${selectedGalleryFiles.length === 1 ? '' : 's'} selected. Videos have no separate per-file app limit; uploads use your remaining studio storage.`);
         }
     });
 
@@ -868,7 +904,7 @@
         }
 
         const imageResponse = await api.getGalleryImages(editId);
-        const selectableImages = imageResponse.data.filter((image) => image.previewUrl);
+        const selectableImages = imageResponse.data.filter((image) => image.previewUrl && image.mimeType.startsWith('image/'));
         if (!selectableImages.length || !existingCoverPhotos || !existingCoverSection) return;
         existingCoverSection.classList.remove('hidden');
         existingCoverPhotos.innerHTML = selectableImages.map((image) => `
@@ -917,7 +953,9 @@
             hasCoverVideo,
             isEdit: Boolean(editId)
         });
-        const photoFiles = uploadPlan.photoFiles;
+        const videoFiles = uploadPlan.photoFiles.filter((file) => getSupportedGalleryMediaMimeType(file)?.startsWith('video/'));
+        const originalVideoFiles = [...videoFiles];
+        const photoFiles = uploadPlan.photoFiles.filter((file) => !getSupportedGalleryMediaMimeType(file)?.startsWith('video/'));
 
         if (!title) {
             isSubmitting = false;
@@ -950,14 +988,26 @@
             if (coverVideoUrl) {
                 await api.setCoverVideo(galleryId, { youtubeUrl: coverVideoUrl });
             } else if (coverVideoFile) {
-                setUploadStatus('Uploading cover video...');
-                await api.uploadCoverVideo(galleryId, coverVideoFile);
+                setUploadStatus('Uploading cover video: 0%');
+                await api.uploadCoverVideo(galleryId, coverVideoFile, (percent) => {
+                    setUploadStatus(`Uploading cover video: ${percent}% · ${coverVideoFile.name}`);
+                });
             } else if (editId && removeExistingCoverVideo) {
                 await api.setCoverVideo(galleryId, { clear: true });
             }
 
+            for (const [videoIndex, videoFile] of videoFiles.entries()) {
+                setUploadStatus(`Uploading video ${videoIndex + 1} of ${videoFiles.length}: 0%`);
+                await api.uploadGalleryVideo(galleryId, videoFile, (percent) => {
+                    setUploadStatus(`Uploading video ${videoIndex + 1} of ${videoFiles.length}: ${percent}% · ${videoFile.name}`);
+                });
+                selectedGalleryFiles = selectedGalleryFiles.filter((file) => file !== videoFile);
+                renderSelectedGalleryMedia();
+                await refreshStorageRemaining();
+            }
+
             if (editId && !photoFiles.length && !coverFile) {
-                showToast('Gallery changes saved.');
+                showToast(videoFiles.length ? 'Gallery changes and videos saved.' : 'Gallery changes saved.');
                 window.location.href = '../ingallery_photography_studio_platform/code.html';
                 return;
             }
@@ -965,7 +1015,7 @@
             if (!photoFiles.length && !coverFile) {
                 uploadJobQueued = true;
                 window.localStorage.setItem('ingallery:lastGallery', JSON.stringify({ title, createdAt: new Date().toISOString() }));
-                showToast(hasCoverVideo ? 'Gallery created with its cover video.' : 'Empty gallery created. Download its QR code from your gallery list.');
+                showToast(videoFiles.length ? `${videoFiles.length} gallery video${videoFiles.length === 1 ? '' : 's'} uploaded.` : hasCoverVideo ? 'Gallery created with its cover video.' : 'Empty gallery created. Download its QR code from your gallery list.');
                 window.location.href = '../ingallery_photography_studio_platform/code.html';
                 return;
             }
@@ -1004,14 +1054,14 @@
                     files: batchFiles,
                     coverFile: batchIndex === 0 ? coverFile : null
                 });
-                setUploadStatus(`Preparing upload queue: ${Math.min(startIndex + batchFiles.length, photoFiles.length)} of ${photoFiles.length} photos saved.`);
+                setUploadStatus(`Preparing upload queue: ${Math.min(startIndex + batchFiles.length, photoFiles.length)} of ${photoFiles.length} media files saved.`);
             }
 
             await sendUploadWorkerMessage(worker, { type: 'QUEUE_GALLERY_UPLOAD', jobId });
 
             uploadJobQueued = true;
             window.localStorage.setItem('ingallery:lastGallery', JSON.stringify({ title, createdAt: new Date().toISOString() }));
-            showToast(`Gallery upload queued: ${photoFiles.length} photo${photoFiles.length === 1 ? '' : 's'}. You can keep working.`);
+            showToast(`Gallery upload queued: ${photoFiles.length} photo${photoFiles.length === 1 ? '' : 's'}${videoFiles.length ? `; ${videoFiles.length} video${videoFiles.length === 1 ? '' : 's'} uploaded.` : '.'} You can keep working.`);
             resetFormState();
             setUploadStatus('Upload queued. Progress will stay visible while you work elsewhere.');
             if (submitButton) {
@@ -1026,6 +1076,8 @@
             if (createdGalleryId && !uploadJobQueued) {
                 try {
                     await api.deleteGallery(createdGalleryId);
+                    selectedGalleryFiles = Array.from(new Set([...selectedGalleryFiles, ...originalVideoFiles]));
+                    renderSelectedGalleryMedia();
                 } catch {
                     // Keep the queue failure message generic if cleanup is unavailable.
                 }
