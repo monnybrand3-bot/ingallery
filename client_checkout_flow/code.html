@@ -158,17 +158,6 @@
 </div>
 <div class="w-full h-px bg-white/10 mb-8"></div>
 <div class="flex-grow flex flex-col justify-center">
-<fieldset class="mb-6 space-y-3" data-payment-choice hidden>
-<legend class="text-label-sm font-label-sm text-on-surface-variant uppercase mb-3">Payment method</legend>
-<label class="flex cursor-pointer items-start gap-3 rounded border border-white/15 p-3 text-sm text-on-surface" data-mobile-push-option>
-<input class="mt-1 accent-secondary" type="radio" name="payment-method" value="mobile_money" checked />
-<span><strong class="block">Mobile money prompt</strong><span class="text-on-surface-variant">Approve the request on your phone and return here automatically.</span></span>
-</label>
-<label class="flex cursor-pointer items-start gap-3 rounded border border-white/15 p-3 text-sm text-on-surface" data-other-payment-option hidden>
-<input class="mt-1 accent-secondary" type="radio" name="payment-method" value="other" />
-<span><strong class="block">Other available methods</strong><span class="text-on-surface-variant">Continue to payment methods enabled by this photographer.</span></span>
-</label>
-</fieldset>
 <div data-mobile-network>
 <label class="text-label-sm font-label-sm text-on-surface-variant uppercase mb-2 flex items-center gap-2" for="network">
 <span class="material-symbols-outlined text-[18px]">network_cell</span>
@@ -231,8 +220,6 @@ Mobile money network
         const orderTotalNode = document.querySelector('[data-order-total]');
         const checkoutStudioName = document.querySelector('[data-checkout-studio-name]');
         const checkoutStudioLogo = document.querySelector('[data-checkout-studio-logo]');
-        const paymentChoice = document.querySelector('[data-payment-choice]');
-        const otherPaymentOption = document.querySelector('[data-other-payment-option]');
         const mobileNetwork = document.querySelector('[data-mobile-network]');
         let paymentProvider = null;
         let checkoutAmount = null;
@@ -287,15 +274,6 @@ Mobile money network
                     const options = await api.getPublicGalleryPaymentOptions(response.data.id);
                     paymentProvider = options.data.provider;
                     if (paymentProvider === 'clickpesa') {
-                        paymentChoice.hidden = false;
-                        if (options.data.supportsMobileMoneyPush) {
-                            otherPaymentOption.hidden = !options.data.supportsOtherMethods;
-                        } else {
-                            paymentChoice.querySelector('[data-mobile-push-option]')?.setAttribute('hidden', '');
-                            const otherMethodInput = paymentChoice.querySelector('input[value="other"]');
-                            if (otherMethodInput) otherMethodInput.checked = true;
-                            otherPaymentOption.hidden = !options.data.supportsOtherMethods;
-                        }
                         mobileNetwork.hidden = true;
                     }
                 } catch (optionsError) {
@@ -320,8 +298,7 @@ Mobile money network
             const phoneInput = document.getElementById('phone');
             const phone = phoneInput?.value.trim() ?? '';
             const network = document.getElementById('network')?.value ?? '';
-            const selectedMethod = document.querySelector('input[name="payment-method"]:checked')?.value;
-            const paymentMethod = paymentProvider === 'clickpesa' ? selectedMethod : undefined;
+            const paymentMethod = paymentProvider === 'clickpesa' ? 'mobile_money' : undefined;
             if (!phone) {
                 if (errorMessage) errorMessage.textContent = 'Enter a mobile payment number to continue.';
                 return;
