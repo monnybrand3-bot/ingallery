@@ -2390,7 +2390,7 @@ app.post('/api/galleries/:galleryId/cover-video-upload-url', requireUser, async 
 
 app.post('/api/galleries/:galleryId/cover-video', requireUser, async (request: AuthenticatedRequest, response: Response) => {
   const galleryId = getGalleryIdParam(request);
-  const body = request.body as { youtubeUrl?: string; storagePath?: string; mimeType?: string; fileSize?: number; clear?: boolean };
+  const body = request.body as { youtubeUrl?: string; storagePath?: string; fileName?: string; mimeType?: string; fileSize?: number; clear?: boolean };
   const youtubeUrl = body.youtubeUrl?.trim();
   const storagePath = body.storagePath?.trim();
   if (body.clear && (youtubeUrl || storagePath)) {
@@ -2476,9 +2476,42 @@ app.post('/api/galleries/:galleryId/cover-video', requireUser, async (request: A
       response.status(500).json({ ok: false, message: 'Video saved, but storage accounting could not be finalized.' });
       return;
     }
+
+    const { data: albumVideo, error: albumVideoError } = await supabase.from('gallery_images').insert({
+      gallery_id: galleryId,
+      owner_id: request.userId,
+      tenant_id: tenantContext.tenantId,
+      storage_path: storagePath,
+      processing_status: 'ready',
+      file_name: body.fileName?.trim() || storagePath.split('/').pop() || 'gallery-video',
+      mime_type: body.mimeType?.toLowerCase() ?? 'video/mp4',
+      file_size: Number(body.fileSize)
+    }).select('id').single();
+    if (albumVideoError || !albumVideo) {
+      console.error('cover_video_album_registration_failed', albumVideoError);
+      response.status(500).json({ ok: false, message: 'Cover video uploaded, but it could not be added to the gallery album.' });
+      return;
+    }
+    const { error: albumFileLinkError } = await supabase.from('files').update({ id: albumVideo.id, updated_at: new Date().toISOString() })
+      .eq('tenant_id', tenantContext.tenantId).eq('storage_key', storagePath);
+    const { count: mediaCount, error: mediaCountError } = await supabase.from('gallery_images')
+      .select('id', { count: 'exact', head: true }).eq('gallery_id', galleryId);
+    const { error: mediaCountUpdateError } = await supabase.from('galleries')
+      .update({ image_count: mediaCount ?? 0, updated_at: new Date().toISOString() }).eq('id', galleryId).eq('owner_id', request.userId);
+    if (albumFileLinkError || mediaCountError || mediaCountUpdateError) {
+      console.error('cover_video_album_finalize_failed', albumFileLinkError ?? mediaCountError ?? mediaCountUpdateError);
+      response.status(500).json({ ok: false, message: 'Cover video uploaded, but gallery media details could not be updated.' });
+      return;
+    }
   }
 
   if (gallery.cover_video_path && gallery.cover_video_path !== newVideoPath) {
+    const { data: oldAlbumVideo } = await supabase.from('gallery_images').select('id')
+      .eq('tenant_id', tenantContext.tenantId).eq('storage_path', gallery.cover_video_path).maybeSingle();
+    if (oldAlbumVideo) {
+      response.json({ ok: true, data: { id: galleryId, coverVideoUrl: newVideoUrl, coverVideoPath: newVideoPath } });
+      return;
+    }
     const { data: previousFile } = await supabase.from('files').select('size_bytes')
       .eq('tenant_id', tenantContext.tenantId).eq('storage_key', gallery.cover_video_path).maybeSingle();
     try {
@@ -3431,6 +3464,12 @@ app.delete('/api/files/:fileId', requireUser, async (request: AuthenticatedReque
       }).eq('id', standaloneCover.id).eq('cover_path', fileData.storage_key);
       if (clearCoverError) throw clearCoverError;
     }
+    const { error: clearCoverVideoError } = await supabase.from('galleries').update({
+      cover_video_url: null,
+      cover_video_path: null,
+      updated_at: new Date().toISOString()
+    }).eq('cover_video_path', fileData.storage_key).eq('owner_id', request.userId);
+    if (clearCoverVideoError) throw clearCoverVideoError;
     if (Number(fileData.size_bytes ?? 0) > 0 && !image && fileData.status === 'processing') {
       const { error: reservationReleaseError } = await supabase.rpc('release_tenant_storage', {
         p_tenant_id: tenantContext.tenantId,

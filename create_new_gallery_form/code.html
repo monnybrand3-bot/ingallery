@@ -612,6 +612,7 @@
     let selectedCoverVideoFile = null;
     let removeExistingCoverVideo = false;
     let selectedGalleryFiles = Array.from(galleryInput?.files ?? []);
+    let rejectedGalleryMediaSelection = false;
     const getCoverDesign = () => form?.querySelector('[name="coverDesign"]:checked')?.value ?? 'classic';
     const updateCoverDesignSamples = () => {
         const sampleTitle = titleInput?.value.trim() || 'Your Gallery';
@@ -654,6 +655,11 @@
             }
             galleryPreviewList.appendChild(preview);
         });
+    };
+
+    const setUploadProgress = (message, buttonMessage = message) => {
+        setUploadStatus(message);
+        if (submitButton?.disabled) submitButton.textContent = buttonMessage;
     };
 
     const refreshStorageRemaining = async () => {
@@ -725,7 +731,7 @@
     });
 
     const clearGalleryPreviews = () => {
-        galleryPreviewList?.querySelectorAll('img').forEach((preview) => URL.revokeObjectURL(preview.src));
+        galleryPreviewList?.querySelectorAll('img, video').forEach((preview) => URL.revokeObjectURL(preview.src));
         galleryPreviewList?.replaceChildren();
     };
 
@@ -736,6 +742,7 @@
         selectedCoverVideoFile = null;
         removeExistingCoverVideo = false;
         selectedGalleryFiles = [];
+        rejectedGalleryMediaSelection = false;
         if (coverPreview) {
             coverPreview.src = '';
             coverPreview.style.display = 'none';
@@ -849,6 +856,7 @@
         if (!selectedFiles.length) return;
 
         const invalidFiles = selectedFiles.filter((file) => !getSupportedGalleryMediaMimeType(file));
+        rejectedGalleryMediaSelection = invalidFiles.length > 0 && !selectedFiles.some((file) => getSupportedGalleryMediaMimeType(file));
         const existingFiles = new Set(selectedGalleryFiles.map((file) => `${file.name}:${file.size}:${file.lastModified}`));
         selectedFiles.forEach((file) => {
             const key = `${file.name}:${file.size}:${file.lastModified}`;
@@ -957,6 +965,13 @@
         const originalVideoFiles = [...videoFiles];
         const photoFiles = uploadPlan.photoFiles.filter((file) => !getSupportedGalleryMediaMimeType(file)?.startsWith('video/'));
 
+        if (rejectedGalleryMediaSelection) {
+            setUploadStatus('This video format is not supported. Choose an MP4 or WebM video, or remove it before creating the gallery.');
+            isSubmitting = false;
+            galleryInput?.focus();
+            return;
+        }
+
         if (!title) {
             isSubmitting = false;
             titleInput?.focus();
@@ -988,18 +1003,18 @@
             if (coverVideoUrl) {
                 await api.setCoverVideo(galleryId, { youtubeUrl: coverVideoUrl });
             } else if (coverVideoFile) {
-                setUploadStatus('Uploading cover video: 0%');
+                setUploadProgress('Uploading cover video: 0%', 'Cover video · 0%');
                 await api.uploadCoverVideo(galleryId, coverVideoFile, (percent) => {
-                    setUploadStatus(`Uploading cover video: ${percent}% · ${coverVideoFile.name}`);
+                    setUploadProgress(`Uploading cover video: ${percent}% · ${coverVideoFile.name}`, `Cover video · ${percent}%`);
                 });
             } else if (editId && removeExistingCoverVideo) {
                 await api.setCoverVideo(galleryId, { clear: true });
             }
 
             for (const [videoIndex, videoFile] of videoFiles.entries()) {
-                setUploadStatus(`Uploading video ${videoIndex + 1} of ${videoFiles.length}: 0%`);
+                setUploadProgress(`Uploading video ${videoIndex + 1} of ${videoFiles.length}: 0% · ${videoFile.name}`, `Video ${videoIndex + 1}/${videoFiles.length} · 0%`);
                 await api.uploadGalleryVideo(galleryId, videoFile, (percent) => {
-                    setUploadStatus(`Uploading video ${videoIndex + 1} of ${videoFiles.length}: ${percent}% · ${videoFile.name}`);
+                    setUploadProgress(`Uploading video ${videoIndex + 1} of ${videoFiles.length}: ${percent}% · ${videoFile.name}`, `Video ${videoIndex + 1}/${videoFiles.length} · ${percent}%`);
                 });
                 selectedGalleryFiles = selectedGalleryFiles.filter((file) => file !== videoFile);
                 renderSelectedGalleryMedia();
@@ -1015,6 +1030,7 @@
             if (!photoFiles.length && !coverFile) {
                 uploadJobQueued = true;
                 window.localStorage.setItem('ingallery:lastGallery', JSON.stringify({ title, createdAt: new Date().toISOString() }));
+                setUploadProgress(videoFiles.length ? 'Video uploaded. Opening your gallery list…' : 'Gallery ready. Opening your gallery list…', 'Complete');
                 showToast(videoFiles.length ? `${videoFiles.length} gallery video${videoFiles.length === 1 ? '' : 's'} uploaded.` : hasCoverVideo ? 'Gallery created with its cover video.' : 'Empty gallery created. Download its QR code from your gallery list.');
                 window.location.href = '../ingallery_photography_studio_platform/code.html';
                 return;

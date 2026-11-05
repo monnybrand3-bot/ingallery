@@ -624,7 +624,7 @@ export interface ApiService {
   confirmImage: (galleryId: string, upload: Pick<UploadUrl, 'storagePath' | 'fileName' | 'mimeType' | 'fileSize'>) => Promise<ApiResponse<unknown>>;
   setCoverImage: (galleryId: string, upload: Pick<UploadUrl, 'storagePath' | 'mimeType'>) => Promise<ApiResponse<unknown>>;
   uploadCoverVideo: (galleryId: string, file: File, onProgress?: (percent: number) => void) => Promise<ApiResponse<unknown>>;
-  setCoverVideo: (galleryId: string, video: { youtubeUrl?: string; storagePath?: string; mimeType?: string; fileSize?: number; clear?: boolean }) => Promise<ApiResponse<unknown>>;
+  setCoverVideo: (galleryId: string, video: { youtubeUrl?: string; storagePath?: string; fileName?: string; mimeType?: string; fileSize?: number; clear?: boolean }) => Promise<ApiResponse<unknown>>;
   getPublicGallery: (slug: string, accessToken?: string) => Promise<ApiResponse<PublicGalleryRecord>>;
   getPublicGalleryImages: (slug: string, offset: number, accessToken?: string) => Promise<ApiResponse<PublicGalleryImagesPage>>;
   getPublicGalleryPaymentOptions: (galleryId: string) => Promise<ApiResponse<PublicGalleryPaymentOptions>>;
@@ -838,7 +838,7 @@ export const createApiService = (baseUrl: string): ApiService => {
         await putFileToStorage(upload.data.signedUrl, file, mimeType, onProgress);
         return await authorizedRequest<unknown>(`/api/galleries/${encodeURIComponent(galleryId)}/cover-video`, {
           method: 'POST',
-          body: JSON.stringify({ storagePath: upload.data.storagePath, mimeType, fileSize: file.size })
+          body: JSON.stringify({ storagePath: upload.data.storagePath, fileName: file.name, mimeType, fileSize: file.size })
         });
       } catch (error) {
         await authorizedRequest(`/api/galleries/${encodeURIComponent(galleryId)}/upload-cancel`, {

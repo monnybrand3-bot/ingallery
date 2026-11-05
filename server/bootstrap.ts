@@ -23,7 +23,8 @@ const migrationPaths = [
   path.join(process.cwd(), 'supabase', 'migrations', '20261010_deduplicate_default_plans.sql'),
   path.join(process.cwd(), 'supabase', 'migrations', '20261011_restore_original_packages.sql'),
   path.join(process.cwd(), 'supabase', 'migrations', '20261102_performance_analytics.sql'),
-  path.join(process.cwd(), 'supabase', 'migrations', '20261103_gallery_cover_design.sql')
+  path.join(process.cwd(), 'supabase', 'migrations', '20261103_gallery_cover_design.sql'),
+  path.join(process.cwd(), 'supabase', 'migrations', '20261105_gallery_cover_videos_in_album.sql')
 ];
 
 export const bootstrapDatabase = async (): Promise<void> => {
