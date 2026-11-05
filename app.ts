@@ -580,10 +580,25 @@ export const getApiBaseUrl = (): string => {
 };
 
 export const getPublicFrontendUrl = (): string => {
-  if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PUBLIC_FRONTEND_URL) {
-    return String(import.meta.env.VITE_PUBLIC_FRONTEND_URL).replace(/\/$/, '');
-  }
-  return typeof window !== 'undefined' ? window.location.origin : '';
+  const configuredUrl = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PUBLIC_FRONTEND_URL
+    ? String(import.meta.env.VITE_PUBLIC_FRONTEND_URL).replace(/\/$/, '')
+    : '';
+  const runtimeUrl = typeof window !== 'undefined' ? window.location.origin : '';
+  const isLocalUrl = (value: string): boolean => {
+    try {
+      const hostname = new URL(value).hostname;
+      return hostname === 'localhost' || hostname === '127.0.0.1' || hostname.endsWith('.local') || /^192\.168\./.test(hostname);
+    } catch {
+      return false;
+    }
+  };
+
+  // On a deployed site, build-time environment values can be stale (often localhost).
+  // Use the actual hosted origin so copied links and gallery QR codes work for clients.
+  if (runtimeUrl && !isLocalUrl(runtimeUrl)) return runtimeUrl;
+  // During local development, allow an explicitly configured public host for sharing.
+  if (configuredUrl && (!runtimeUrl || isLocalUrl(runtimeUrl))) return configuredUrl;
+  return runtimeUrl || configuredUrl;
 };
 
 if (typeof window !== 'undefined') {
