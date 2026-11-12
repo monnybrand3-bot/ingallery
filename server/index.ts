@@ -2155,6 +2155,34 @@ const processGalleryCoverVariant = async (galleryId: string): Promise<void> => {
 };
 
 const resumeQueuedImageVariantJobs = async (): Promise<void> => {
+  const { data: albumVideosToRecover, error: albumVideoLookupError } = await supabase
+    .from('gallery_images')
+    .select('id')
+    .in('mime_type', ['video/mp4', 'video/webm'])
+    .in('processing_status', ['queued', 'processing']);
+  if (albumVideoLookupError) {
+    console.error('gallery_album_video_recovery_lookup_failed', albumVideoLookupError);
+    return;
+  }
+  const albumVideoIds = (albumVideosToRecover ?? []).map((video) => video.id);
+  if (albumVideoIds.length) {
+    const { error: albumVideoFileRecoveryError } = await supabase.from('files')
+      .update({ status: 'uploaded', updated_at: new Date().toISOString() })
+      .in('id', albumVideoIds);
+    if (albumVideoFileRecoveryError) {
+      console.error('gallery_album_video_file_recovery_failed', albumVideoFileRecoveryError);
+      return;
+    }
+    const { error: albumVideoRecoveryError } = await supabase.from('gallery_images')
+      .update({ processing_status: 'ready', processing_started_at: null })
+      .in('id', albumVideoIds)
+      .in('processing_status', ['queued', 'processing']);
+    if (albumVideoRecoveryError) {
+      console.error('gallery_album_video_recovery_failed', albumVideoRecoveryError);
+      return;
+    }
+  }
+
   const staleBefore = new Date(Date.now() - 60 * 60 * 1000).toISOString();
   let staleQuery = supabase
     .from('gallery_images')
@@ -2182,6 +2210,8 @@ const resumeQueuedImageVariantJobs = async (): Promise<void> => {
     .from('gallery_images')
     .select('id')
     .eq('processing_status', 'queued')
+    .neq('mime_type', 'video/mp4')
+    .neq('mime_type', 'video/webm')
     .order('created_at', { ascending: true })
     .limit(availableSlots);
   if (error) {
@@ -2675,7 +2705,7 @@ app.post('/api/galleries/:galleryId/images', requireUser, async (request: Authen
       storage_key: storagePath,
       size_bytes: fileSize,
       mime_type: mimeType,
-      status: 'processing',
+      status: isAlbumVideo ? 'uploaded' : 'processing',
       updated_at: new Date().toISOString()
     }, { onConflict: 'tenant_id,storage_key' });
     if (fileUpdateError) throw fileUpdateError;

@@ -675,7 +675,7 @@ export const createApiService = (baseUrl: string): ApiService => {
 
   const request = async <T>(path: string, init?: RequestInit): Promise<ApiResponse<T>> => {
     const headers = new Headers(init?.headers ?? {});
-    if (!(init?.body instanceof FormData) && !headers.has('Content-Type')) {
+    if (init?.body !== undefined && !(init.body instanceof FormData) && !headers.has('Content-Type')) {
       headers.set('Content-Type', 'application/json');
     }
 
