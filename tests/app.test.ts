@@ -86,6 +86,29 @@ test('public gallery GET requests do not trigger a cross-origin JSON preflight',
   }
 });
 
+test('JSON body requests keep their content type', async () => {
+  const originalFetch = globalThis.fetch;
+  let requestHeaders: Headers | undefined;
+  globalThis.fetch = async (_input, init) => {
+    requestHeaders = new Headers(init?.headers);
+    return new Response(JSON.stringify({ ok: true, data: {} }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  };
+
+  try {
+    await createApiService('https://api.example.com').createCheckout('gallery-1', {
+      email: 'client@example.com',
+      phone: '+255123456789'
+    });
+
+    assert.equal(requestHeaders?.get('Content-Type'), 'application/json');
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test('login preserves authentication errors returned by the API', async () => {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async () => new Response(JSON.stringify({
